@@ -394,19 +394,23 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   background: var(--free-green); color: white;
 }
 .panmure-free-banner {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
   text-align: center; color: white;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.55) 100%);
 }
 .panmure-free-banner h3 {
   font-family: 'Outfit', sans-serif;
   font-size: 36px; font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
 }
 .panmure-free-banner p {
-  font-size: 14px; opacity: 0.9;
+  font-size: 14px; opacity: 0.95;
   margin-top: 4px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
 }
 
 .clinic-info { padding: 24px; flex: 1; display: flex; flex-direction: column; }
@@ -869,6 +873,7 @@ footer {
             <div class="clinic-team-member"><div class="team-avatar">JW</div> Jade Warren</div>
             <div class="clinic-team-member"><div class="team-avatar">HV</div> Hans Vermeulen</div>
             <div class="clinic-team-member"><div class="team-avatar">GM</div> Gwenne Manares</div>
+            <div class="clinic-team-member"><div class="team-avatar" style="background:#a8d5a2;color:#2B5A1E;font-size:10px">SW</div> Samuel Warren <span style="font-size:11px;color:#6b8f6b">(Student)</span></div>
           </div>
         </div>
       </div>
@@ -893,6 +898,8 @@ footer {
             <div class="clinic-team-member"><div class="team-avatar">TK</div> Timothy Keung</div>
             <div class="clinic-team-member"><div class="team-avatar">AB</div> Alistair Burgess</div>
             <div class="clinic-team-member"><div class="team-avatar">DC</div> Dylan Connolly</div>
+            <div class="clinic-team-member"><div class="team-avatar">IA</div> Ibrahim Al-Jumaily</div>
+            <div class="clinic-team-member"><div class="team-avatar">KP</div> Komal Preet Kaur <span style="font-size:11px;color:#6b8f6b">(Fri)</span></div>
           </div>
         </div>
       </div>
