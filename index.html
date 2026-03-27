@@ -14,11 +14,11 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 :root {
-  --forest: #2B5A1E;
-  --forest-deep: #1A3A12;
-  --sage: #7BA05B;
-  --sage-light: #A8CC8C;
-  --mint: #E8F3E0;
+  --forest: #2C6120;
+  --forest-deep: #1B3D12;
+  --sage: #6FA052;
+  --sage-light: #A0C882;
+  --mint: #EBF6E3;
   --cream: #FAFBF7;
   --warm: #F5F0E8;
   --bark: #3D2E1E;
@@ -29,8 +29,8 @@
   --white: #FFFFFF;
   --gold: #D4A843;
   --coral: #E07B5A;
-  --free-green: #0B8A3E;
-  --free-bg: #ECFDF3;
+  --free-green: #0A8C3C;
+  --free-bg: #EAFAF1;
 }
 
 html { scroll-behavior: smooth; }
@@ -394,23 +394,24 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   background: var(--free-green); color: white;
 }
 .panmure-free-banner {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  position: absolute; bottom: 0; left: 0; right: 0;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  align-items: center; justify-content: flex-end;
+  padding: 20px 16px;
   text-align: center; color: white;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.55) 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.0) 100%);
 }
 .panmure-free-banner h3 {
   font-family: 'Outfit', sans-serif;
   font-size: 36px; font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 .panmure-free-banner p {
   font-size: 14px; opacity: 0.95;
-  margin-top: 4px;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  margin-top: 2px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 
 .clinic-info { padding: 24px; flex: 1; display: flex; flex-direction: column; }
@@ -669,6 +670,11 @@ footer {
     border-bottom: 1px solid rgba(0,0,0,0.06);
     box-shadow: 0 8px 32px rgba(0,0,0,0.08);
     gap: 16px;
+  }
+  .nav-links.open .nav-cta {
+    background: white;
+    color: var(--forest);
+    border: 2px solid var(--forest);
   }
 }
 </style>
