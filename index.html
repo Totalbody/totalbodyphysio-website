@@ -61,7 +61,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .nav-inner {
   max-width: 1200px; margin: 0 auto; padding: 0 24px;
   display: flex; align-items: center; justify-content: space-between;
-  height: 72px;
+  height: 88px;
 }
 .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
 .nav-logo-icon {
@@ -105,7 +105,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
 /* ─── HERO ─────────────────────────────────────────────── */
 .hero {
-  padding: 140px 0 80px;
+  padding: 150px 0 80px;
   position: relative;
   overflow: hidden;
   background: linear-gradient(170deg, var(--cream) 0%, var(--mint) 40%, var(--warm) 100%);
@@ -684,7 +684,7 @@ footer {
 <nav id="nav">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <img src="images/icons/logo full.png" alt="Total Body Physio" style="height:72px;object-fit:contain;mix-blend-mode:multiply;display:block;">
+      <img src="images/icons/logo full.png" alt="Total Body Physio" style="height:86px;object-fit:contain;mix-blend-mode:multiply;display:block;">
     </a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#pricing">Pricing</a></li>
@@ -1053,7 +1053,9 @@ footer {
   <div class="container">
     <div class="footer-grid">
       <div>
-        <img src="images/icons/logo green background .png" alt="Total Body Physio" style="width:100%;max-width:300px;display:block;margin-bottom:16px;border-radius:4px;border:none;box-shadow:none;background:#0A3D25;outline:4px solid #0A3D25;">
+        <div style="max-width:300px;overflow:hidden;margin-bottom:16px;background:#0A3D25;">
+          <img src="images/icons/logo green background .png" alt="Total Body Physio" style="width:calc(100% + 6px);display:block;margin-right:-6px;">
+        </div>
         <p class="footer-brand-desc">Expert hands-on physiotherapy across Auckland since 2000. ACC accredited, Southern Cross affiliated. Move better, live better.</p>
       </div>
       <div class="footer-col">
