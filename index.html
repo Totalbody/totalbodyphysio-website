@@ -1258,8 +1258,8 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 <!-- ═══ BOOKING WIDGET STYLES ══════════════════════════════ -->
 <style>
   /* ─── RESET & BASE ───────────────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; }
+  /* global reset scoped to widget elements only */
+  /* body font override removed */
 
   /* ─── CSS VARIABLES ──────────────────────────────────────────── */
   :root {
@@ -1381,7 +1381,7 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   /* ── WIX IFRAME FIX ─────────────────────────────────────────────
      iframe must have pointer-events:none so Wix page stays clickable.
      Only the FAB and open panel need to receive clicks. */
-  body { background: transparent !important; }
+  /* body transparent removed - not needed outside iframe */
   #bw-fab, #bw-panel { pointer-events: all; }
 
   /* ── FAB LABEL PILL ──────────────────────────────────────────── */
