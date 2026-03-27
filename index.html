@@ -447,6 +447,10 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   display: flex; align-items: center; justify-content: center;
   font-family: 'Outfit', sans-serif; font-size: 12px;
   font-weight: 700; color: var(--forest-deep);
+  overflow: hidden; flex-shrink: 0;
+}
+.team-avatar img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center top;
 }
 .clinic-phone {
   display: inline-flex; align-items: center; gap: 6px;
@@ -681,12 +685,8 @@ footer {
 <nav id="nav">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <div class="nav-logo-icon">
-        <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-          <path d="M14 4C14 4,22 7,22 13C22 19,14 22,14 22C14 22,8 19,8 13C8 8,11 5,14 4Z" stroke="white" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
-          <path d="M14 4C14 4,10 10,14 13C18 16,22 13,22 13" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" fill="none"/>
-          <circle cx="14" cy="13" r="2.2" fill="white" opacity="0.9"/>
-        </svg>
+      <div class="nav-logo-icon" style="background:none;">
+        <img src="images/icons/koru.png" alt="Total Body Physio" style="width:40px;height:40px;object-fit:contain;">
       </div>
       <span class="nav-logo-text">Total Body Physio</span>
     </a>
@@ -872,9 +872,9 @@ footer {
             <span class="clinic-tag">Free Parking</span>
           </div>
           <div class="clinic-team">
-            <div class="clinic-team-member"><div class="team-avatar">JW</div> Jade Warren</div>
-            <div class="clinic-team-member"><div class="team-avatar">HV</div> Hans Vermeulen</div>
-            <div class="clinic-team-member"><div class="team-avatar">GM</div> Gwenne Manares</div>
+            <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/jade.AVIF" alt="Jade Warren"></div> Jade Warren</div>
+            <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/hans.GIF" alt="Hans Vermeulen"></div> Hans Vermeulen</div>
+            <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/gwen.AVIF" alt="Gwenne Manares"></div> Gwenne Manares</div>
             <div class="clinic-team-member"><div class="team-avatar" style="background:#a8d5a2;color:#2B5A1E;font-size:10px">SW</div> Samuel Warren <span style="font-size:11px;color:#6b8f6b">(Student)</span></div>
           </div>
         </div>
@@ -897,11 +897,11 @@ footer {
             <span class="clinic-tag">Wheelchair Access</span>
           </div>
           <div class="clinic-team">
-            <div class="clinic-team-member"><div class="team-avatar">TK</div> Timothy Keung</div>
-            <div class="clinic-team-member"><div class="team-avatar">AB</div> Alistair Burgess</div>
-            <div class="clinic-team-member"><div class="team-avatar">DC</div> Dylan Connolly</div>
-            <div class="clinic-team-member"><div class="team-avatar">IA</div> Ibrahim Al-Jumaily</div>
-            <div class="clinic-team-member"><div class="team-avatar">KP</div> Komal Preet Kaur <span style="font-size:11px;color:#6b8f6b">(Fri)</span></div>
+            <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/tim.JPG" alt="Timothy Keung"></div> Timothy Keung</div>
+            <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/Alistair Burgess.jpg" alt="Alistair Burgess"></div> Alistair Burgess</div>
+            <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/dylan.AVIF" alt="Dylan Connolly"></div> Dylan Connolly</div>
+            <div class="clinic-team-member"><div class="team-avatar" style="background:#a8d5a2;color:#2B5A1E;font-size:10px">IA</div> Ibrahim Al-Jumaily</div>
+            <div class="clinic-team-member"><div class="team-avatar" style="background:#a8d5a2;color:#2B5A1E;font-size:10px">KP</div> Komal Preet Kaur <span style="font-size:11px;color:#6b8f6b">(Fri)</span></div>
           </div>
         </div>
       </div>
@@ -923,8 +923,8 @@ footer {
             <span class="clinic-tag">Free Parking</span>
           </div>
           <div class="clinic-team">
-            <div class="clinic-team-member"><div class="team-avatar">IY</div> Isabella Yang</div>
-            <div class="clinic-team-member"><div class="team-avatar">IA</div> Ibrahim Al-Jumaily</div>
+            <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/isabella.JPG" alt="Isabella Yang"></div> Isabella Yang</div>
+            <div class="clinic-team-member"><div class="team-avatar" style="background:#a8d5a2;color:#2B5A1E;font-size:10px">IA</div> Ibrahim Al-Jumaily</div>
           </div>
         </div>
       </div>
@@ -953,8 +953,8 @@ footer {
               <span class="clinic-tag">$0 Co-Pay</span>
             </div>
             <div class="clinic-team" style="border-top:none;padding-top:0;margin-top:8px">
-              <div class="clinic-team-member"><div class="team-avatar">KP</div> Komal Preet Kaur</div>
-              <div class="clinic-team-member"><div class="team-avatar">GM</div> Gwenne Manares</div>
+              <div class="clinic-team-member"><div class="team-avatar" style="background:#a8d5a2;color:#2B5A1E;font-size:10px">KP</div> Komal Preet Kaur</div>
+              <div class="clinic-team-member"><div class="team-avatar"><img src="images/team/gwen.AVIF" alt="Gwenne Manares"></div> Gwenne Manares</div>
             </div>
           </div>
         </div>
@@ -1057,7 +1057,7 @@ footer {
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div class="footer-brand-name">Total Body Physio</div>
+        <img src="images/icons/logo full.png" alt="Total Body Physio" style="height:80px;object-fit:contain;margin-bottom:12px;filter:brightness(0) invert(1);">
         <p class="footer-brand-desc">Expert hands-on physiotherapy across Auckland since 2000. ACC accredited, Southern Cross affiliated. Move better, live better.</p>
       </div>
       <div class="footer-col">
