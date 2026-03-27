@@ -18,7 +18,7 @@
   --forest-deep: #1B3D12;
   --sage: #6FA052;
   --sage-light: #A0C882;
-  --mint: #EBF6E3;
+  --mint: #F2F9EC;
   --cream: #FAFBF7;
   --warm: #F5F0E8;
   --bark: #3D2E1E;
@@ -79,13 +79,14 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 .nav-links a:hover { color: var(--forest); }
 .nav-cta {
-  background: var(--forest); color: white;
+  background: white; color: var(--forest);
   padding: 10px 24px; border-radius: 100px;
-  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 14px;
+  font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
   text-decoration: none; transition: all 0.2s;
   display: inline-flex; align-items: center; gap: 6px;
+  border: 2px solid var(--forest);
 }
-.nav-cta:hover { background: var(--forest-deep); transform: translateY(-1px); }
+.nav-cta:hover { background: var(--forest); color: white; transform: translateY(-1px); }
 
 /* Mobile nav */
 .nav-mobile-toggle {
@@ -670,11 +671,6 @@ footer {
     border-bottom: 1px solid rgba(0,0,0,0.06);
     box-shadow: 0 8px 32px rgba(0,0,0,0.08);
     gap: 16px;
-  }
-  .nav-links.open .nav-cta {
-    background: white;
-    color: var(--forest);
-    border: 2px solid var(--forest);
   }
 }
 </style>
