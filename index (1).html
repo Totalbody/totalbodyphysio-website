@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Total Body Physio | Auckland's Hands-On Physio Experts</title>
+<meta name="description" content="Expert physiotherapy across 4 Auckland clinics. ACC accredited, no referral needed. Free physio at our Panmure clinic. Book online today.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   TOTAL BODY PHYSIO — Homepage
+   ═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --forest: #2B5A1E;
+  --forest-deep: #1A3A12;
+  --sage: #7BA05B;
+  --sage-light: #A8CC8C;
+  --mint: #E8F3E0;
+  --cream: #FAFBF7;
+  --warm: #F5F0E8;
+  --bark: #3D2E1E;
+  --bark-light: #6B5744;
+  --text: #2A2A28;
+  --text-mid: #5A5A56;
+  --text-light: #8A8A84;
+  --white: #FFFFFF;
+  --gold: #D4A843;
+  --coral: #E07B5A;
+  --free-green: #0B8A3E;
+  --free-bg: #ECFDF3;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--cream);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,h2,h3,h4,h5,h6 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ─── NAV ──────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250,251,247,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(43,90,30,0.08);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px;
+}
+.nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.nav-logo-icon {
+  width: 44px; height: 44px;
+  background: linear-gradient(145deg, var(--forest), var(--sage));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-text { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px; color: var(--forest-deep); }
+.nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--text-mid);
+  font-size: 14px; font-weight: 500; letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--forest); }
+.nav-cta {
+  background: var(--forest); color: white;
+  padding: 10px 24px; border-radius: 100px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 14px;
+  text-decoration: none; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.nav-cta:hover { background: var(--forest-deep); transform: translateY(-1px); }
+
+/* Mobile nav */
+.nav-mobile-toggle {
+  display: none; background: none; border: none; cursor: pointer;
+  width: 40px; height: 40px; align-items: center; justify-content: center;
+}
+.nav-mobile-toggle span {
+  display: block; width: 22px; height: 2px; background: var(--text);
+  position: relative; transition: 0.2s;
+}
+.nav-mobile-toggle span::before, .nav-mobile-toggle span::after {
+  content: ''; position: absolute; width: 22px; height: 2px;
+  background: var(--text); left: 0; transition: 0.2s;
+}
+.nav-mobile-toggle span::before { top: -7px; }
+.nav-mobile-toggle span::after { top: 7px; }
+
+/* ─── HERO ─────────────────────────────────────────────── */
+.hero {
+  padding: 140px 0 80px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(170deg, var(--cream) 0%, var(--mint) 40%, var(--warm) 100%);
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(123,160,91,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: white; border: 1px solid rgba(43,90,30,0.12);
+  padding: 6px 16px 6px 8px; border-radius: 100px;
+  font-size: 13px; font-weight: 500; color: var(--forest);
+  margin-bottom: 24px;
+}
+.hero-badge-dot {
+  width: 8px; height: 8px; background: var(--free-green);
+  border-radius: 50%; animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.hero h1 {
+  font-size: clamp(40px, 5.5vw, 72px);
+  font-weight: 800;
+  color: var(--forest-deep);
+  margin-bottom: 20px;
+  letter-spacing: -0.03em;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--sage), var(--forest));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 18px; color: var(--text-mid);
+  max-width: 480px; margin-bottom: 32px;
+  line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--forest); color: white;
+  padding: 16px 32px; border-radius: 100px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 16px;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.25s; border: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(43,90,30,0.25);
+}
+.btn-primary:hover { background: var(--forest-deep); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(43,90,30,0.3); }
+.btn-secondary {
+  background: white; color: var(--forest);
+  padding: 16px 32px; border-radius: 100px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 16px;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  border: 2px solid rgba(43,90,30,0.15); transition: all 0.25s; cursor: pointer;
+}
+.btn-secondary:hover { border-color: var(--forest); background: var(--mint); }
+
+/* Hero visual */
+.hero-visual {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-card {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+}
+.hero-card-stat {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-box {
+  background: var(--mint); border-radius: 16px;
+  padding: 20px; text-align: center;
+}
+.stat-num {
+  font-family: 'Outfit', sans-serif; font-size: 32px;
+  font-weight: 800; color: var(--forest);
+}
+.stat-label { font-size: 12px; color: var(--text-mid); font-weight: 500; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.hero-card-features { display: flex; flex-direction: column; gap: 12px; }
+.hero-feature {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: var(--text-mid); font-weight: 500;
+}
+.hero-feature-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.hfi-green { background: var(--free-bg); }
+.hfi-warm { background: #FFF7ED; }
+.hfi-blue { background: #EFF6FF; }
+
+/* Floating accent card */
+.hero-float {
+  position: absolute; top: -16px; right: -20px;
+  background: var(--forest); color: white;
+  padding: 14px 20px; border-radius: 16px;
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 8px 24px rgba(43,90,30,0.3);
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.hero-float-num { font-size: 22px; font-weight: 800; }
+.hero-float-label { font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ─── TRUST BAR ────────────────────────────────────────── */
+.trust {
+  padding: 40px 0;
+  background: white;
+  border-top: 1px solid rgba(0,0,0,0.04);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.trust-inner {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: 40px;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 500; color: var(--text-mid);
+}
+.trust-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.ti-green { background: var(--mint); }
+.ti-gold { background: #FEF9EE; }
+.ti-blue { background: #EFF6FF; }
+
+/* ─── PRICING ──────────────────────────────────────────── */
+.pricing {
+  padding: 100px 0;
+  background: var(--cream);
+}
+.section-label {
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--sage); margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(32px, 4vw, 48px); font-weight: 800;
+  color: var(--forest-deep); margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.section-sub {
+  font-size: 17px; color: var(--text-mid); max-width: 560px;
+  line-height: 1.7; margin-bottom: 48px;
+}
+
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.price-card {
+  background: white; border-radius: 20px;
+  padding: 32px 28px;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.price-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+
+.price-card.featured {
+  border-color: var(--forest);
+  box-shadow: 0 8px 32px rgba(43,90,30,0.12);
+}
+.price-card.free-card {
+  background: linear-gradient(145deg, #ECFDF3, #D1FAE5);
+  border-color: var(--free-green);
+}
+.price-card-badge {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--forest); color: white;
+  padding: 4px 12px; border-radius: 100px;
+  font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.free-card .price-card-badge {
+  background: var(--free-green);
+}
+.price-card-type {
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+  color: var(--text-mid); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 8px;
+}
+.price-card-amount {
+  font-family: 'Outfit', sans-serif;
+  margin-bottom: 4px;
+}
+.price-big {
+  font-size: 48px; font-weight: 800; color: var(--forest-deep);
+}
+.free-card .price-big { color: var(--free-green); }
+.price-unit { font-size: 16px; font-weight: 400; color: var(--text-light); }
+.price-card-desc {
+  font-size: 14px; color: var(--text-mid); margin-bottom: 20px;
+  line-height: 1.6;
+}
+.price-card-list {
+  list-style: none; display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 24px;
+}
+.price-card-list li {
+  font-size: 14px; color: var(--text-mid);
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.price-card-list li::before {
+  content: '✓'; color: var(--sage); font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+.free-card .price-card-list li::before { color: var(--free-green); }
+
+.price-note {
+  margin-top: 24px;
+  padding: 20px 24px;
+  background: var(--mint);
+  border-radius: 16px;
+  font-size: 14px;
+  color: var(--forest);
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.price-note strong { font-weight: 600; }
+
+/* ─── CLINICS ──────────────────────────────────────────── */
+.clinics {
+  padding: 100px 0;
+  background: white;
+}
+.clinics-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.clinic-card {
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--cream);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.clinic-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+
+.clinic-card.panmure-card {
+  background: linear-gradient(145deg, #ECFDF3, #D1FAE5);
+  border-color: var(--free-green);
+  grid-column: 1 / -1;
+}
+.clinic-img {
+  height: 200px;
+  background: var(--mint);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.panmure-card .clinic-img {
+  background: linear-gradient(135deg, #059669, #0B8A3E);
+}
+.clinic-img-tag {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba(255,255,255,0.95); color: var(--forest);
+  padding: 4px 12px; border-radius: 100px;
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600;
+}
+.panmure-card .clinic-img-tag {
+  background: var(--free-green); color: white;
+}
+.panmure-free-banner {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; color: white;
+}
+.panmure-free-banner h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 36px; font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.panmure-free-banner p {
+  font-size: 14px; opacity: 0.9;
+  margin-top: 4px;
+}
+
+.clinic-info { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.clinic-name {
+  font-family: 'Outfit', sans-serif; font-size: 22px;
+  font-weight: 700; color: var(--forest-deep); margin-bottom: 8px;
+}
+.clinic-address { font-size: 14px; color: var(--text-mid); margin-bottom: 16px; }
+.clinic-details {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+}
+.clinic-tag {
+  background: var(--mint); color: var(--forest);
+  padding: 4px 12px; border-radius: 100px;
+  font-size: 12px; font-weight: 600;
+}
+.panmure-card .clinic-tag {
+  background: rgba(11,138,62,0.12); color: var(--free-green);
+}
+.clinic-team {
+  display: flex; gap: 8px; margin-top: auto; padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  flex-wrap: wrap;
+}
+.clinic-team-member {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-mid);
+}
+.team-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--sage-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Outfit', sans-serif; font-size: 12px;
+  font-weight: 700; color: var(--forest-deep);
+}
+.clinic-phone {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--forest); font-weight: 600;
+  text-decoration: none; font-size: 15px;
+  margin-bottom: 12px;
+}
+
+/* ─── ABOUT ────────────────────────────────────────────── */
+.about {
+  padding: 100px 0;
+  background: var(--forest-deep);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.about::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 20% 80%, rgba(123,160,91,0.2) 0%, transparent 60%);
+}
+.about-inner {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center;
+  position: relative; z-index: 1;
+}
+.about-photo {
+  width: 100%; aspect-ratio: 4/5;
+  background: linear-gradient(145deg, var(--forest), var(--sage));
+  border-radius: 24px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.about-photo-placeholder {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 3px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px; margin-bottom: 20px;
+}
+.about-photo-name {
+  font-family: 'Outfit', sans-serif; font-size: 24px;
+  font-weight: 700; margin-bottom: 4px;
+}
+.about-photo-role { font-size: 14px; opacity: 0.7; }
+
+.about h2 {
+  font-size: clamp(32px, 4vw, 44px); font-weight: 800;
+  margin-bottom: 24px; letter-spacing: -0.02em;
+}
+.about-text {
+  font-size: 16px; line-height: 1.8;
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 20px;
+}
+.about-quote {
+  font-family: 'Outfit', sans-serif; font-size: 20px;
+  font-weight: 600; font-style: italic;
+  color: var(--sage-light);
+  border-left: 3px solid var(--sage);
+  padding-left: 20px;
+  margin-top: 32px;
+}
+
+/* ─── SERVICES ─────────────────────────────────────────── */
+.services {
+  padding: 100px 0;
+  background: var(--cream);
+}
+.services-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.service-card {
+  background: white; border-radius: 20px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: all 0.3s;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+.service-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+.si-1 { background: var(--mint); }
+.si-2 { background: #FFF7ED; }
+.si-3 { background: #EFF6FF; }
+.si-4 { background: #FEF3F2; }
+.si-5 { background: #F0F9FF; }
+.si-6 { background: #FFFBEB; }
+.service-name {
+  font-family: 'Outfit', sans-serif; font-size: 16px;
+  font-weight: 700; color: var(--forest-deep); margin-bottom: 8px;
+}
+.service-desc {
+  font-size: 13px; color: var(--text-light); line-height: 1.6;
+}
+
+/* ─── CTA ──────────────────────────────────────────────── */
+.cta {
+  padding: 100px 0;
+  background: linear-gradient(170deg, var(--mint) 0%, var(--cream) 100%);
+  text-align: center;
+}
+.cta h2 {
+  font-size: clamp(32px, 4vw, 52px); font-weight: 800;
+  color: var(--forest-deep); margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.cta p {
+  font-size: 18px; color: var(--text-mid);
+  max-width: 500px; margin: 0 auto 40px;
+  line-height: 1.7;
+}
+.cta-phones {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: 16px; margin-top: 32px;
+}
+.cta-phone {
+  display: flex; align-items: center; gap: 8px;
+  background: white; padding: 12px 20px; border-radius: 100px;
+  text-decoration: none; color: var(--forest);
+  font-weight: 600; font-size: 14px;
+  border: 1px solid rgba(43,90,30,0.1);
+  transition: all 0.2s;
+}
+.cta-phone:hover { border-color: var(--forest); background: var(--mint); }
+.cta-phone-loc { color: var(--text-light); font-weight: 400; }
+
+/* ─── FOOTER ───────────────────────────────────────────── */
+footer {
+  background: var(--forest-deep); color: white;
+  padding: 60px 0 32px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px; margin-bottom: 40px;
+}
+.footer-brand-name {
+  font-family: 'Outfit', sans-serif; font-size: 20px;
+  font-weight: 700; margin-bottom: 12px;
+}
+.footer-brand-desc {
+  font-size: 14px; color: rgba(255,255,255,0.6);
+  line-height: 1.7; max-width: 300px;
+}
+.footer-col-title {
+  font-family: 'Outfit', sans-serif; font-size: 13px;
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--sage-light);
+  margin-bottom: 16px;
+}
+.footer-col a {
+  display: block; color: rgba(255,255,255,0.6);
+  text-decoration: none; font-size: 14px;
+  padding: 4px 0; transition: color 0.2s;
+}
+.footer-col a:hover { color: white; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; color: rgba(255,255,255,0.4);
+}
+
+/* ─── ANIMATIONS ───────────────────────────────────────── */
+.fade-up {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible {
+  opacity: 1; transform: translateY(0);
+}
+
+/* ─── MOBILE ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual { order: -1; }
+  .hero-card { max-width: 100%; }
+  .hero-float { top: -12px; right: 0; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .clinics-grid { grid-template-columns: 1fr; }
+  .clinic-card.panmure-card { grid-column: auto; }
+  .about-inner { grid-template-columns: 1fr; }
+  .about-photo { aspect-ratio: auto; padding: 48px 32px; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex; }
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 110px 0 60px; }
+  .hero h1 { font-size: 36px; }
+  .hero-sub { font-size: 16px; }
+  .hero-actions { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+  .trust-inner { gap: 24px; }
+  .services-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .panmure-free-banner h3 { font-size: 24px; }
+  .cta-phones { flex-direction: column; align-items: center; }
+  .hero-card-stat { grid-template-columns: 1fr 1fr; }
+  .stat-num { font-size: 26px; }
+}
+
+/* Mobile nav open */
+@media (max-width: 900px) {
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 72px; left: 0; right: 0;
+    background: white; padding: 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    gap: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════════ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+          <path d="M14 4C14 4,22 7,22 13C22 19,14 22,14 22C14 22,8 19,8 13C8 8,11 5,14 4Z" stroke="white" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+          <path d="M14 4C14 4,10 10,14 13C18 16,22 13,22 13" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" fill="none"/>
+          <circle cx="14" cy="13" r="2.2" fill="white" opacity="0.9"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">Total Body Physio</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#clinics">Clinics</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="nav-cta">Book Now →</a></li>
+    </ul>
+    <button class="nav-mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ HERO ══════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="fade-up">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Free physio at our Panmure clinic
+      </div>
+      <h1>Move Better,<br><em>Live Better.</em></h1>
+      <p class="hero-sub">Expert hands-on physiotherapy across 4 Auckland clinics. ACC accredited, no referral needed. Real physios who listen, diagnose, and get you moving again.</p>
+      <div class="hero-actions">
+        <a href="https://total-body-physio.au1.cliniko.com/bookings" class="btn-primary">Book an Appointment →</a>
+        <a href="tel:098177377" class="btn-secondary">📞 Call Us</a>
+      </div>
+    </div>
+    <div class="hero-visual fade-up" style="transition-delay:0.15s">
+      <div class="hero-card">
+        <div class="hero-float">
+          <div class="hero-float-num">25+</div>
+          <div class="hero-float-label">Years in Auckland</div>
+        </div>
+        <div class="hero-card-stat">
+          <div class="stat-box">
+            <div class="stat-num">4</div>
+            <div class="stat-label">Clinics</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">12+</div>
+            <div class="stat-label">Physios</div>
+          </div>
+        </div>
+        <div class="hero-card-features">
+          <div class="hero-feature">
+            <div class="hero-feature-icon hfi-green">✓</div>
+            ACC accredited — we lodge your claim
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon hfi-warm">🤝</div>
+            Southern Cross affiliated provider
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon hfi-blue">🅿️</div>
+            Free parking at all locations
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRUST BAR ════════════════════════════════════════════ -->
+<section class="trust">
+  <div class="trust-inner container">
+    <div class="trust-item">
+      <div class="trust-icon ti-green">🏥</div>
+      ACC Accredited
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon ti-blue">✚</div>
+      Southern Cross Affiliated
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon ti-gold">🎓</div>
+      AUT Training Practice
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon ti-green">🏊</div>
+      Hydrotherapy Available
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon ti-gold">🙌</div>
+      No Referral Needed
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ══════════════════════════════════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label fade-up">What it costs</div>
+    <h2 class="section-title fade-up">Transparent pricing.<br>No surprises.</h2>
+    <p class="section-sub fade-up">Most people are covered by ACC. If you've had an injury from an accident, we lodge your claim on the spot — no GP visit needed first.</p>
+
+    <div class="pricing-grid">
+      <!-- ACC -->
+      <div class="price-card featured fade-up">
+        <div class="price-card-badge">Most Common</div>
+        <div class="price-card-type">ACC Injury</div>
+        <div class="price-card-amount">
+          <span class="price-big">$25–45</span>
+          <span class="price-unit"> co-pay</span>
+        </div>
+        <p class="price-card-desc">Had an accident or injury? ACC covers most of the cost. You just pay a small co-payment.</p>
+        <ul class="price-card-list">
+          <li>We lodge your ACC claim for you</li>
+          <li>Initial consult 45–60 min</li>
+          <li>Follow-ups 20–30 min</li>
+          <li>No GP referral required</li>
+        </ul>
+        <a href="https://total-body-physio.au1.cliniko.com/bookings" class="btn-primary" style="width:100%;justify-content:center;font-size:14px;padding:14px 24px">Book ACC Appointment</a>
+      </div>
+
+      <!-- Private -->
+      <div class="price-card fade-up" style="transition-delay:0.1s">
+        <div class="price-card-type">Private / Non-ACC</div>
+        <div class="price-card-amount">
+          <span class="price-big">$85–110</span>
+          <span class="price-unit"> per session</span>
+        </div>
+        <p class="price-card-desc">For conditions not caused by an accident. Southern Cross members may have zero out-of-pocket cost.</p>
+        <ul class="price-card-list">
+          <li>Initial consult 45–60 min</li>
+          <li>Follow-ups 30 min</li>
+          <li>Southern Cross Easy-Claim</li>
+          <li>Health insurance claimable</li>
+        </ul>
+        <a href="https://total-body-physio.au1.cliniko.com/bookings" class="btn-secondary" style="width:100%;justify-content:center;font-size:14px;padding:14px 24px">Book Private Appointment</a>
+      </div>
+
+      <!-- FREE Panmure -->
+      <div class="price-card free-card fade-up" style="transition-delay:0.2s">
+        <div class="price-card-badge">Community</div>
+        <div class="price-card-type">Panmure Clinic</div>
+        <div class="price-card-amount">
+          <span class="price-big">FREE</span>
+        </div>
+        <p class="price-card-desc">We believe cost should never stop you getting help. Our Panmure clinic offers free ACC physio — zero co-pay.</p>
+        <ul class="price-card-list">
+          <li>$0 co-payment on ACC visits</li>
+          <li>Same expert physio care</li>
+          <li>Hydrotherapy & gym access</li>
+          <li>Inside Lagoon Pools complex</li>
+        </ul>
+        <a href="https://total-body-physio.au1.cliniko.com/bookings" class="btn-primary" style="width:100%;justify-content:center;font-size:14px;padding:14px 24px;background:var(--free-green)">Book Free at Panmure</a>
+      </div>
+    </div>
+
+    <div class="price-note fade-up" style="transition-delay:0.1s">
+      <span style="font-size:18px">💡</span>
+      <div><strong>Not sure if you're covered by ACC?</strong> Just come in. If your injury was caused by an accident — even months ago — we can lodge your claim on the spot. No need to see a GP first.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CLINICS ══════════════════════════════════════════════ -->
+<section class="clinics" id="clinics">
+  <div class="container">
+    <div class="section-label fade-up">Our Locations</div>
+    <h2 class="section-title fade-up">4 clinics across Auckland</h2>
+    <p class="section-sub fade-up">From West to East Auckland — there's a Total Body Physio near you. All with free parking and easy access.</p>
+
+    <div class="clinics-grid">
+      <!-- Titirangi -->
+      <div class="clinic-card fade-up">
+        <div class="clinic-img" style="background:linear-gradient(135deg,#2B5A1E,#4A8A35);">
+          <div class="clinic-img-tag">Est. 2004</div>
+          <span style="font-size:64px;opacity:0.3">🌿</span>
+        </div>
+        <div class="clinic-info">
+          <div class="clinic-name">Titirangi</div>
+          <div class="clinic-address">2 Rangiwai Rd, Titirangi Village<br>Below Titirangi Medical Centre</div>
+          <a href="tel:098177377" class="clinic-phone">📞 09 817 7377</a>
+          <div class="clinic-details">
+            <span class="clinic-tag">Mon–Fri</span>
+            <span class="clinic-tag">Gym On-Site</span>
+            <span class="clinic-tag">Free Parking</span>
+          </div>
+          <div class="clinic-team">
+            <div class="clinic-team-member"><div class="team-avatar">JW</div> Jade Warren</div>
+            <div class="clinic-team-member"><div class="team-avatar">HV</div> Hans Vermeulen</div>
+            <div class="clinic-team-member"><div class="team-avatar">GM</div> Gwenne Manares</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pakuranga -->
+      <div class="clinic-card fade-up" style="transition-delay:0.1s">
+        <div class="clinic-img" style="background:linear-gradient(135deg,#1E4A5A,#358A7A);">
+          <div class="clinic-img-tag">Est. 2002</div>
+          <span style="font-size:64px;opacity:0.3">🏊</span>
+        </div>
+        <div class="clinic-info">
+          <div class="clinic-name">Pakuranga</div>
+          <div class="clinic-address">Lloyd Elsmore Leisure Centre<br>Sir Lloyd Drive, Pakuranga Heights</div>
+          <a href="tel:095351932" class="clinic-phone">📞 09 535 1932</a>
+          <div class="clinic-details">
+            <span class="clinic-tag">Mon–Fri</span>
+            <span class="clinic-tag">Pool & Gym</span>
+            <span class="clinic-tag">Wheelchair Access</span>
+          </div>
+          <div class="clinic-team">
+            <div class="clinic-team-member"><div class="team-avatar">TK</div> Timothy Keung</div>
+            <div class="clinic-team-member"><div class="team-avatar">AB</div> Alistair Burgess</div>
+            <div class="clinic-team-member"><div class="team-avatar">DC</div> Dylan Connolly</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flat Bush -->
+      <div class="clinic-card fade-up">
+        <div class="clinic-img" style="background:linear-gradient(135deg,#5A3D1E,#8A6A35);">
+          <div class="clinic-img-tag">Est. 2006</div>
+          <span style="font-size:64px;opacity:0.3">🏗️</span>
+        </div>
+        <div class="clinic-info">
+          <div class="clinic-name">Flat Bush / Botany</div>
+          <div class="clinic-address">14 Fusion Rd, Flat Bush<br>Behind Ormiston Hospital</div>
+          <a href="tel:092652323" class="clinic-phone">📞 09 265 2323</a>
+          <div class="clinic-details">
+            <span class="clinic-tag">Mon–Sat</span>
+            <span class="clinic-tag">Purpose-Built Clinic</span>
+            <span class="clinic-tag">Free Parking</span>
+          </div>
+          <div class="clinic-team">
+            <div class="clinic-team-member"><div class="team-avatar">IY</div> Isabella Yang</div>
+            <div class="clinic-team-member"><div class="team-avatar">IA</div> Ibrahim Al-Jumaily</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANMURE - Featured -->
+      <div class="clinic-card panmure-card fade-up" style="transition-delay:0.1s">
+        <div class="clinic-img panmure-card" style="height:220px">
+          <div class="clinic-img-tag">FREE ACC Physio</div>
+          <div class="panmure-free-banner">
+            <h3>Free Physio For All</h3>
+            <p>Because cost should never stop you getting better</p>
+          </div>
+        </div>
+        <div class="clinic-info" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div>
+            <div class="clinic-name">Panmure — Lagoon Pools</div>
+            <div class="clinic-address">29 Lagoon Drive, Panmure<br>Inside Lagoon Pools complex</div>
+            <a href="tel:095735788" class="clinic-phone">📞 09 573 5788</a>
+          </div>
+          <div>
+            <div class="clinic-details">
+              <span class="clinic-tag">Mon & Thu</span>
+              <span class="clinic-tag">Hydrotherapy</span>
+              <span class="clinic-tag">Pool & Gym</span>
+              <span class="clinic-tag">$0 Co-Pay</span>
+            </div>
+            <div class="clinic-team" style="border-top:none;padding-top:0;margin-top:8px">
+              <div class="clinic-team-member"><div class="team-avatar">KP</div> Komal Preet Kaur</div>
+              <div class="clinic-team-member"><div class="team-avatar">GM</div> Gwenne Manares</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═════════════════════════════════════════════ -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-label fade-up">What We Treat</div>
+    <h2 class="section-title fade-up">Hands-on physio.<br>Not a production line.</h2>
+    <p class="section-sub fade-up">Every patient is different. We take time to assess what's going on, explain what we find, and build a plan that fits your life.</p>
+
+    <div class="services-grid">
+      <div class="service-card fade-up">
+        <div class="service-icon si-1">🤲</div>
+        <div class="service-name">Manual Therapy</div>
+        <div class="service-desc">Hands-on joint mobilisation & soft tissue work to restore movement</div>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.05s">
+        <div class="service-icon si-2">⚡</div>
+        <div class="service-name">Sports Injuries</div>
+        <div class="service-desc">From weekend warriors to school athletes — diagnosis to full recovery</div>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.1s">
+        <div class="service-icon si-3">🎯</div>
+        <div class="service-name">Acupuncture & Dry Needling</div>
+        <div class="service-desc">Targeted pain relief for muscle tension, inflammation & chronic conditions</div>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.15s">
+        <div class="service-icon si-4">💪</div>
+        <div class="service-name">Strength & Rehab</div>
+        <div class="service-desc">Guided exercise therapy using our on-site gyms for lasting recovery</div>
+      </div>
+      <div class="service-card fade-up">
+        <div class="service-icon si-5">🏊</div>
+        <div class="service-name">Hydrotherapy</div>
+        <div class="service-desc">Pool-based rehab at Pakuranga & Panmure for low-impact recovery</div>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.05s">
+        <div class="service-icon si-6">🔧</div>
+        <div class="service-name">Post-Surgery Rehab</div>
+        <div class="service-desc">Structured recovery plans for hip, knee, shoulder & spinal surgery</div>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.1s">
+        <div class="service-icon si-1">🏢</div>
+        <div class="service-name">Workplace Injury</div>
+        <div class="service-desc">ACC work injury claims & return-to-work programmes</div>
+      </div>
+      <div class="service-card fade-up" style="transition-delay:0.15s">
+        <div class="service-icon si-2">📋</div>
+        <div class="service-name">ACC Claims</div>
+        <div class="service-desc">We lodge your claim on the spot — no GP referral needed first</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ════════════════════════════════════════════════ -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-inner">
+      <div class="about-photo fade-up">
+        <div class="about-photo-placeholder">👩‍⚕️</div>
+        <div class="about-photo-name">Jade Warren</div>
+        <div class="about-photo-role">Clinical Director & Founder · 26+ Years</div>
+      </div>
+      <div class="fade-up" style="transition-delay:0.15s">
+        <div class="section-label" style="color:var(--sage-light)">The Person Behind It</div>
+        <h2>Started with one goal: give Auckland genuinely great physio care.</h2>
+        <p class="about-text">I started Total Body Physio in 2000 — not to build an empire, but because I thought people deserved better than cookie-cutter treatment. Twenty-six years later, I still see patients most days at Titirangi. Staying clinical keeps me sharp and connected to what we're actually here for.</p>
+        <p class="about-text">Every physio on our team was chosen not just for their qualifications, but for the kind of person they are. Skilled, caring, and committed to getting you better. We've treated thousands of Aucklanders — from kids with sports injuries to people managing chronic pain — and we're prouder of our reputation than our growth.</p>
+        <div class="about-quote">"No matter how much the business has grown, I never wanted to lose the hands-on part. That's the whole point."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══════════════════════════════════════════════════ -->
+<section class="cta" id="contact">
+  <div class="container">
+    <h2 class="fade-up">Ready to feel better?</h2>
+    <p class="fade-up">Book online in 2 minutes, or call the clinic nearest you. No referral needed — just show up.</p>
+    <div class="fade-up">
+      <a href="https://total-body-physio.au1.cliniko.com/bookings" class="btn-primary" style="font-size:18px;padding:18px 40px">Book Online Now →</a>
+    </div>
+    <div class="cta-phones fade-up" style="transition-delay:0.1s">
+      <a href="tel:098177377" class="cta-phone"><span class="cta-phone-loc">Titirangi</span> 09 817 7377</a>
+      <a href="tel:095351932" class="cta-phone"><span class="cta-phone-loc">Pakuranga</span> 09 535 1932</a>
+      <a href="tel:092652323" class="cta-phone"><span class="cta-phone-loc">Flat Bush</span> 09 265 2323</a>
+      <a href="tel:095735788" class="cta-phone"><span class="cta-phone-loc">Panmure</span> 09 573 5788</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">Total Body Physio</div>
+        <p class="footer-brand-desc">Expert hands-on physiotherapy across Auckland since 2000. ACC accredited, Southern Cross affiliated. Move better, live better.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Clinics</div>
+        <a href="#clinics">Titirangi</a>
+        <a href="#clinics">Pakuranga</a>
+        <a href="#clinics">Flat Bush / Botany</a>
+        <a href="#clinics">Panmure (Free)</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Quick Links</div>
+        <a href="#pricing">Pricing</a>
+        <a href="#services">Services</a>
+        <a href="#about">About Jade</a>
+        <a href="https://total-body-physio.au1.cliniko.com/bookings">Book Online</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Contact</div>
+        <a href="mailto:admin@totalbodyphysio.co.nz">admin@totalbodyphysio.co.nz</a>
+        <a href="tel:098177377">09 817 7377</a>
+        <a href="#">Auckland, New Zealand</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Total Body Physio. All rights reserved.</span>
+      <span>Made with care in Auckland</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll shadow
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Fade-up on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
