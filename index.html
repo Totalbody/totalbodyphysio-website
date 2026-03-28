@@ -1394,6 +1394,10 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     align-items: flex-end;
     gap: 10px;
     z-index: 9998;
+    pointer-events: none;
+    width: auto;
+  }
+  #bw-fab {
     pointer-events: all;
   }
 
@@ -2015,6 +2019,10 @@ document.querySelectorAll('.nav-links a').forEach(a => {
       position: fixed;
       bottom: 20px;
       right: 20px;
+      pointer-events: none;
+    }
+    #bw-fab {
+      pointer-events: all;
     }
     #bw-fab {
       width: 64px;
