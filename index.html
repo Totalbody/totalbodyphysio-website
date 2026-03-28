@@ -1378,11 +1378,8 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     pointer-events: all;
   }
 
-  /* ── WIX IFRAME FIX ─────────────────────────────────────────────
-     iframe must have pointer-events:none so Wix page stays clickable.
-     Only the FAB and open panel need to receive clicks. */
-  /* body transparent removed - not needed outside iframe */
-  #bw-fab, #bw-panel { pointer-events: all; }
+  /* Only the FAB button always needs pointer events. Panel only when open. */
+  #bw-fab { pointer-events: all; }
 
   /* ── FAB LABEL PILL ──────────────────────────────────────────── */
   #bw-fab-wrap {
