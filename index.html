@@ -686,6 +686,139 @@ footer {
   .nav-links.open li:last-child a { border-bottom: none; }
 }
 </style>
+<!-- Local Business Schema Markup -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.totalbodyphysio.co.nz/#organization",
+      "name": "Total Body Physio",
+      "url": "https://www.totalbodyphysio.co.nz",
+      "logo": "https://www.totalbodyphysio.co.nz/images/icons/logo full.png",
+      "description": "Expert hands-on physiotherapy across 4 Auckland clinics. ACC accredited, Southern Cross affiliated. No referral needed.",
+      "foundingYear": "2000",
+      "sameAs": [
+        "https://www.totalbodyphysio.nz",
+        "https://www.facebook.com/totalbodyphysio"
+      ]
+    },
+    {
+      "@type": "MedicalBusiness",
+      "@id": "https://www.totalbodyphysio.co.nz/#titirangi",
+      "name": "Total Body Physio Titirangi",
+      "url": "https://www.totalbodyphysio.co.nz",
+      "telephone": "+6498177377",
+      "email": "titirangi@totalbodyphysio.co.nz",
+      "medicalSpecialty": "Physiotherapy",
+      "priceRange": "$$",
+      "currenciesAccepted": "NZD",
+      "paymentAccepted": "ACC, Cash, Credit Card, Southern Cross",
+      "openingHours": ["Mo-Fr 07:00-18:00"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2 Rangiwai Road",
+        "addressLocality": "Titirangi",
+        "addressRegion": "Auckland",
+        "postalCode": "0604",
+        "addressCountry": "NZ"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -36.938236,
+        "longitude": 174.658247
+      },
+      "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5346.jpeg",
+      "parentOrganization": { "@id": "https://www.totalbodyphysio.co.nz/#organization" }
+    },
+    {
+      "@type": "MedicalBusiness",
+      "@id": "https://www.totalbodyphysio.co.nz/#pakuranga",
+      "name": "Total Body Physio Pakuranga",
+      "url": "https://www.totalbodyphysio.co.nz",
+      "telephone": "+6495351932",
+      "email": "pakuranga@totalbodyphysio.co.nz",
+      "medicalSpecialty": "Physiotherapy",
+      "priceRange": "$$",
+      "currenciesAccepted": "NZD",
+      "paymentAccepted": "ACC, Cash, Credit Card, Southern Cross",
+      "openingHours": ["Mo-Fr 07:00-18:00"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Sir Lloyd Drive, Lloyd Elsmore Leisure Centre",
+        "addressLocality": "Pakuranga Heights",
+        "addressRegion": "Auckland",
+        "postalCode": "2010",
+        "addressCountry": "NZ"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -36.903192,
+        "longitude": 174.902258
+      },
+      "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5351.jpeg",
+      "parentOrganization": { "@id": "https://www.totalbodyphysio.co.nz/#organization" }
+    },
+    {
+      "@type": "MedicalBusiness",
+      "@id": "https://www.totalbodyphysio.co.nz/#flatbush",
+      "name": "Total Body Physio Flat Bush",
+      "url": "https://www.totalbodyphysio.co.nz",
+      "telephone": "+6492652323",
+      "email": "botany@totalbodyphysio.co.nz",
+      "medicalSpecialty": "Physiotherapy",
+      "priceRange": "$$",
+      "currenciesAccepted": "NZD",
+      "paymentAccepted": "ACC, Cash, Credit Card, Southern Cross",
+      "openingHours": ["Mo-Fr 09:00-18:00"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "14 Fusion Road",
+        "addressLocality": "Flat Bush",
+        "addressRegion": "Auckland",
+        "postalCode": "2016",
+        "addressCountry": "NZ"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -36.965175,
+        "longitude": 174.904572
+      },
+      "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5350.jpeg",
+      "parentOrganization": { "@id": "https://www.totalbodyphysio.co.nz/#organization" }
+    },
+    {
+      "@type": "MedicalBusiness",
+      "@id": "https://www.totalbodyphysio.co.nz/#panmure",
+      "name": "Total Body Physio Panmure",
+      "description": "Free ACC physiotherapy at Panmure Lagoon Pools. Zero co-pay — because cost should never stop you getting better.",
+      "url": "https://www.totalbodyphysio.co.nz",
+      "telephone": "+6495735788",
+      "medicalSpecialty": "Physiotherapy",
+      "priceRange": "$",
+      "currenciesAccepted": "NZD",
+      "paymentAccepted": "ACC Free — No Co-Pay",
+      "openingHours": ["Mo 09:00-17:00", "Tu 09:00-17:00", "We 09:00-17:00", "Th 09:00-17:00"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "29 Lagoon Drive",
+        "addressLocality": "Panmure",
+        "addressRegion": "Auckland",
+        "postalCode": "1072",
+        "addressCountry": "NZ"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -36.901542,
+        "longitude": 174.853172
+      },
+      "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5353.jpeg",
+      "parentOrganization": { "@id": "https://www.totalbodyphysio.co.nz/#organization" }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -955,7 +1088,7 @@ footer {
           </div>
           <div>
             <div class="clinic-details">
-              <span class="clinic-tag">Mon & Thu</span>
+              <span class="clinic-tag">Mon–Thu</span>
               <span class="clinic-tag">Hydrotherapy</span>
               <span class="clinic-tag">Pool & Gym</span>
               <span class="clinic-tag">$0 Co-Pay</span>
