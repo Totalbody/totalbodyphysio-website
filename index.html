@@ -2028,6 +2028,10 @@ document.querySelectorAll('.nav-links a').forEach(a => {
       height: 100%;
       border-radius: 0;
       transform-origin: bottom center;
+      pointer-events: none;
+    }
+    #bw-panel.visible {
+      pointer-events: all;
     }
     #bw-panel.visible ~ #bw-fab-wrap {
       display: none;
