@@ -1086,7 +1086,7 @@ footer {
             <div class="clinic-team-member" onclick="openTeamModal('Jade Warren')" title="View Jade's profile"><div class="team-avatar"><img src="images/team/jade.AVIF" alt="Jade Warren"></div> Jade Warren</div>
             <div class="clinic-team-member" onclick="openTeamModal('Hans Vermeulen')" title="View Hans's profile"><div class="team-avatar"><img src="images/team/hans.GIF" alt="Hans Vermeulen"></div> Hans Vermeulen</div>
             <div class="clinic-team-member" onclick="openTeamModal('Gwenne Manares')" title="View Gwenne's profile"><div class="team-avatar"><img src="images/team/gwen.AVIF" alt="Gwenne Manares"></div> Gwenne Manares</div>
-            <div class="clinic-team-member"><div class="team-avatar" style="background:#a8d5a2;color:#2B5A1E;font-size:10px">SW</div> Samuel Warren <span style="font-size:11px;color:#6b8f6b">(Student)</span></div>
+            <div class="clinic-team-member" onclick="openTeamModal('Current Student')" title="View Student Physio profile"><div class="team-avatar" style="background:#e8f3e0;font-size:18px;display:flex;align-items:center;justify-content:center;">🎓</div> Scott Clayton <span style="font-size:11px;color:#6b8f6b">(Student)</span></div>
           </div>
           <a href="https://total-body-physio.au1.cliniko.com/bookings?business_id=90865" class="btn-primary" style="margin-top:16px;width:100%;justify-content:center;font-size:13px;padding:12px 16px;">Book at Titirangi →</a>
         </div>
@@ -4118,6 +4118,15 @@ window.addEventListener('message', function(e) {
 
 <script>
 const TEAM = {
+  'Current Student': {
+    photo: null,
+    initials: '🎓',
+    title: '4th Year Physiotherapy Student · Titirangi',
+    bio: 'Scott is a 4th year physiotherapy student completing his clinical placement at Total Body Physio Titirangi. Working under the close supervision of our senior physios, Scott brings fresh enthusiasm, up-to-date clinical knowledge, and genuine care to every session.',
+    specialties: ['Supervised Clinical Treatment','Exercise Rehabilitation','Musculoskeletal Assessment','Patient Education'],
+    outside: 'Total Body Physio is proud to support the next generation of physios through our student placement programme.',
+    booking: 'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1414969921577682942'
+  },
   'Jade Warren': {
     photo: 'images/team/jade.AVIF',
     title: 'Clinical Director & Founder · 26+ Years',
@@ -4198,6 +4207,8 @@ function openTeamModal(name) {
   const wrap = document.getElementById('modalPhotoWrap');
   if (p.photo) {
     wrap.innerHTML = `<img src="${p.photo}" class="team-modal-photo" alt="${name}">`;
+  } else if (p.initials && p.initials.length <= 2 && /[^\x00-\x7F]/.test(p.initials)) {
+    wrap.innerHTML = `<div class="team-modal-photo-initials" style="font-size:48px;">${p.initials}</div>`;
   } else {
     wrap.innerHTML = `<div class="team-modal-photo-initials">${name.split(' ').map(n=>n[0]).join('')}</div>`;
   }
