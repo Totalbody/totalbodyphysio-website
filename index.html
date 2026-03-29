@@ -1003,7 +1003,7 @@ footer {
         <div class="price-card-badge">Most Common</div>
         <div class="price-card-type">ACC Injury</div>
         <div class="price-card-amount">
-          <span class="price-big">$25–45</span>
+          <span class="price-big">$30–45</span>
           <span class="price-unit"> co-pay</span>
         </div>
         <p class="price-card-desc">Had an accident or injury? ACC covers most of the cost. You just pay a small co-payment.</p>
@@ -1013,6 +1013,7 @@ footer {
           <li>Follow-ups 20–30 min</li>
           <li>No GP referral required</li>
         </ul>
+        <button onclick="openPriceModal()" class="btn-secondary" style="width:100%;justify-content:center;font-size:14px;padding:12px 24px;margin-bottom:10px;background:none;border:2px solid var(--forest);color:var(--forest);border-radius:100px;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;">📋 See Prices by Clinic</button>
         <a href="https://total-body-physio.au1.cliniko.com/bookings" class="btn-primary" style="width:100%;justify-content:center;font-size:14px;padding:14px 24px">Book ACC Appointment</a>
       </div>
 
@@ -4092,6 +4093,98 @@ window.addEventListener('message', function(e) {
     document.getElementById('bw-tooltip').classList.remove('show');
   }
 });
+</script>
+
+<!-- ═══ PRICE MODAL ══════════════════════════════════════════ -->
+<div class="team-modal-overlay" id="priceModal" onclick="if(event.target===this)closePriceModal()">
+  <div class="team-modal" style="max-height:85vh;">
+    <div class="team-modal-header" style="padding:24px 24px 20px;">
+      <div>
+        <div class="team-modal-name">ACC Prices by Clinic</div>
+        <div class="team-modal-title">All prices include GST · Updated 2026</div>
+      </div>
+      <button class="team-modal-close" onclick="closePriceModal()">✕</button>
+    </div>
+    <div class="team-modal-body" style="padding:16px 20px;">
+
+      <!-- Titirangi -->
+      <div class="price-clinic-block">
+        <div class="price-clinic-name">🌿 Titirangi</div>
+        <div class="price-rows">
+          <div class="price-row"><span>ACC Initial (45–60 min)</span><span class="price-val">$45</span></div>
+          <div class="price-row"><span>ACC Follow-up (20–30 min)</span><span class="price-val">$40</span></div>
+          <div class="price-row discount"><span>Student / Gold Card</span><span class="price-val">$35</span></div>
+        </div>
+      </div>
+
+      <!-- Pakuranga -->
+      <div class="price-clinic-block">
+        <div class="price-clinic-name">🏊 Pakuranga — Lloyd Elsmore</div>
+        <div class="price-rows">
+          <div class="price-row"><span>ACC Initial (45–60 min)</span><span class="price-val">$35</span></div>
+          <div class="price-row"><span>ACC Follow-up (20–30 min)</span><span class="price-val">$30</span></div>
+          <div class="price-row discount"><span>Student / Gold Card</span><span class="price-val">$25</span></div>
+        </div>
+      </div>
+
+      <!-- Flat Bush -->
+      <div class="price-clinic-block">
+        <div class="price-clinic-name">🏠 Flat Bush / Botany</div>
+        <div class="price-rows">
+          <div class="price-row"><span>ACC Initial (45–60 min)</span><span class="price-val">$35</span></div>
+          <div class="price-row"><span>ACC Follow-up (20–30 min)</span><span class="price-val">$30</span></div>
+          <div class="price-row discount"><span>Student / Gold Card</span><span class="price-val">$25</span></div>
+        </div>
+      </div>
+
+      <!-- Panmure -->
+      <div class="price-clinic-block" style="border-color:var(--free-green);background:#EAFAF1;">
+        <div class="price-clinic-name" style="color:var(--free-green);">🌊 Panmure — Lagoon Pools</div>
+        <div class="price-rows">
+          <div class="price-row" style="font-weight:700;color:var(--free-green);"><span>ACC Initial</span><span class="price-val">FREE</span></div>
+          <div class="price-row" style="font-weight:700;color:var(--free-green);"><span>ACC Follow-up</span><span class="price-val">FREE</span></div>
+          <div class="price-row"><span>$0 co-pay — all patients</span><span class="price-val">✅</span></div>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:var(--text-light);margin-top:12px;line-height:1.6;">💳 Southern Cross Easy-Claim available · Health insurance claimable · No GP referral needed · We lodge your ACC claim on the spot</p>
+
+      <a href="https://total-body-physio.au1.cliniko.com/bookings" class="team-modal-book" style="margin-top:16px;">Book an Appointment →</a>
+    </div>
+  </div>
+</div>
+
+<style>
+.price-clinic-block {
+  border: 1px solid rgba(43,90,30,0.12);
+  border-radius: 14px; padding: 14px 16px;
+  margin-bottom: 12px; background: white;
+}
+.price-clinic-name {
+  font-family: 'Outfit',sans-serif; font-weight: 700;
+  font-size: 15px; color: var(--forest-deep);
+  margin-bottom: 10px;
+}
+.price-rows { display: flex; flex-direction: column; gap: 6px; }
+.price-row {
+  display: flex; justify-content: space-between;
+  font-size: 14px; color: var(--text-mid);
+  padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.price-row:last-child { border-bottom: none; }
+.price-row.discount { color: var(--forest); font-weight: 600; }
+.price-val { font-weight: 700; color: var(--forest-deep); }
+</style>
+
+<script>
+function openPriceModal() {
+  document.getElementById('priceModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePriceModal() {
+  document.getElementById('priceModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
 </script>
 
 <!-- ═══ TEAM PROFILE MODAL ══════════════════════════════════ -->
