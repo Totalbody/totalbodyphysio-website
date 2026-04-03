@@ -2275,8 +2275,12 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 
   /* ─── PHONE ONLY (not iPad) ──────────────────────────────────── */
   @media (max-width: 480px) {
-    /* Taller header so koru logo has breathing room */
-    .bw-header { height: 165px; }
+    /* Header height with logo kept at original size — extra green below */
+    .bw-header {
+      height: 148px;
+      background-size: auto 78%;
+      background-position: center 28%;
+    }
     /* Push tab text down to match Ask Pip position */
     .bw-tab-btn {
       padding: 18px 4px 10px;
