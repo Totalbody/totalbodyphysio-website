@@ -2273,6 +2273,23 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     .bw-slots-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   }
 
+  /* ─── PHONE ONLY (not iPad) ──────────────────────────────────── */
+  @media (max-width: 480px) {
+    /* Taller header so koru logo has breathing room */
+    .bw-header { height: 165px; }
+    /* Push tab text down to match Ask Pip position */
+    .bw-tab-btn {
+      padding: 18px 4px 10px;
+      font-size: 12px;
+      -webkit-appearance: none;
+      appearance: none;
+      line-height: 1;
+    }
+    .bw-tab-btn.active {
+      padding: 18px 4px 10px;
+    }
+  }
+
 </style>
 
 <!-- ═══ BOOKING WIDGET ══════════════════════════════════════ -->
