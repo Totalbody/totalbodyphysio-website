@@ -353,7 +353,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
 <nav id="nav">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <img src="images/icons/logo green background .png" alt="Total Body Physio" style="height:86px;object-fit:contain;display:block;-webkit-mask-image:radial-gradient(ellipse 82% 72% at center, black 45%, transparent 100%);mask-image:radial-gradient(ellipse 82% 72% at center, black 45%, transparent 100%);">
+      <img src="images/icons/logo full.png" alt="Total Body Physio" style="height:86px;object-fit:contain;display:block;mix-blend-mode:multiply;filter:brightness(1.8) contrast(1.1);">
 
     </a>
     <ul class="nav-links" id="navLinks">
@@ -3398,7 +3398,7 @@ function closePriceModal() { document.getElementById('priceModal').classList.rem
 </div>
 <script>
 const TEAM = {
-  'Current Student': { photo:null, initials:'\u{1F393}', title:'4th Year Physiotherapy Student \u00b7 Titirangi', bio:'Scott is a 4th year physiotherapy student completing his clinical placement at Total Body Physio Titirangi. Working under the close supervision of our senior physios, Scott brings fresh enthusiasm, up-to-date clinical knowledge, and genuine care to every session.', specialties:['Supervised Clinical Treatment','Exercise Rehabilitation','Musculoskeletal Assessment','Patient Education'], outside:'Total Body Physio is proud to support the next generation of physios through our student placement programme.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1414969921577682942' },
+  'Current Student': { photo:null, initials:'🎓', title:'4th Year Physiotherapy Student \u00b7 Titirangi', bio:'Scott is a 4th year physiotherapy student completing his clinical placement at Total Body Physio Titirangi. Working under the close supervision of our senior physios, Scott brings fresh enthusiasm, up-to-date clinical knowledge, and genuine care to every session.', specialties:['Supervised Clinical Treatment','Exercise Rehabilitation','Musculoskeletal Assessment','Patient Education'], outside:'Total Body Physio is proud to support the next generation of physios through our student placement programme.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1414969921577682942' },
   'Jade Warren': { photo:'images/team/jade.AVIF', title:'Clinical Director & Founder \u00b7 26+ Years', bio:'Jade founded Total Body Physio in 2000 with a simple belief \u2014 people deserve better than cookie-cutter treatment. With over 26 years of experience, he still sees patients most days at Titirangi, working with everyone from elite athletes to people managing chronic pain.', specialties:['Shoulder Rehabilitation','Knee Rehabilitation','Sports Injuries','Musculoskeletal Assessment','ACC Claims'], outside:'Married with four teenage children, Jade is a passionate advocate for hands-on physio and keeping people moving at every age.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=146146' },
   'Hans Vermeulen': { photo:'images/team/hans.GIF', title:'Senior Physiotherapist \u00b7 30 Years Experience', bio:'Hans is a qualified physiotherapist and massage therapist with nearly 30 years of experience. He qualified as a CranioSacral Therapist 17 years ago, expanding his practice to encompass a truly holistic approach to the physical body.', specialties:['CranioSacral Therapy','Deep Soft Tissue Massage','Holistic Physiotherapy','Stress Management','Lifestyle Advice'], outside:'Hans brings a calm, thoughtful energy to every session and is known for his gentle yet highly effective approach.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=151541' },
   'Gwenne Manares': { photo:'images/team/gwen.AVIF', title:'Physiotherapist', bio:'Gwenne is a dedicated physiotherapist who provides patient-centred, evidence-based care. She believes successful rehabilitation is built on a strong partnership \u2014 care that is tailored, collaborative, and goal-focused.', specialties:['Manual Therapy','Exercise-Based Rehabilitation','Musculoskeletal Conditions','Patient Education','Self-Management Strategies'], outside:'Gwenne is committed to ongoing professional development and staying up to date with best practice.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1837927442598069580' },
@@ -3420,6 +3420,15 @@ function openTeamModal(name) {
   document.getElementById('modalSpecialties').innerHTML = p.specialties.map(s=>`<span class="team-modal-tag">${s}</span>`).join('');
   document.getElementById('modalOutside').textContent = p.outside;
   document.getElementById('modalBook').href = p.booking;
-  document.getElementById('modalBook').textContent = `Book with ${name.split(' ')[0]} \u2192`;
+  document.getElementById('modalBook').textContent = `Book with ${name.split(' ')[0]} →`;
   document.getElementById('teamModal').classList.add('open');
-  document.body.style.overf
+  document.body.style.overflow = 'hidden';
+}
+function closeTeamModal() {
+  document.getElementById('teamModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeTeamModal(); });
+</script>
+</body>
+</html>
