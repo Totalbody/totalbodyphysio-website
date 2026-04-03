@@ -2118,6 +2118,9 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     gap: 5px;
     transition: all 0.2s ease;
     letter-spacing: 0.01em;
+    -webkit-appearance: none;
+    appearance: none;
+    line-height: 1;
   }
   .bw-tab-btn:hover {
     background: #e2f0de;
@@ -3063,13 +3066,13 @@ const BW = {
       body.style.display   = 'none';
       footer.style.display = 'none';
       pipCont.classList.add('active');
-      progress.style.display = 'none';
+      progress.style.visibility = 'hidden';
       if (!PIP.initialised) PIP.init();
     } else {
       body.style.display   = '';
       footer.style.display = '';
       pipCont.classList.remove('active');
-      progress.style.display = '';
+      progress.style.visibility = '';
       if (tab === 'book') {
         S.mode = 'book'; S.step = 1;
         BW.renderCurrent();
