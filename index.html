@@ -1495,9 +1495,10 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 
 <!-- ═══ BOOKING WIDGET STYLES ══════════════════════════════ -->
 <style>
+
   /* ─── RESET & BASE ───────────────────────────────────────────── */
-  /* global reset scoped to widget elements only */
-  /* body font override removed */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; }
 
   /* ─── CSS VARIABLES ──────────────────────────────────────────── */
   :root {
@@ -1541,6 +1542,10 @@ document.querySelectorAll('.nav-links a').forEach(a => {
                 background 0.2s ease, box-shadow 0.2s ease;
     outline: none;
     flex-shrink: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
   #bw-fab.vis {
     opacity: 1;
@@ -1616,8 +1621,12 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     pointer-events: all;
   }
 
-  /* Only the FAB button always needs pointer events. Panel only when open. */
-  #bw-fab { pointer-events: all; }
+  /* ── TOUCH HANDLING ──────────────────────────────────────────── */
+  * { -webkit-tap-highlight-color: transparent; }
+  #bw-fab, #bw-panel, .bw-tab-btn, .bw-btn, .bw-card, .bw-choice, .bw-slot, .pip-chip {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
 
   /* ── FAB LABEL PILL ──────────────────────────────────────────── */
   #bw-fab-wrap {
@@ -1629,10 +1638,6 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     align-items: flex-end;
     gap: 10px;
     z-index: 9998;
-    pointer-events: none;
-    width: auto;
-  }
-  #bw-fab {
     pointer-events: all;
   }
 
@@ -1697,87 +1702,73 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 
   /* ─── HEADER ─────────────────────────────────────────────────── */
   .bw-header {
-    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 55%, #5a9447 100%);
-    padding: 18px 20px 16px;
+    background: url('https://tbp-cliniko-proxy-j6f9.vercel.app/receipt-header-final.png') center 50% / cover no-repeat;
+    background-color: #0a3320;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
+    height: 185px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
-  /* Decorative circles */
-  .bw-header::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 130px; height: 130px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.07);
-    pointer-events: none;
-  }
-  .bw-header::after {
-    content: '';
-    position: absolute;
-    bottom: -24px; left: 60px;
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-    pointer-events: none;
-  }
+  .bw-header::before, .bw-header::after { display: none; }
+
   .bw-header-top {
+    position: absolute;
+    top: 8px; right: 10px;
+    z-index: 3;
+  }
+  .bw-brand, .bw-title, .bw-subtitle, .bw-logo, .bw-sdot { display: none; }
+
+  .bw-progress {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
+    gap: 4px;
+    padding: 0 14px 6px;
     position: relative;
-    z-index: 1;
+    z-index: 3;
   }
-  .bw-brand { display: flex; align-items: center; gap: 12px; }
-  .bw-logo {
-    width: 42px; height: 42px;
-    background: rgba(255,255,255,0.15);
-    border: 2px solid rgba(255,255,255,0.28);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+  .bw-prog-dot {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.3);
+    flex: 1;
+    transition: background 0.35s ease;
   }
-  .bw-logo svg { width: 24px; height: 24px; }
-  .bw-title    { color: white; font-size: 15px; font-weight: 600; }
-  .bw-subtitle { color: rgba(255,255,255,0.72); font-size: 11.5px; margin-top: 2px;
-                  display: flex; align-items: center; gap: 5px; }
+  .bw-prog-dot.done   { background: rgba(255,255,255,0.85); }
+  .bw-prog-dot.active { background: white; }
+
+  .bw-tagline {
+    background: rgba(0,0,0,0.35);
+    padding: 4px 14px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 3;
+  }
   .bw-sdot {
     width: 7px; height: 7px;
     background: #7de870; border-radius: 50%;
-    box-shadow: 0 0 6px #7de870;
-    flex-shrink: 0;
+    box-shadow: 0 0 6px #7de870; flex-shrink: 0;
     animation: sdot-blink 2.5s ease-in-out infinite;
   }
   @keyframes sdot-blink { 0%,100%{opacity:1}50%{opacity:.4} }
 
   .bw-close {
-    background: rgba(255,255,255,0.14);
+    background: rgba(0,0,0,0.35);
     border: none;
-    width: 32px; height: 32px;
+    width: 30px; height: 30px;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    color: white;
+    cursor: pointer; color: white;
     transition: background var(--transition);
     flex-shrink: 0;
   }
-  .bw-close:hover { background: rgba(255,255,255,0.26); }
-
-  /* Tagline strip */
-  .bw-tagline {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255,255,255,0.15);
-    font-size: 11px;
-    color: rgba(255,255,255,0.6);
-    font-weight: 300;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    position: relative;
-    z-index: 1;
-  }
+  .bw-close:hover { background: rgba(0,0,0,0.55); }
 
   /* ─── PROGRESS STEPS ─────────────────────────────────────────── */
   .bw-progress {
@@ -2242,50 +2233,43 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   #pip-send:active { transform:scale(0.94); }
   #pip-send svg { width:17px; height:17px; }
 
-  /* ─── TOUCH HANDLING ──────────────────────────────────────────── */
-  html, body {
-    touch-action: auto;
-    -webkit-tap-highlight-color: transparent;
-  }
-
   /* ─── MOBILE ─────────────────────────────────────────────────── */
-  @media (max-width: 600px) {
-    #bw-fab-wrap {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      pointer-events: none;
-    }
-    #bw-fab {
-      pointer-events: all;
-    }
-    #bw-fab {
-      width: 64px;
-      height: 64px;
-    }
-    #bw-fab svg { width: 28px; height: 28px; }
+  @media (max-width: 768px) {
+    /* Panel goes full screen on mobile */
     #bw-panel {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       width: 100%;
       height: 100%;
+      max-height: 100%;
       border-radius: 0;
       transform-origin: bottom center;
-      pointer-events: none;
+      /* Account for browser bars on iPhone/iPad */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
     }
-    #bw-panel.visible {
-      pointer-events: all;
+    /* FAB smaller on mobile */
+    #bw-fab-wrap {
+      bottom: max(20px, env(safe-area-inset-bottom, 20px));
+      right: 20px;
     }
-    #bw-panel.visible ~ #bw-fab-wrap {
-      display: none;
-    }
+    #bw-fab { width: 62px; height: 62px; }
+    #bw-fab svg { width: 28px; height: 28px; }
+    /* Header smaller on mobile */
+    .bw-header { height: 110px; }
+    /* Larger touch targets */
+    .bw-input { font-size: 16px; } /* Prevents iOS zoom */
+    #pip-input { font-size: 16px; }
+    .bw-slot { padding: 14px 6px; }
+    .bw-tab-btn { padding: 8px 4px 10px; font-size: 12px; }
+    .bw-tab-btn svg { width: 18px; height: 18px; }
+    /* Body padding */
     .bw-body { padding: 16px; }
-    .bw-slots-grid { grid-template-columns: repeat(2, 1fr); }
-    .bw-choice-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
     .bw-choice { padding: 16px 10px; }
-    #pip-input { font-size: 16px; } /* Prevents iOS zoom on focus */
-    .bw-input { font-size: 16px; } /* Prevents iOS zoom on focus */
+    /* Calendar bigger tap targets */
+    .bw-slots-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   }
+
 </style>
 
 <!-- ═══ BOOKING WIDGET ══════════════════════════════════════ -->
@@ -2303,7 +2287,7 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   </div>
 
   <!-- FAB Button -->
-  <button id="bw-fab" onclick="BW.toggle();document.getElementById('bw-tooltip').classList.remove('show')" aria-label="Book or manage appointment">
+  <button id="bw-fab" aria-label="Book or manage appointment">
     <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="spark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -2326,19 +2310,10 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   <!-- Header -->
   <div class="bw-header">
     <div class="bw-header-top">
-      <div class="bw-brand">
-        <div class="bw-logo">
-          <!-- Leaf / spiral icon matching site -->
-          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14 4C14 4,22 7,22 13C22 19,14 22,14 22C14 22,8 19,8 13C8 8,11 5,14 4Z"
-                  stroke="white" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
-            <path d="M14 4C14 4,10 10,14 13C18 16,22 13,22 13"
-                  stroke="rgba(255,255,255,0.5)" stroke-width="1.1" fill="none"/>
-            <circle cx="14" cy="13" r="2.2" fill="white" opacity="0.9"/>
-          </svg>
-        </div>
+      <div class="bw-brand" style="gap:10px;">
+        <img src="images/icons/logo green background .png" alt="Total Body Physio"
+             style="height:52px;width:auto;object-fit:contain;display:block;border-radius:6px;flex-shrink:0;">
         <div>
-          <div class="bw-title">Total Body Physio</div>
           <div class="bw-subtitle"><span class="bw-sdot"></span>Online Booking</div>
         </div>
       </div>
@@ -2388,6 +2363,7 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 </div>
 
 <script>
+
 // ═══════════════════════════════════════════════════════════════════
 //  CONFIGURATION
 // ═══════════════════════════════════════════════════════════════════
@@ -3108,12 +3084,12 @@ const BW = {
     S.open = !S.open;
     $('bw-panel').classList.toggle('visible', S.open);
     if (S.open) {
-      window.parent.postMessage({ type: 'tbp-widget', action: 'open' }, '*');
+      window.parent.postMessage('tbp-open', '*');
       const dot = $('bw-fab-dot');
       if (dot) dot.style.display = 'none';
       BW.switchTab('book');
     } else {
-      window.parent.postMessage({ type: 'tbp-widget', action: 'close' }, '*');
+      window.parent.postMessage('tbp-close', '*');
       // Send transcript if Pip had a conversation (3+ messages) and no booking was made
       if (PIP.history && PIP.history.length >= 3 && !PIP._bookingNotified && !PIP._transcriptSent) {
         PIP._transcriptSent = true;
@@ -4095,6 +4071,39 @@ ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: 
 
 // ─── INIT: show launcher immediately ─────────────────────────────
 BW.renderCurrent();
+
+// ─── TOUCH/CLICK HANDLERS ─────────────────────────────────────────
+// Simple touchend + click — most reliable on iOS Safari and Chrome
+(function() {
+  function onTap(el, fn) {
+    if (!el) return;
+    // touchend for mobile
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      fn();
+    }, { passive: false });
+    // click for desktop fallback
+    el.addEventListener('click', function(e) {
+      fn();
+    });
+  }
+
+  onTap(document.getElementById('bw-fab'), function() {
+    var tip = document.getElementById('bw-tooltip');
+    if (tip) tip.classList.remove('show');
+    BW.toggle();
+  });
+
+  onTap(document.getElementById('bw-tooltip'), function() {
+    document.getElementById('bw-tooltip').classList.remove('show');
+    if (!S.open) BW.toggle();
+  });
+
+  onTap(document.getElementById('bw-tooltip-close'), function() {
+    document.getElementById('bw-tooltip').classList.remove('show');
+  });
+})();
 setTimeout(function() {
   document.getElementById('bw-fab').classList.add('vis');
   setTimeout(function() {
@@ -4120,15 +4129,8 @@ document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'hidden') sendTranscriptIfNeeded();
 });
 
-// ─── LISTEN FOR PARENT PAGE TOGGLE (from loader hit area) ──────────
-window.addEventListener('message', function(e) {
-  if (e.data && e.data.type === 'tbp-parent' && e.data.action === 'toggle') {
-    BW.toggle();
-    document.getElementById('bw-tooltip').classList.remove('show');
-  }
-});
 </script>
-
+<!-- ═══ END BOOKING WIDGET ══════════════════════════════════ -->
 <!-- ═══ PRICE MODAL ══════════════════════════════════════════ -->
 <div class="team-modal-overlay" id="priceModal" onclick="if(event.target===this)closePriceModal()">
   <div class="team-modal" style="max-height:85vh;">
