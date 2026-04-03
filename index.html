@@ -67,14 +67,14 @@ nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
 }
 .nav-links a:hover { color: white; }
 .nav-cta {
-  background: white; color: var(--forest-deep);
+  background: white; color: var(--forest-deep) !important;
   padding: 10px 24px; border-radius: 100px;
   font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
   text-decoration: none; transition: all 0.2s;
   display: inline-flex; align-items: center; gap: 6px;
   border: 2px solid white;
 }
-.nav-cta:hover { background: transparent; color: white; transform: translateY(-1px); }
+.nav-cta:hover { background: var(--forest-deep) !important; color: white !important; transform: translateY(-1px); }
 
 /* Mobile nav */
 .nav-mobile-toggle {
@@ -353,7 +353,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
 <nav id="nav">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <img src="images/icons/logo full.png" alt="Total Body Physio" style="height:86px;object-fit:contain;display:block;filter:brightness(0) invert(1);">
+      <img src="images/icons/logo green background .png" alt="Total Body Physio" style="height:86px;object-fit:contain;display:block;border-radius:4px;">
     </a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#pricing">Pricing</a></li>
@@ -3331,13 +3331,13 @@ document.addEventListener('visibilitychange', function() {
       </div>
       <div class="footer-col"><div class="footer-col-title">Clinics</div><a href="#clinics">Titirangi</a><a href="#clinics">Pakuranga</a><a href="#clinics">Flat Bush / Botany</a><a href="#clinics">Panmure (Free)</a></div>
       <div class="footer-col"><div class="footer-col-title">Quick Links</div><a href="#pricing">Pricing</a><a href="#conditions">Conditions We Treat</a><a href="#services">Services</a><a href="#about">About Jade</a><a href="https://total-body-physio.au1.cliniko.com/bookings">Book Online</a></div>
-      <div class="footer-col"><div class="footer-col-title">Contact</div><a href="mailto:admin@totalbodyphysio.co.nz">admin@totalbodyphysio.co.nz</a><a href="tel:098177377">09 817 7377</a><a href="#">Auckland, New Zealand</a></div>
+      <div class="footer-col"><div class="footer-col-title">Contact</div><a href="/cdn-cgi/l/email-protection#95f4f1f8fcfbd5e1fae1f4f9f7faf1ece5fdece6fcfabbf6fabbfbef"><span class="__cf_email__" data-cfemail="dabbbeb7b3b49aaeb5aebbb6b8b5bea3aab2a3a9b3b5f4b9b5f4b4a0">[email&#160;protected]</span></a><a href="tel:098177377">09 817 7377</a><a href="#">Auckland, New Zealand</a></div>
     </div>
     <div class="footer-bottom"><span>&copy; 2026 Total Body Physio. All rights reserved.</span><span>Made with care in Auckland</span></div>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('scroll', () => { document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20); });
 const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.05 });
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
@@ -3421,10 +3421,4 @@ function openTeamModal(name) {
   document.getElementById('modalBook').href = p.booking;
   document.getElementById('modalBook').textContent = `Book with ${name.split(' ')[0]} \u2192`;
   document.getElementById('teamModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeTeamModal() { document.getElementById('teamModal').classList.remove('open'); document.body.style.overflow = ''; }
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeTeamModal(); });
-</script>
-</body>
-</html>
+  document.body.style.overf
