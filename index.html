@@ -1707,9 +1707,10 @@ function renderStep1() {
 // STEP 2: Patient details
 function renderStep2() {
   if (S.isNewPatient === false) {
+    const useNameSearch = S.patient.searchByName || false;
     setBody(`
       <div class="bw-step-title">Find your account</div>
-      <div class="bw-step-sub">Enter your email and date of birth or phone number to verify your identity.</div>
+      <div class="bw-step-sub">Enter your details and date of birth or phone number to verify your identity.</div>
       ${S.patientId ? `
         <div class="bw-patient-found">
           <div class="bw-patient-found-icon">✓</div>
@@ -1718,10 +1719,21 @@ function renderStep2() {
             <div class="bw-patient-found-sub">Identity verified — ready to book</div>
           </div>
         </div>` : ''}
+      ${!useNameSearch ? `
       <div class="bw-field">
         <label class="bw-label">Email Address</label>
         <input class="bw-input" type="email" id="bw-email" placeholder="you@example.com" value="${S.patient.email || ''}" oninput="S.patient.email=this.value">
-      </div>
+      </div>` : `
+      <div class="bw-row">
+        <div class="bw-field">
+          <label class="bw-label">First Name</label>
+          <input class="bw-input" type="text" id="bw-firstname" placeholder="Jane" value="${S.patient.first_name || ''}" oninput="S.patient.first_name=this.value">
+        </div>
+        <div class="bw-field">
+          <label class="bw-label">Last Name</label>
+          <input class="bw-input" type="text" id="bw-lastname" placeholder="Smith" value="${S.patient.last_name || ''}" oninput="S.patient.last_name=this.value">
+        </div>
+      </div>`}
       <div class="bw-field">
         <label class="bw-label">Date of Birth <span style="color:var(--gray-400);font-weight:400">or Phone Number</span></label>
         <input class="bw-input" id="bw-verify" placeholder="DD/MM/YYYY or 021 123 4567" value="${S.patient.verify || ''}" oninput="S.patient.verify=this.value" onkeydown="if(event.key==='Enter')BW.lookupPatient()">
@@ -1729,6 +1741,11 @@ function renderStep2() {
       <button class="bw-btn bw-btn-ghost" style="width:100%;margin-top:4px" onclick="BW.lookupPatient()" id="bw-lookup-btn">
         🔍 Find My Account
       </button>
+      <div style="text-align:center;margin-top:10px">
+        <button onclick="S.patient.searchByName=!S.patient.searchByName;S.patientId=null;BW.renderCurrent();" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--teal);text-decoration:underline;padding:4px">
+          ${useNameSearch ? '← Search by email instead' : 'No email on file? Search by name instead'}
+        </button>
+      </div>
     `);
     setFooter(`
       <button class="bw-btn bw-btn-ghost" onclick="BW.prev()">← Back</button>
@@ -1838,6 +1855,7 @@ function renderStep4() {
 
 // MANAGE STEP A: Verify identity
 function renderManageVerify() {
+  const useNameSearch = S.patient.searchByName || false;
   setBody(`
     <div class="bw-step-title">Find your booking</div>
     <div class="bw-step-sub">Enter your details to find your upcoming appointments.</div>
@@ -1849,10 +1867,21 @@ function renderManageVerify() {
           <div class="bw-patient-found-sub">Identity verified</div>
         </div>
       </div>` : ''}
+    ${!useNameSearch ? `
     <div class="bw-field">
       <label class="bw-label">Email Address</label>
       <input class="bw-input" type="email" id="bw-email" placeholder="you@example.com" value="${S.patient.email || ''}">
-    </div>
+    </div>` : `
+    <div class="bw-row">
+      <div class="bw-field">
+        <label class="bw-label">First Name</label>
+        <input class="bw-input" type="text" id="bw-firstname" placeholder="Jane" value="${S.patient.first_name || ''}" oninput="S.patient.first_name=this.value">
+      </div>
+      <div class="bw-field">
+        <label class="bw-label">Last Name</label>
+        <input class="bw-input" type="text" id="bw-lastname" placeholder="Smith" value="${S.patient.last_name || ''}" oninput="S.patient.last_name=this.value">
+      </div>
+    </div>`}
     <div class="bw-field">
       <label class="bw-label">Date of Birth <span style="color:var(--gray-400);font-weight:400">or Phone Number</span></label>
       <input class="bw-input" id="bw-verify" placeholder="DD/MM/YYYY or 021 123 4567" value="${S.patient.verify || ''}">
@@ -1860,6 +1889,11 @@ function renderManageVerify() {
     <button class="bw-btn bw-btn-ghost" style="width:100%;margin-top:4px" onclick="BW.lookupPatientForManage()" id="bw-lookup-btn">
       🔍 Find My Bookings
     </button>
+    <div style="text-align:center;margin-top:10px">
+      <button onclick="S.patient.searchByName=!S.patient.searchByName;S.patientId=null;BW.renderManageFlow();" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--teal);text-decoration:underline;padding:4px">
+        ${useNameSearch ? '← Search by email instead' : 'No email on file? Search by name instead'}
+      </button>
+    </div>
   `);
   setFooter(`
     <button class="bw-btn bw-btn-ghost" onclick="BW.prev()">← Back</button>
@@ -2248,34 +2282,54 @@ const BW = {
   },
 
   async lookupPatient() {
-    const inputEl  = $('bw-email');
+    const useNameSearch = S.patient.searchByName || false;
     const verifyEl = $('bw-verify');
-    const email  = (inputEl  ? inputEl.value  : S.patient.email   || '').trim();
     const verify = (verifyEl ? verifyEl.value : '').trim();
-    if (!email)  return showError('Please enter your email address.');
     if (!verify) return showError('Please enter your date of birth or phone number.');
-    S.patient.email = email;
+
+    let searchParams;
+    if (useNameSearch) {
+      const firstNameEl = $('bw-firstname');
+      const lastNameEl  = $('bw-lastname');
+      const firstName = (firstNameEl ? firstNameEl.value : S.patient.first_name || '').trim();
+      const lastName  = (lastNameEl  ? lastNameEl.value  : S.patient.last_name  || '').trim();
+      if (!firstName || !lastName) return showError('Please enter both your first and last name.');
+      S.patient.first_name = firstName; S.patient.last_name = lastName;
+      searchParams = { first_name: firstName, last_name: lastName };
+    } else {
+      const emailEl = $('bw-email');
+      const email = (emailEl ? emailEl.value : S.patient.email || '').trim();
+      if (!email) return showError('Please enter your email address.');
+      S.patient.email = email;
+      searchParams = { email };
+    }
+
     const btn = $('bw-lookup-btn');
     btn.disabled = true; btn.textContent = 'Searching…';
     try {
-      const d = await apiGet('search_patient', { email });
+      const d = await apiGet('search_patient', searchParams);
       if (d.patients && d.patients.length > 0) {
-        const p = d.patients[0];
         const verifyClean = verify.replace(/\D/g,'');
         let dobFormatted = verify.trim();
         const dobParts = dobFormatted.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
         if (dobParts) dobFormatted = `${dobParts[3]}-${dobParts[2].padStart(2,'0')}-${dobParts[1].padStart(2,'0')}`;
-        const dobMatch   = p.dob && p.dob === dobFormatted;
-        const phoneMatch = p.phones && p.phones.some(ph => {
-          const phClean = ph.replace(/\D/g,'');
-          return phClean.endsWith(verifyClean) || verifyClean.endsWith(phClean.slice(-7));
+        // Find the patient whose DOB or phone matches the verify field
+        const matched = d.patients.find(p => {
+          const dobMatch   = p.dob && p.dob === dobFormatted;
+          const phoneMatch = p.phones && p.phones.some(ph => {
+            const phClean = ph.replace(/\D/g,'');
+            return phClean.endsWith(verifyClean) || verifyClean.endsWith(phClean.slice(-7));
+          });
+          return dobMatch || phoneMatch;
         });
-        if (!dobMatch && !phoneMatch) {
+        if (!matched) {
           S.patientId = null; btn.disabled = false; btn.textContent = '🔍 Find My Account';
-          return showError('Details do not match our records. Please check your date of birth or phone number.');
+          return showError(d.patients.length > 1
+            ? 'Multiple accounts found but details did not match. Please check your date of birth or phone number, or call us on ' + CONFIG.phone
+            : 'Details do not match our records. Please check your date of birth or phone number.');
         }
-        S.patientId   = p.id;
-        S.patientName = `${p.first_name} ${p.last_name}`;
+        S.patientId   = matched.id;
+        S.patientName = `${matched.first_name} ${matched.last_name}`;
         const body    = $('bw-body');
         if (!document.getElementById('bw-found-banner')) {
           const banner = document.createElement('div');
@@ -2288,7 +2342,9 @@ const BW = {
         btn.textContent = '✓ Verified'; btn.style.color = 'var(--success)';
       } else {
         S.patientId = null; btn.disabled = false; btn.textContent = '🔍 Find My Account';
-        showError(`No account found for ${email}. Please check your email or register as a new patient.`);
+        showError(useNameSearch
+          ? `No account found for that name. Please check the spelling or register as a new patient.`
+          : `No account found for ${searchParams.email}. Please check your email or register as a new patient.`);
       }
     } catch(e) {
       btn.disabled = false; btn.textContent = '🔍 Find My Account';
@@ -2297,34 +2353,53 @@ const BW = {
   },
 
   async lookupPatientForManage() {
-    const emailEl  = $('bw-email');
+    const useNameSearch = S.patient.searchByName || false;
     const verifyEl = $('bw-verify');
-    const email  = (emailEl  ? emailEl.value  : S.patient.email || '').trim();
     const verify = (verifyEl ? verifyEl.value : '').trim();
-    if (!email)  return showError('Please enter your email address.');
     if (!verify) return showError('Please enter your date of birth or phone number.');
-    S.patient.email = email;
+
+    let searchParams;
+    if (useNameSearch) {
+      const firstNameEl = $('bw-firstname');
+      const lastNameEl  = $('bw-lastname');
+      const firstName = (firstNameEl ? firstNameEl.value : S.patient.first_name || '').trim();
+      const lastName  = (lastNameEl  ? lastNameEl.value  : S.patient.last_name  || '').trim();
+      if (!firstName || !lastName) return showError('Please enter both your first and last name.');
+      S.patient.first_name = firstName; S.patient.last_name = lastName;
+      searchParams = { first_name: firstName, last_name: lastName };
+    } else {
+      const emailEl = $('bw-email');
+      const email = (emailEl ? emailEl.value : S.patient.email || '').trim();
+      if (!email) return showError('Please enter your email address.');
+      S.patient.email = email;
+      searchParams = { email };
+    }
+
     const btn = $('bw-lookup-btn');
     btn.disabled = true; btn.textContent = 'Searching…';
     try {
-      const d = await apiGet('search_patient', { email });
+      const d = await apiGet('search_patient', searchParams);
       if (d.patients && d.patients.length > 0) {
-        const p = d.patients[0];
         const verifyClean = verify.replace(/\D/g,'');
         let dobFormatted = verify.trim();
         const dobParts = dobFormatted.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
         if (dobParts) dobFormatted = `${dobParts[3]}-${dobParts[2].padStart(2,'0')}-${dobParts[1].padStart(2,'0')}`;
-        const dobMatch   = p.dob && p.dob === dobFormatted;
-        const phoneMatch = p.phones && p.phones.some(ph => {
-          const phClean = ph.replace(/\D/g,'');
-          return phClean.endsWith(verifyClean) || verifyClean.endsWith(phClean.slice(-7));
+        const matched = d.patients.find(p => {
+          const dobMatch   = p.dob && p.dob === dobFormatted;
+          const phoneMatch = p.phones && p.phones.some(ph => {
+            const phClean = ph.replace(/\D/g,'');
+            return phClean.endsWith(verifyClean) || verifyClean.endsWith(phClean.slice(-7));
+          });
+          return dobMatch || phoneMatch;
         });
-        if (!dobMatch && !phoneMatch) {
+        if (!matched) {
           S.patientId = null; btn.disabled = false; btn.textContent = '🔍 Find My Bookings';
-          return showError('Details do not match our records.');
+          return showError(d.patients.length > 1
+            ? 'Multiple accounts found but details did not match. Please check your date of birth or phone number, or call us on ' + CONFIG.phone
+            : 'Details do not match our records.');
         }
-        S.patientId   = p.id;
-        S.patientName = `${p.first_name} ${p.last_name}`;
+        S.patientId   = matched.id;
+        S.patientName = `${matched.first_name} ${matched.last_name}`;
         const nextBtn = $('bw-manage-next');
         if (nextBtn) nextBtn.removeAttribute('disabled');
         btn.textContent = '✓ Verified'; btn.style.color = 'var(--success)';
@@ -2336,7 +2411,9 @@ const BW = {
         }
       } else {
         btn.disabled = false; btn.textContent = '🔍 Find My Bookings';
-        showError(`No account found for ${email}.`);
+        showError(useNameSearch
+          ? `No account found for that name. Please check the spelling or call us on ${CONFIG.phone}.`
+          : `No account found for ${searchParams.email}.`);
       }
     } catch(e) {
       btn.disabled = false; btn.textContent = '🔍 Find My Bookings';
@@ -2709,20 +2786,46 @@ const PIP = {
       switch(action.type) {
 
         case 'search_patient': {
-          const d = await apiGet('search_patient', { email: action.email });
-          if (!d.patients || d.patients.length === 0) {
-            result = `[SYSTEM: No patient found for email "${action.email}". Ask them to check or register as a new patient.]`;
+          // Build search params — support email OR first/last name
+          const searchParams = {};
+          if (action.email) {
+            searchParams.email = action.email;
+          } else if (action.first_name && action.last_name) {
+            searchParams.first_name = action.first_name;
+            searchParams.last_name  = action.last_name;
           } else {
-            const p = d.patients[0];
-            let dob = (action.dob || '').trim();
-            const parts = dob.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-            if (parts) dob = `${parts[3]}-${parts[2].padStart(2,'0')}-${parts[1].padStart(2,'0')}`;
-            if (!p.dob || p.dob !== dob) {
-              result = `[SYSTEM: Patient found but date of birth does not match. Cannot verify identity. Ask them to double-check.]`;
+            result = `[SYSTEM: search_patient requires either 'email' or both 'first_name' and 'last_name'. Ask the patient for the missing detail.]`;
+            break;
+          }
+          const d = await apiGet('search_patient', searchParams);
+          if (!d.patients || d.patients.length === 0) {
+            result = action.email
+              ? `[SYSTEM: No patient found for email "${action.email}". Ask if they may have a different email on file, or if they have no email on file, ask for their name instead to search that way. If still not found, offer to register them as a new patient.]`
+              : `[SYSTEM: No patient found for name "${action.first_name} ${action.last_name}". Ask them to check the spelling, or offer to register as a new patient.]`;
+          } else {
+            // Normalise the verification value (DOB or phone)
+            const verifyRaw = (action.dob || action.phone || '').trim();
+            const verifyClean = verifyRaw.replace(/\D/g,'');
+            let dobFormatted = verifyRaw;
+            const dobParts = verifyRaw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+            if (dobParts) dobFormatted = `${dobParts[3]}-${dobParts[2].padStart(2,'0')}-${dobParts[1].padStart(2,'0')}`;
+            // Find the patient whose DOB or phone matches
+            const matched = d.patients.find(p => {
+              const dobMatch   = p.dob && p.dob === dobFormatted;
+              const phoneMatch = p.phones && p.phones.some(ph => {
+                const phClean = ph.replace(/\D/g,'');
+                return phClean.endsWith(verifyClean) || verifyClean.endsWith(phClean.slice(-7));
+              });
+              return dobMatch || phoneMatch;
+            });
+            if (!matched) {
+              result = d.patients.length > 1
+                ? `[SYSTEM: Multiple patients found but none matched the date of birth or phone provided. Ask the patient to double-check their details, or suggest they call us on ${CONFIG.phone}.]`
+                : `[SYSTEM: Patient found but date of birth/phone does not match. Cannot verify identity. Ask them to double-check.]`;
             } else {
-              PIP.verifiedPatientId   = p.id;
-              PIP.verifiedPatientName = `${p.first_name} ${p.last_name}`;
-              result = `[SYSTEM: Identity verified. Patient name: ${PIP.verifiedPatientName}, ID: ${p.id}]`;
+              PIP.verifiedPatientId   = matched.id;
+              PIP.verifiedPatientName = `${matched.first_name} ${matched.last_name}`;
+              result = `[SYSTEM: Identity verified. Patient name: ${PIP.verifiedPatientName}, ID: ${matched.id}]`;
             }
           }
           break;
@@ -3038,7 +3141,15 @@ IMPORTANT RULES — NO HALLUCINATIONS
 ═══════════════════════════════
 IDENTITY & BOOKING
 ═══════════════════════════════
-Before ANY booking or management action, verify identity. Ask for email first, then DOB as a separate message. Use search_patient.
+Before ANY booking or management action, verify identity. Ask for email first, then DOB or phone number as a separate message. Use search_patient.
+
+When calling search_patient, pass either:
+- { email, dob } — standard lookup by email + date of birth
+- { email, phone } — if patient gives phone instead of DOB
+- { first_name, last_name, dob } — if patient says they have no email on file or email search fails
+- { first_name, last_name, phone } — name + phone as alternative
+
+If a patient says they don't have an email on file (or email search returns nothing), warmly tell them that's fine and ask for their first and last name instead, then use first_name + last_name in the search_patient action. Always still ask for DOB or phone to verify identity — name alone is not enough.
 
 If search_patient finds the patient → identity verified, proceed with booking.
 
