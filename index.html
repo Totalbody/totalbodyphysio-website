@@ -76,6 +76,15 @@ nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
   border: 2px solid white;
 }
 .nav-cta:hover { background: var(--forest-deep) !important; color: white !important; transform: translateY(-1px); }
+.nav-manage {
+  background: transparent; color: rgba(255,255,255,0.82) !important;
+  padding: 10px 20px; border-radius: 100px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 14px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.nav-manage:hover { border-color: rgba(255,255,255,0.7); color: white !important; background: rgba(255,255,255,0.08) !important; }
 
 /* Mobile nav */
 .nav-mobile-toggle {
@@ -301,6 +310,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
     color: rgba(255,255,255,0.88); font-weight: 500;
   }
   .nav-links.open li:last-child a { border-bottom: none; }
+  .nav-links.open .nav-manage { border: none; padding: 8px 0; background: transparent !important; }
 }
 </style>
 
@@ -368,6 +378,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
       <li><a href="#clinics">Clinics</a></li>
       <li><a href="#conditions">Conditions</a></li>
       <li><a href="#contact">Contact</a></li>
+      <li><a href="#" class="nav-manage" onclick="event.preventDefault();BW.openManage();">&#128197; Manage Booking</a></li>
       <li><a href="https://total-body-physio.au1.cliniko.com/bookings" class="nav-cta">Book Now &#8594;</a></li>
     </ul>
     <button class="nav-mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
@@ -722,73 +733,31 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
   /* ── FAB LABEL PILL ──────────────────────────────────────────── */
   #bw-fab-wrap {
     position: fixed;
-    bottom: 28px;
-    right: 28px;
+    bottom: 24px;
+    right: 24px;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-    z-index: 9998;
-    pointer-events: all;
-  }
-
-  /* Tooltip bubble */
-  #bw-tooltip {
-    background: white;
-    border-radius: 14px;
-    padding: 12px 16px;
-    box-shadow: 0 8px 30px rgba(46,82,36,0.18);
-    border: 1px solid #ddecd8;
-    max-width: 220px;
-    opacity: 0;
-    transform: translateY(8px) scale(0.95);
-    pointer-events: none;
-    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  #bw-tooltip.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: all;
-    cursor: pointer;
-  }
-  #bw-tooltip-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: #2e5224;
-    margin-bottom: 6px;
-  }
-  #bw-tooltip-features {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .tbp-feat {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: #4a6040;
-    display: flex;
     align-items: center;
     gap: 6px;
+    z-index: 9998;
   }
-  /* Dismiss X */
-  #bw-tooltip-close {
-    position: absolute;
-    top: 8px; right: 10px;
-    background: none; border: none;
-    font-size: 14px; color: #8aaa7e;
-    cursor: pointer; line-height: 1;
+  #bw-fab {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: linear-gradient(135deg, #2C6120, #1B3D12);
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(43,90,30,0.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  /* Arrow pointing down-right */
-  #bw-tooltip::after {
-    content: '';
-    position: absolute;
-    bottom: -8px; right: 28px;
-    width: 0; height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 8px solid white;
-    filter: drop-shadow(0 2px 2px rgba(46,82,36,0.1));
+  #bw-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(43,90,30,0.55); }
+  #bw-fab svg { width: 26px; height: 26px; }
+  #bw-fab-label {
+    background: #1B3D12; color: white;
+    font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 100px;
+    white-space: nowrap; pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
 
   /* ─── HEADER ─────────────────────────────────────────────────── */
@@ -1233,7 +1202,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
   }
   .bw-tab-btn.active svg { stroke-width: 2.2; }
 
-  /* ─── PIP AI CHAT ────────────────────────────────────────────── */
+  /* ─── JENNY AI CHAT ────────────────────────────────────────────── */
   #pip-container {
     display: none;
     flex: 1;
@@ -1372,7 +1341,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
       background-size: auto 78%;
       background-position: center 28%;
     }
-    /* Push tab text down to match Ask Pip position */
+    /* Push tab text down to match Ask Jenny position */
     .bw-tab-btn {
       padding: 18px 4px 10px;
       font-size: 12px;
@@ -1390,33 +1359,16 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
 <!-- ═══ BOOKING WIDGET ══════════════════════════════════════ -->
 <!-- ── LAUNCHER + TOOLTIP ────────────────────────────────────────── -->
 <div id="bw-fab-wrap">
-  <!-- Tooltip -->
-  <div id="bw-tooltip" onclick="BW.toggle();this.classList.remove('show')" style="position:relative">
-    <button id="bw-tooltip-close" onclick="event.stopPropagation();document.getElementById('bw-tooltip').classList.remove('show')">✕</button>
-    <div id="bw-tooltip-title">👋 Hi! Need help?</div>
-    <div id="bw-tooltip-features">
-      <div class="tbp-feat">📅 Book an appointment</div>
-      <div class="tbp-feat">⚙️ Manage your booking</div>
-      <div class="tbp-feat">💬 Ask Pip anything</div>
-    </div>
-  </div>
-
-  <!-- FAB Button -->
-  <button id="bw-fab" aria-label="Book or manage appointment">
-    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="spark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#a8e063"/>
-          <stop offset="100%" stop-color="#ffffff"/>
-        </linearGradient>
-      </defs>
-      <!-- Large sparkle -->
-      <path d="M20 3 C20 3 21.8 13 20 20 C18.2 27 3 29 3 29 C3 29 18.2 31 20 38 C21.8 31 37 29 37 29 C37 29 21.8 27 20 20 C18.2 13 20 3 20 3Z" fill="url(#spark-grad)"/>
-      <!-- Small sparkle top right -->
-      <path d="M32 6 C32 6 32.9 10 32 13 C31.1 16 27 17 27 17 C27 17 31.1 18 32 21 C32.9 18 37 17 37 17 C37 17 32.9 16 32 13 C31.1 10 32 6 32 6Z" fill="rgba(255,255,255,0.75)" transform="scale(0.7) translate(14, 2)"/>
+  <!-- Jenny AI FAB -->
+  <button id="bw-fab" aria-label="Chat with Jenny — Physio AI">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 3h20a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8l-6 5V5a2 2 0 0 1 2-2z" fill="rgba(255,255,255,0.18)" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="9" cy="12" r="1.5" fill="white"/>
+      <circle cx="14" cy="12" r="1.5" fill="white"/>
+      <circle cx="19" cy="12" r="1.5" fill="white"/>
     </svg>
-    <span class="fab-dot" id="bw-fab-dot"></span>
   </button>
+  <div id="bw-fab-label">Physio AI · Jenny</div>
 </div>
 
 <!-- ── WIDGET PANEL ──────────────────────────────────────────────── -->
@@ -1454,7 +1406,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
     </button>
     <button class="bw-tab-btn" id="bw-tab-pip" onclick="BW.switchTab('pip')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Ask Pip
+      Ask Jenny
     </button>
   </div>
 
@@ -1464,12 +1416,12 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
   <!-- Footer nav -->
   <div class="bw-footer" id="bw-footer"></div>
 
-  <!-- Pip AI Chat -->
+  <!-- Jenny AI Chat -->
   <div id="pip-container">
     <div id="pip-messages"></div>
     <div id="pip-chips"></div>
     <div id="pip-input-area">
-      <textarea id="pip-input" placeholder="Ask Pip anything…" rows="1"></textarea>
+      <textarea id="pip-input" placeholder="Ask Jenny anything…" rows="1"></textarea>
       <button id="pip-send" aria-label="Send">
         <svg viewBox="0 0 18 18" fill="none"><path d="M2 9l14-7-7 14V9H2z" fill="white"/></svg>
       </button>
@@ -1581,6 +1533,7 @@ const CONFIG = {
 // ═══════════════════════════════════════════════════════════════════
 const S = {
   open: false,
+  widgetMode: null,
   step: 1,
   isNewPatient: null,
   patient: {},
@@ -2213,7 +2166,7 @@ const BW = {
       footer.style.display = 'none';
       pipCont.classList.add('active');
       progress.style.visibility = 'hidden';
-      if (!PIP.initialised) PIP.init();
+      if (!JENNY.initialised) JENNY.init();
     } else {
       body.style.display   = '';
       footer.style.display = '';
@@ -2229,20 +2182,55 @@ const BW = {
     }
   },
 
+  openManage() {
+    S.widgetMode = 'manage';
+    // Hide tabs — manage panel is standalone
+    document.getElementById('bw-tabs').style.display = 'none';
+    if (!S.open) {
+      S.open = true;
+      $('bw-panel').classList.add('visible');
+      window.parent.postMessage('tbp-open', '*');
+    }
+    S.mode = 'manage'; S.manageStep = 'verify';
+    // Reset manage state cleanly
+    S.patientId = null; S.patientName = ''; S.patient = {};
+    S.upcomingAppointments = []; S.selectedAppointment = null; S.manageAction = null;
+    // Show body/footer, hide pip
+    document.getElementById('bw-body').style.display = '';
+    document.getElementById('bw-footer').style.display = '';
+    document.getElementById('pip-container').classList.remove('active');
+    document.getElementById('bw-progress').style.visibility = 'hidden';
+    BW.renderManageFlow();
+    document.getElementById('navLinks').classList.remove('open');
+  },
+
+  openJenny() {
+    S.widgetMode = 'jenny';
+    // Hide tabs — Jenny is standalone
+    document.getElementById('bw-tabs').style.display = 'none';
+    if (!S.open) {
+      S.open = true;
+      $('bw-panel').classList.add('visible');
+      window.parent.postMessage('tbp-open', '*');
+    }
+    document.getElementById('bw-body').style.display = 'none';
+    document.getElementById('bw-footer').style.display = 'none';
+    document.getElementById('bw-progress').style.visibility = 'hidden';
+    document.getElementById('pip-container').classList.add('active');
+    if (!JENNY.initialised) JENNY.init();
+  },
+
   toggle() {
     S.open = !S.open;
     $('bw-panel').classList.toggle('visible', S.open);
-    if (S.open) {
-      window.parent.postMessage('tbp-open', '*');
-      const dot = $('bw-fab-dot');
-      if (dot) dot.style.display = 'none';
-      BW.switchTab('book');
-    } else {
+    if (!S.open) {
       window.parent.postMessage('tbp-close', '*');
-      // Send transcript if Pip had a conversation (3+ messages) and no booking was made
-      if (PIP.history && PIP.history.length >= 3 && !PIP._bookingNotified && !PIP._transcriptSent) {
-        PIP._transcriptSent = true;
-        PIP.sendNotification('transcript');
+      // Restore tabs for next open
+      document.getElementById('bw-tabs').style.display = '';
+      S.widgetMode = null;
+      if (JENNY.history && JENNY.history.length >= 3 && !JENNY._bookingNotified && !JENNY._transcriptSent) {
+        JENNY._transcriptSent = true;
+        JENNY.sendNotification('transcript');
       }
     }
   },
@@ -2599,7 +2587,10 @@ const BW = {
 
   prev() {
     if (S.mode === 'manage') {
-      if (S.manageStep === 'verify')          { S.mode = null; S.step = 1; BW.renderCurrent(); }
+      if (S.manageStep === 'verify') {
+        if (S.widgetMode === 'manage') { BW.toggle(); return; }
+        S.mode = null; S.step = 1; BW.renderCurrent();
+      }
       else if (S.manageStep === 'appointments') { S.manageStep = 'verify'; BW.renderManageFlow(); }
       else if (S.manageStep === 'options')      { S.manageStep = 'appointments'; BW.renderManageFlow(); }
       else if (S.manageStep === 'confirm_cancel') { S.manageStep = 'options'; BW.renderManageFlow(); }
@@ -2652,9 +2643,9 @@ const BW = {
 };
 
 // ═══════════════════════════════════════════════════════════════════
-//  PIP — AI CHAT
+//  JENNY — AI CHAT
 // ═══════════════════════════════════════════════════════════════════
-const PIP = {
+const JENNY = {
   initialised: false,
   loading: false,
   history: [],
@@ -2673,17 +2664,17 @@ const PIP = {
     document.getElementById('pip-messages').innerHTML = '';
     const greetings = ["Kia ora", "G'day", "Hey there", "Hi there", "Kia ora"];
     const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-    PIP.addBubble('bot', `${greeting}! 👋 I'm Pip, the AI assistant for Total Body Physio. I can answer your questions and help you book or manage your appointments.\n\nHow can I help you today?`);
+    JENNY.addBubble('bot', `${greeting}! 👋 I'm Jenny, the AI assistant for Total Body Physio. I can answer your questions and help you book or manage your appointments.\n\nHow can I help you today?`);
     // Subtle privacy notice in footer style — not a full bubble
     const msgs = document.getElementById('pip-messages');
     const note = document.createElement('div');
     note.style.cssText = 'text-align:center;font-size:11px;color:#aac8a5;padding:4px 8px 0;';
     note.innerHTML = 'By chatting you agree to our <a href="https://www.totalbodyphysio.co.nz/privacy-policy" target="_blank" style="color:#7cbf5e;text-decoration:underline">privacy policy</a>. Prefer to talk? Call us anytime.';
     msgs.appendChild(note);
-    PIP.renderChips(['Book an appointment', 'Manage my booking', 'What are your prices?', 'Where are your clinics?']);
-    PIP.bindInput();
-    // Pre-load businesses and appointment types silently so Pip has real IDs
-    PIP.preloadData();
+    JENNY.renderChips(['Book an appointment', 'Manage my booking', 'What are your prices?', 'Where are your clinics?']);
+    JENNY.bindInput();
+    // Pre-load businesses and appointment types silently so Jenny has real IDs
+    JENNY.preloadData();
   },
 
   async preloadData() {
@@ -2706,40 +2697,40 @@ const PIP = {
       biz.name.toLowerCase().includes(k.toLowerCase())
     );
     const ids = key ? CONFIG.clinicAppointmentTypes[key] : null;
-    const all = PIP._allApptTypes || [];
+    const all = JENNY._allApptTypes || [];
     return ids ? all.filter(t => ids.includes(String(t.id))) : all;
   },
 
   bindInput() {
     const inp  = document.getElementById('pip-input');
     const send = document.getElementById('pip-send');
-    if (!inp || PIP._bound) return;
-    PIP._bound = true;
+    if (!inp || JENNY._bound) return;
+    JENNY._bound = true;
     inp.addEventListener('input', () => {
       inp.style.height = 'auto';
       inp.style.height = Math.min(inp.scrollHeight, 90) + 'px';
     });
     inp.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); PIP.handleSend(); }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); JENNY.handleSend(); }
     });
-    send.addEventListener('click', () => PIP.handleSend());
+    send.addEventListener('click', () => JENNY.handleSend());
   },
 
   handleSend() {
     const inp = document.getElementById('pip-input');
     const text = inp.value.trim();
-    if (!text || PIP.loading) return;
+    if (!text || JENNY.loading) return;
     inp.value = ''; inp.style.height = 'auto';
     document.getElementById('pip-chips').innerHTML = '';
-    PIP.sendMessage(text);
+    JENNY.sendMessage(text);
   },
 
   async sendMessage(text, isSystem = false) {
-    if (!isSystem) PIP.addBubble('user', text);
-    PIP.history.push({ role: 'user', content: text });
-    PIP.loading = true;
-    const typing = PIP.addTyping();
-    PIP.scrollBottom();
+    if (!isSystem) JENNY.addBubble('user', text);
+    JENNY.history.push({ role: 'user', content: text });
+    JENNY.loading = true;
+    const typing = JENNY.addTyping();
+    JENNY.scrollBottom();
     try {
       // Call via secure proxy (keeps Anthropic API key server-side)
       const res = await fetch(CONFIG.proxyUrl + '/api/chat', {
@@ -2748,8 +2739,8 @@ const PIP = {
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 700,
-          system: PIP.systemPrompt(),
-          messages: PIP.history,
+          system: JENNY.systemPrompt(),
+          messages: JENNY.history,
         })
       });
       const data = await res.json();
@@ -2758,26 +2749,26 @@ const PIP = {
       const actionMatch = raw.match(/<action>([\s\S]*?)<\/action>/);
       const display = raw.replace(/<action>[\s\S]*?<\/action>/g, '').trim();
       if (display) {
-        PIP.addBubble('bot', display);
-        PIP.history.push({ role: 'assistant', content: raw });
+        JENNY.addBubble('bot', display);
+        JENNY.history.push({ role: 'assistant', content: raw });
       } else if (!actionMatch) {
-        PIP.addBubble('bot', 'Sorry, something went wrong. Please try again or call ' + CONFIG.phone);
+        JENNY.addBubble('bot', 'Sorry, something went wrong. Please try again or call ' + CONFIG.phone);
       } else {
-        PIP.history.push({ role: 'assistant', content: raw });
+        JENNY.history.push({ role: 'assistant', content: raw });
       }
       if (actionMatch) {
         try {
-          await PIP.executeAction(JSON.parse(actionMatch[1]));
+          await JENNY.executeAction(JSON.parse(actionMatch[1]));
         } catch(e) {
-          await PIP.sendMessage('[SYSTEM: Action parse error. Tell patient to call ' + CONFIG.phone + '.]', true);
+          await JENNY.sendMessage('[SYSTEM: Action parse error. Tell patient to call ' + CONFIG.phone + '.]', true);
         }
       }
     } catch(e) {
       typing.remove();
-      PIP.addBubble('bot', 'Sorry, connection issue. Please try again or call ' + CONFIG.phone + '.');
+      JENNY.addBubble('bot', 'Sorry, connection issue. Please try again or call ' + CONFIG.phone + '.');
     }
-    PIP.loading = false;
-    PIP.scrollBottom();
+    JENNY.loading = false;
+    JENNY.scrollBottom();
   },
 
   async executeAction(action) {
@@ -2823,17 +2814,17 @@ const PIP = {
                 ? `[SYSTEM: Multiple patients found but none matched the date of birth or phone provided. Ask the patient to double-check their details, or suggest they call us on ${CONFIG.phone}.]`
                 : `[SYSTEM: Patient found but date of birth/phone does not match. Cannot verify identity. Ask them to double-check.]`;
             } else {
-              PIP.verifiedPatientId   = matched.id;
-              PIP.verifiedPatientName = `${matched.first_name} ${matched.last_name}`;
-              result = `[SYSTEM: Identity verified. Patient name: ${PIP.verifiedPatientName}, ID: ${matched.id}]`;
+              JENNY.verifiedPatientId   = matched.id;
+              JENNY.verifiedPatientName = `${matched.first_name} ${matched.last_name}`;
+              result = `[SYSTEM: Identity verified. Patient name: ${JENNY.verifiedPatientName}, ID: ${matched.id}]`;
             }
           }
           break;
         }
 
         case 'get_appointments': {
-          if (!PIP.verifiedPatientId) { result = '[SYSTEM: No verified patient. Verify identity first.]'; break; }
-          const d = await apiGet('patient_appointments', { patient_id: PIP.verifiedPatientId });
+          if (!JENNY.verifiedPatientId) { result = '[SYSTEM: No verified patient. Verify identity first.]'; break; }
+          const d = await apiGet('patient_appointments', { patient_id: JENNY.verifiedPatientId });
           const appts = d.appointments || [];
           if (!appts.length) { result = '[SYSTEM: No upcoming appointments found for this patient.]'; break; }
           result = '[SYSTEM: Upcoming appointments:\n' + appts.map((a,i) => {
@@ -2870,70 +2861,70 @@ const PIP = {
             phone:         action.phone,
             date_of_birth: action.dob,
           });
-          PIP.verifiedPatientId   = d.id;
-          PIP.verifiedPatientName = `${d.first_name} ${d.last_name}`;
-          result = `[SYSTEM: New patient created and verified. Patient name: ${PIP.verifiedPatientName}, ID: ${d.id}. All details saved — proceed with booking.]`;
+          JENNY.verifiedPatientId   = d.id;
+          JENNY.verifiedPatientName = `${d.first_name} ${d.last_name}`;
+          result = `[SYSTEM: New patient created and verified. Patient name: ${JENNY.verifiedPatientName}, ID: ${d.id}. All details saved — proceed with booking.]`;
           break;
         }
 
         case 'get_businesses': {
           const d = await apiGet('businesses');
-          PIP._businesses = (d.businesses||[]).filter(b =>
+          JENNY._businesses = (d.businesses||[]).filter(b =>
             CONFIG.allowedClinics.some(a => b.name.toLowerCase().includes(a.toLowerCase()))
           );
-          result = `[SYSTEM: Clinics available: ${PIP._businesses.map(b=>b.name).join(', ')}. Use clinic NAME in all future actions — never use numeric IDs.]`;
+          result = `[SYSTEM: Clinics available: ${JENNY._businesses.map(b=>b.name).join(', ')}. Use clinic NAME in all future actions — never use numeric IDs.]`;
           break;
         }
 
         case 'get_appointment_types': {
-          const biz = PIP._biz(action.business_name);
+          const biz = JENNY._biz(action.business_name);
           if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
-          PIP._currentBiz = biz;
-          PIP._currentApptTypes = PIP._apptTypesForBiz(biz);
-          result = `[SYSTEM: Appointment types at ${biz.name}: ${PIP._currentApptTypes.map(t=>`"${t.name}" ${t.duration}min`).join(' | ')}. Use type NAME in future actions.]`;
+          JENNY._currentBiz = biz;
+          JENNY._currentApptTypes = JENNY._apptTypesForBiz(biz);
+          result = `[SYSTEM: Appointment types at ${biz.name}: ${JENNY._currentApptTypes.map(t=>`"${t.name}" ${t.duration}min`).join(' | ')}. Use type NAME in future actions.]`;
           break;
         }
 
         case 'get_practitioners': {
-          const biz = PIP._biz(action.business_name);
+          const biz = JENNY._biz(action.business_name);
           if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found.]`; break; }
           // Use hardcoded practitioners first
           const clinicKey = Object.keys(CONFIG.CLINICS).find(k => k.toLowerCase() === biz.name.toLowerCase());
           const hardcoded = clinicKey ? CONFIG.CLINICS[clinicKey].practitioners : [];
           if (hardcoded.length > 0) {
-            PIP._practitioners = hardcoded;
+            JENNY._practitioners = hardcoded;
             result = `[SYSTEM: Practitioners at ${biz.name}: ${hardcoded.map(p=>p.name).join(', ')}. Use practitioner NAME in future actions.]`;
           } else {
             // Fallback for clinics not yet hardcoded (Flat Bush, Panmure)
             const d = await apiGet('practitioners', { business_id: biz.id });
-            PIP._practitioners = d.practitioners || [];
-            result = PIP._practitioners.length
-              ? `[SYSTEM: Practitioners at ${biz.name}: ${PIP._practitioners.map(p=>p.name).join(', ')}. Use practitioner NAME in future actions.]`
+            JENNY._practitioners = d.practitioners || [];
+            result = JENNY._practitioners.length
+              ? `[SYSTEM: Practitioners at ${biz.name}: ${JENNY._practitioners.map(p=>p.name).join(', ')}. Use practitioner NAME in future actions.]`
               : `[SYSTEM: No practitioners found at ${biz.name}.]`;
           }
           break;
         }
 
         case 'get_available_dates': {
-          const biz = PIP._biz(action.business_name);
-          const apt = PIP._apt(action.appointment_type_name, biz);
+          const biz = JENNY._biz(action.business_name);
+          const apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
           if (!apt) {
-            const avail = biz ? PIP._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
+            const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
             result = `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${action.business_name}. Available types: ${avail}. Call get_appointment_types for ${action.business_name} to refresh, then retry with exact name.]`;
             break;
           }
-          const prac = action.practitioner_name ? PIP._prac(action.practitioner_name) : null;
+          const prac = action.practitioner_name ? JENNY._prac(action.practitioner_name) : null;
           // Exactly mirrors BW.loadAvailableDates
           const params = { business_id: biz.id, appointment_type_id: apt.id, weeks: 2 };
           if (prac) params.practitioner_id = prac.id;
           const d = await apiGet('available_dates', params);
-          PIP._lastDates = d.available_dates || [];
-          if (!PIP._lastDates.length) {
+          JENNY._lastDates = d.available_dates || [];
+          if (!JENNY._lastDates.length) {
             result = `[SYSTEM: No availability in next 2 weeks${prac ? ' for ' + prac.name : ''}. Suggest trying no-preference practitioner or different clinic.]`;
           } else {
             // T12:00:00 prevents timezone date-shift — same fix as booking widget
-            const fmt = PIP._lastDates.slice(0, 8).map((dt, i) => {
+            const fmt = JENNY._lastDates.slice(0, 8).map((dt, i) => {
               const label = new Date(dt + 'T12:00:00').toLocaleDateString('en-NZ', { weekday:'long', day:'numeric', month:'long' });
               return `date${i}=${label}`;
             });
@@ -2943,21 +2934,21 @@ const PIP = {
         }
 
         case 'get_available_times': {
-          const biz = PIP._biz(action.business_name);
-          const apt = PIP._apt(action.appointment_type_name, biz);
+          const biz = JENNY._biz(action.business_name);
+          const apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
           if (!apt) {
-            const avail = biz ? PIP._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
+            const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
             result = `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${action.business_name}. Available types: ${avail}. Call get_appointment_types for ${action.business_name} then retry with exact name.]`;
             break;
           }
           // Use date_index to get exact date string — prevents AI guessing wrong date
           const di = action.date_index !== undefined ? parseInt(action.date_index) : -1;
-          const dateStr = (di >= 0 && PIP._lastDates && PIP._lastDates[di])
-            ? PIP._lastDates[di]
+          const dateStr = (di >= 0 && JENNY._lastDates && JENNY._lastDates[di])
+            ? JENNY._lastDates[di]
             : action.date || '';
           if (!dateStr) { result = `[SYSTEM: No date. Ask patient to pick from available dates list.]`; break; }
-          const prac = action.practitioner_name ? PIP._prac(action.practitioner_name) : null;
+          const prac = action.practitioner_name ? JENNY._prac(action.practitioner_name) : null;
           // Exactly mirrors BW.loadSlots
           const params = {
             business_id: biz.id,
@@ -2967,13 +2958,13 @@ const PIP = {
           };
           if (prac) params.practitioner_id = prac.id;
           const d = await apiGet('available_times', params);
-          PIP._lastSlots = d.available_times || [];
-          if (!PIP._lastSlots.length) {
+          JENNY._lastSlots = d.available_times || [];
+          if (!JENNY._lastSlots.length) {
             result = `[SYSTEM: No available times on ${dateStr}. Suggest another date from the list.]`;
           } else {
-            const fmt = PIP._lastSlots.map((s, i) => {
+            const fmt = JENNY._lastSlots.map((s, i) => {
               const t = new Date(s.time).toLocaleTimeString('en-NZ', { hour:'numeric', minute:'2-digit', hour12:true, timeZone:'Pacific/Auckland' });
-              const pn = PIP._resolvePracName(s.practitioner_id);
+              const pn = JENNY._resolvePracName(s.practitioner_id);
               return `slot${i}:${t}${pn ? ' with ' + pn : ''}`;
             });
             result = `[SYSTEM: Available times on ${dateStr}: ${fmt.join(' | ')}. Present 4–5 naturally. To book use slot_index:0 (etc).]`;
@@ -2982,38 +2973,38 @@ const PIP = {
         }
 
         case 'book_appointment': {
-          if (!PIP.verifiedPatientId) { result='[SYSTEM: No verified patient.]'; break; }
-          const biz = PIP._biz(action.business_name);
-          const apt = PIP._apt(action.appointment_type_name, biz);
+          if (!JENNY.verifiedPatientId) { result='[SYSTEM: No verified patient.]'; break; }
+          const biz = JENNY._biz(action.business_name);
+          const apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz||!apt) { result='[SYSTEM: Missing clinic or appointment type.]'; break; }
           const idx = parseInt(action.slot_index ?? 0);
-          const slot = PIP._lastSlots && PIP._lastSlots[idx];
+          const slot = JENNY._lastSlots && JENNY._lastSlots[idx];
           if (!slot) { result='[SYSTEM: Slot not found. Confirm the slot index from the times list.]'; break; }
           await apiPost('book_appointment', {
             practitioner_id:     slot.practitioner_id,
             business_id:         biz.id,
-            patient_id:          PIP.verifiedPatientId,
+            patient_id:          JENNY.verifiedPatientId,
             appointment_type_id: apt.id,
             starts_at:           slot.time,
-            notes: 'Booked via Pip AI chat',
+            notes: 'Booked via Jenny AI chat',
           });
           // Send booking notification email
-          const pracName = PIP._resolvePracName(slot.practitioner_id);
+          const pracName = JENNY._resolvePracName(slot.practitioner_id);
           const dtStr = new Date(slot.time).toLocaleString('en-NZ', {
             weekday:'long', day:'numeric', month:'long',
             hour:'numeric', minute:'2-digit', hour12:true, timeZone:'Pacific/Auckland'
           });
-          PIP.sendNotification('booking', {
+          JENNY.sendNotification('booking', {
             booking: {
-              patientName:     PIP.verifiedPatientName,
+              patientName:     JENNY.verifiedPatientName,
               clinic:          biz.name,
               appointmentType: apt.name,
               practitioner:    pracName,
               datetime:        dtStr,
             }
           });
-          PIP._bookingNotified = true;
-          PIP._transcriptSent  = true;
+          JENNY._bookingNotified = true;
+          JENNY._transcriptSent  = true;
           result = '[SYSTEM: Appointment booked successfully! Confirmation email will be sent.]';
           break;
         }
@@ -3024,12 +3015,12 @@ const PIP = {
     } catch(e) {
       result = `[SYSTEM: ${action.type} failed — ${e.message}. Tell the patient to call ${CONFIG.phone}.]`;
     }
-    await PIP.sendMessage(result, true);
+    await JENNY.sendMessage(result, true);
   },
 
   systemPrompt() {
     const now = new Date().toLocaleDateString('en-NZ',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Pacific/Auckland'});
-    return `Today is ${now}. You are Pip, the friendly AI assistant for Total Body Physio, Auckland NZ (totalbodyphysio.co.nz).
+    return `Today is ${now}. You are Jenny, the friendly AI assistant for Total Body Physio, Auckland NZ (totalbodyphysio.co.nz).
 
 PERSONALITY: Warm, professional, concise. Natural NZ English. Max 2–3 sentences per reply for simple questions. Plain sentences for short answers. Ask ONE question at a time.
 
@@ -3212,7 +3203,7 @@ ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: 
     const div = document.createElement('div');
     div.className = `pip-msg ${role}`;
     const av = role==='bot' ? `<div class="pip-avatar"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5.5" r="3.5" stroke="white" stroke-width="1.1"/><path d="M2.5 12c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="white" stroke-width="1.1" stroke-linecap="round" fill="none"/></svg></div>` : '';
-    div.innerHTML = `<div class="pip-row">${av}<div class="pip-bubble">${PIP.esc(text)}</div></div><div class="pip-time">${now}</div>`;
+    div.innerHTML = `<div class="pip-row">${av}<div class="pip-bubble">${JENNY.esc(text)}</div></div><div class="pip-time">${now}</div>`;
     msgs.appendChild(div);
     return div;
   },
@@ -3228,13 +3219,13 @@ ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: 
 
   renderChips(chips) {
     const el = document.getElementById('pip-chips');
-    if (el) el.innerHTML = chips.map(c=>`<button class="pip-chip" onclick="PIP.chipClick(this)">${c}</button>`).join('');
+    if (el) el.innerHTML = chips.map(c=>`<button class="pip-chip" onclick="JENNY.chipClick(this)">${c}</button>`).join('');
   },
 
   chipClick(btn) {
     const text = btn.textContent;
     document.getElementById('pip-chips').innerHTML = '';
-    PIP.sendMessage(text);
+    JENNY.sendMessage(text);
   },
 
   // ── EMAIL NOTIFICATIONS ───────────────────────────────────────
@@ -3245,20 +3236,20 @@ ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type,
-          transcript: PIP.history
+          transcript: JENNY.history
             .filter(m => !m.content.startsWith('[SYSTEM'))
             .map(m => ({ role: m.role, content: m.content.replace(/<action>[\s\S]*?<\/action>/g,'').trim() }))
             .filter(m => m.content),
-          patientName: PIP.verifiedPatientName || 'Unknown visitor',
+          patientName: JENNY.verifiedPatientName || 'Unknown visitor',
           ...extra,
         }),
       });
     } catch(e) { /* silent fail — don't interrupt user experience */ }
   },
-  _biz(name='')  { return (PIP._businesses||[]).find(b=>b.name.toLowerCase().includes(name.toLowerCase().trim())); },
+  _biz(name='')  { return (JENNY._businesses||[]).find(b=>b.name.toLowerCase().includes(name.toLowerCase().trim())); },
   _apt(name='', biz=null) {
     if (!name) return null;
-    const types = biz ? PIP._apptTypesForBiz(biz) : (PIP._currentApptTypes || PIP._allApptTypes || []);
+    const types = biz ? JENNY._apptTypesForBiz(biz) : (JENNY._currentApptTypes || JENNY._allApptTypes || []);
     const needle = name.toLowerCase().trim();
     // Try exact include first
     let found = types.find(t => t.name.toLowerCase().includes(needle));
@@ -3274,12 +3265,12 @@ ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: 
   _prac(name='') {
     // Search hardcoded practitioners across all clinics
     const all = Object.values(CONFIG.CLINICS).flatMap(c => c.practitioners);
-    return (PIP._practitioners || all).find(p => p.name.toLowerCase().includes(name.toLowerCase().trim()));
+    return (JENNY._practitioners || all).find(p => p.name.toLowerCase().includes(name.toLowerCase().trim()));
   },
   _resolvePracName(practitioner_id) {
     const all = Object.values(CONFIG.CLINICS).flatMap(c => c.practitioners);
     const found = all.find(p => String(p.id) === String(practitioner_id));
-    return found ? found.name : (PIP._practitioners||[]).find(p=>String(p.id)===String(practitioner_id))?.name || '';
+    return found ? found.name : (JENNY._practitioners||[]).find(p=>String(p.id)===String(practitioner_id))?.name || '';
   },
 
   scrollBottom() { setTimeout(()=>{ const m=document.getElementById('pip-messages'); if(m) m.scrollTop=m.scrollHeight; },60); },
@@ -3316,36 +3307,22 @@ BW.renderCurrent();
   }
 
   onTap(document.getElementById('bw-fab'), function() {
-    var tip = document.getElementById('bw-tooltip');
-    if (tip) tip.classList.remove('show');
-    BW.toggle();
-  });
-
-  onTap(document.getElementById('bw-tooltip'), function() {
-    document.getElementById('bw-tooltip').classList.remove('show');
-    if (!S.open) BW.toggle();
-  });
-
-  onTap(document.getElementById('bw-tooltip-close'), function() {
-    document.getElementById('bw-tooltip').classList.remove('show');
+    if (S.open && S.widgetMode === 'jenny') {
+      BW.toggle(); // close if already open on Jenny
+    } else {
+      BW.openJenny();
+    }
   });
 })();
 setTimeout(function() {
   document.getElementById('bw-fab').classList.add('vis');
-  setTimeout(function() {
-    var tip = document.getElementById('bw-tooltip');
-    if (tip) { tip.classList.add('show'); }
-    setTimeout(function() {
-      if (tip) tip.classList.remove('show');
-    }, 6000);
-  }, 2000);
 }, 400);
 
 // ─── SEND TRANSCRIPT WHEN PAGE CLOSES OR HIDES ───────────────────
 function sendTranscriptIfNeeded() {
-  if (PIP.history && PIP.history.length >= 3 && !PIP._bookingNotified && !PIP._transcriptSent) {
-    PIP._transcriptSent = true;
-    PIP.sendNotification('transcript');
+  if (JENNY.history && JENNY.history.length >= 3 && !JENNY._bookingNotified && !JENNY._transcriptSent) {
+    JENNY._transcriptSent = true;
+    JENNY.sendNotification('transcript');
   }
 }
 // Fires when tab is closed or navigated away
@@ -3483,7 +3460,30 @@ document.querySelectorAll('.nav-links a').forEach(a => { a.addEventListener('cli
   </div>
 </div>
 <style>
-.price-clinic-block { border:1px solid rgba(43,90,30,0.12); border-radius:14px; padding:14px 16px; margin-bottom:12px; background:white; }
+#bw-fab-wrap {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+#bw-fab {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(135deg, #2C6120, #1B3D12);
+  border: none; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(43,90,30,0.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: white;
+}
+#bw-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(43,90,30,0.5); }
+#bw-fab svg { width: 28px; height: 28px; }
+#bw-fab-label {
+  background: #1B3D12; color: white;
+  font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
 .price-clinic-name { font-family:'Outfit',sans-serif; font-weight:700; font-size:15px; color:var(--forest-deep); margin-bottom:10px; }
 .price-rows { display:flex; flex-direction:column; gap:6px; }
 .price-row { display:flex; justify-content:space-between; font-size:14px; color:var(--text-mid); padding:4px 0; border-bottom:1px solid rgba(0,0,0,0.04); }
