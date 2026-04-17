@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Rights, Privacy & Complaints | Total Body Physio</title>
+<meta name="description" content="Your rights as a patient at Total Body Physio. Privacy policy, how to make a complaint, and your rights under the Health & Disability Commissioner Code.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#1a3c34">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --forest: #2C6120;
+  --forest-deep: #1B3D12;
+  --sage: #6FA052;
+  --sage-light: #A0C882;
+  --mint: #F2F9EC;
+  --cream: #FAFBF7;
+  --text: #2A2A28;
+  --text-mid: #5A5A56;
+  --text-light: #8A8A84;
+  --free-green: #0A8C3C;
+}
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+body { font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; line-height: 1.2; }
+.container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: linear-gradient(to bottom, #0e2a0a 0%, #1B3D12 28%, #2C6120 50%, #1B3D12 72%, #0e2a0a 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 80px; }
+.nav-logo img { height: 68px; object-fit: contain; display: block; }
+.nav-back {
+  color: rgba(255,255,255,0.82); text-decoration: none; font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: white; }
+
+/* ── HERO ── */
+.page-hero {
+  background: linear-gradient(to bottom, #0e2a0a, #1B3D12);
+  padding: 56px 0 48px; text-align: center; color: white;
+}
+.page-hero-label { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 12px; }
+.page-hero h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 14px; }
+.page-hero p { font-size: 16px; color: rgba(255,255,255,0.72); max-width: 560px; margin: 0 auto; line-height: 1.7; }
+
+/* ── TOC ── */
+.toc {
+  background: white; border: 1px solid rgba(43,90,30,0.12); border-radius: 16px;
+  padding: 28px 32px; margin: 40px 0;
+}
+.toc-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--forest); margin-bottom: 16px; }
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.toc-list a { color: var(--forest); text-decoration: none; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+.toc-list a::before { content: '→'; font-size: 13px; opacity: 0.5; }
+.toc-list a:hover { color: var(--forest-deep); }
+.toc-list a:hover::before { opacity: 1; }
+
+/* ── SECTIONS ── */
+.page-section { padding: 52px 0; border-bottom: 1px solid rgba(43,90,30,0.08); }
+.page-section:last-of-type { border-bottom: none; }
+.section-eyebrow { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage); margin-bottom: 10px; }
+.section-heading { font-size: clamp(22px, 3vw, 32px); font-weight: 800; color: var(--forest-deep); margin-bottom: 20px; letter-spacing: -0.02em; }
+.prose { font-size: 15px; color: var(--text-mid); line-height: 1.8; }
+.prose p { margin-bottom: 14px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { color: var(--text); font-weight: 600; }
+.prose a { color: var(--forest); font-weight: 500; }
+.prose a:hover { text-decoration: underline; }
+
+/* ── RIGHTS GRID ── */
+.rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+@media (max-width: 600px) { .rights-grid { grid-template-columns: 1fr; } }
+.right-card {
+  background: white; border: 1px solid rgba(43,90,30,0.1); border-radius: 14px;
+  padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+}
+.right-num { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 800; color: var(--sage-light); line-height: 1; flex-shrink: 0; min-width: 28px; }
+.right-body {}
+.right-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px; color: var(--forest-deep); margin-bottom: 4px; }
+.right-desc { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+
+/* ── COMPLAINT STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
+.step { display: flex; gap: 18px; padding: 20px 0; border-bottom: 1px solid rgba(43,90,30,0.07); }
+.step:last-child { border-bottom: none; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--forest); color: white; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-body {}
+.step-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; color: var(--forest-deep); margin-bottom: 4px; }
+.step-desc { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+.step-desc a { color: var(--forest); font-weight: 500; }
+
+/* ── CONTACT BOX ── */
+.contact-box {
+  background: var(--mint); border: 1px solid rgba(43,90,30,0.15); border-radius: 14px;
+  padding: 22px 24px; margin-top: 24px; display: flex; flex-direction: column; gap: 8px;
+}
+.contact-box-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; color: var(--forest-deep); margin-bottom: 4px; }
+.contact-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-mid); }
+.contact-row a { color: var(--forest); font-weight: 500; text-decoration: none; }
+.contact-row a:hover { text-decoration: underline; }
+
+/* ── CALLOUT ── */
+.callout {
+  background: white; border-left: 4px solid var(--forest); border-radius: 0 12px 12px 0;
+  padding: 16px 20px; margin: 20px 0; font-size: 14px; color: var(--text-mid); line-height: 1.6;
+}
+.callout strong { color: var(--forest-deep); }
+
+/* ── FOOTER ── */
+footer { background: #0A3D25; color: white; padding: 32px 0; margin-top: 60px; text-align: center; }
+.footer-inner { font-size: 13px; color: rgba(255,255,255,0.5); }
+.footer-inner a { color: rgba(255,255,255,0.7); text-decoration: none; }
+.footer-inner a:hover { color: white; }
+
+/* ── UPDATED DATE ── */
+.updated { font-size: 12px; color: var(--text-light); margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(43,90,30,0.08); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="images/icons/logo-nav.png" alt="Total Body Physio">
+    </a>
+    <a href="/" class="nav-back">← Back to main site</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="container">
+    <div class="page-hero-label">Your rights matter</div>
+    <h1>Patient Rights, Privacy &amp; Complaints</h1>
+    <p>At Total Body Physio we are committed to treating every patient with respect, transparency, and care. This page explains your rights, how we use your information, and what to do if something goes wrong.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc" aria-label="Page contents">
+    <div class="toc-title">On this page</div>
+    <ul class="toc-list">
+      <li><a href="#rights">Your Rights as a Patient</a></li>
+      <li><a href="#privacy">Privacy &amp; Your Health Information</a></li>
+      <li><a href="#acc">Your Rights as an ACC Patient</a></li>
+      <li><a href="#complaints">How to Make a Complaint</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── SECTION 1: PATIENT RIGHTS ── -->
+  <section class="page-section" id="rights">
+    <div class="section-eyebrow">HDC Code of Rights</div>
+    <h2 class="section-heading">Your Rights as a Patient</h2>
+    <div class="prose">
+      <p>As a patient receiving health and disability services in New Zealand, you are protected by the <strong>Code of Health and Disability Services Consumers' Rights</strong> (the Code), established under the Health and Disability Commissioner Act 1994. These rights apply to every appointment at every Total Body Physio clinic.</p>
+    </div>
+    <div class="rights-grid">
+      <div class="right-card">
+        <div class="right-num">1</div>
+        <div class="right-body">
+          <div class="right-title">Right to be Treated with Respect</div>
+          <div class="right-desc">You have the right to be treated with respect, including respect for your culture, values, beliefs, and personal privacy.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">2</div>
+        <div class="right-body">
+          <div class="right-title">Right to Fair Treatment</div>
+          <div class="right-desc">You have the right to be treated fairly and without discrimination, coercion, harassment, or exploitation.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">3</div>
+        <div class="right-body">
+          <div class="right-title">Right to Dignity and Independence</div>
+          <div class="right-desc">You have the right to have your dignity and independence respected at all times during your care.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">4</div>
+        <div class="right-body">
+          <div class="right-title">Right to Appropriate Standards</div>
+          <div class="right-desc">You have the right to services provided with reasonable care and skill, consistent with professional standards.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">5</div>
+        <div class="right-body">
+          <div class="right-title">Right to Effective Communication</div>
+          <div class="right-desc">You have the right to clear, open, and honest communication in a way you can understand, including using an interpreter if needed.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">6</div>
+        <div class="right-body">
+          <div class="right-title">Right to be Fully Informed</div>
+          <div class="right-desc">You have the right to know your diagnosis, treatment options, risks and benefits, expected outcomes, and your prognosis before consenting.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">7</div>
+        <div class="right-body">
+          <div class="right-title">Right to Make an Informed Choice</div>
+          <div class="right-desc">You have the right to make an informed choice and give or withhold consent freely. You can also refuse or withdraw consent at any time.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">8</div>
+        <div class="right-body">
+          <div class="right-title">Right to Support</div>
+          <div class="right-desc">You have the right to have a support person or advocate present during consultations, unless their presence would create risk to others.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">9</div>
+        <div class="right-body">
+          <div class="right-title">Rights in Teaching &amp; Research</div>
+          <div class="right-desc">You have the right to refuse to participate in research or the teaching of students and must give informed consent if you do participate.</div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="right-num">10</div>
+        <div class="right-body">
+          <div class="right-title">Right to Complain</div>
+          <div class="right-desc">You have the right to complain about your care and to have your complaint taken seriously, investigated promptly, and responded to in writing.</div>
+        </div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:24px">
+      <strong>Want to read the full Code?</strong> Visit the Health and Disability Commissioner at <a href="https://www.hdc.org.nz/your-rights/about-the-code/" target="_blank" rel="noopener">hdc.org.nz</a>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: PRIVACY ── -->
+  <section class="page-section" id="privacy">
+    <div class="section-eyebrow">Privacy Policy</div>
+    <h2 class="section-heading">Privacy &amp; Your Health Information</h2>
+    <div class="prose">
+      <p>Total Body Physio Limited is committed to protecting your personal and health information in accordance with the <strong>Privacy Act 2020</strong> and the <strong>Health Information Privacy Code 2020</strong>.</p>
+
+      <p><strong>What we collect</strong><br>
+      We collect information necessary to provide physiotherapy services. This includes your name, contact details, date of birth, medical history, treatment notes, ACC claim information, and billing records. We only collect what we need.</p>
+
+      <p><strong>How we use your information</strong><br>
+      Your information is used to assess, treat, and manage your health care; to process ACC claims on your behalf; to communicate with your GP or other health providers where clinically appropriate and with your consent; and to fulfil our legal and professional obligations.</p>
+
+      <p><strong>Who we share it with</strong><br>
+      We do not sell or share your health information with third parties except where required by law, with your explicit consent, or where necessary to provide your care (such as referrals or ACC). We may share anonymised, non-identifiable data for quality improvement.</p>
+
+      <p><strong>How we store it</strong><br>
+      Your records are stored securely in <strong>Cliniko</strong>, a healthcare practice management platform that meets New Zealand privacy requirements. Cliniko is cloud-based and stores data in Australia with encryption in transit and at rest. Staff access is role-based and limited to what is needed for your care.</p>
+
+      <p><strong>Our AI assistant — Jenny</strong><br>
+      Our website includes Jenny, an AI-powered chat assistant. Conversations with Jenny may be used to help answer your questions and assist with bookings. Jenny does not have access to your clinical records. Chat logs may be reviewed by clinic staff to improve the service. No identifiable chat data is used to train AI models.</p>
+
+      <p><strong>Your privacy rights</strong><br>
+      You have the right to access your health records, request corrections, ask how your information is being used, and complain if you believe your privacy has been breached. Contact us at <a href="mailto:admin@totalbodyphysio.co.nz">admin@totalbodyphysio.co.nz</a> to make a request.</p>
+
+      <p><strong>Retention</strong><br>
+      Health records are retained for a minimum of 10 years from the date of last contact (or until a child turns 26), in line with professional requirements.</p>
+
+      <p><strong>Privacy complaints</strong><br>
+      If you believe we have breached your privacy, please contact us in the first instance. If you are not satisfied with our response, you may complain to the <strong>Office of the Privacy Commissioner</strong> at <a href="https://www.privacy.org.nz" target="_blank" rel="noopener">privacy.org.nz</a> or phone 0800 803 909.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: ACC RIGHTS ── -->
+  <section class="page-section" id="acc">
+    <div class="section-eyebrow">ACC</div>
+    <h2 class="section-heading">Your Rights as an ACC Patient</h2>
+    <div class="prose">
+      <p>Total Body Physio is an <strong>ACC registered provider</strong>. When you receive ACC-funded treatment, you have the following rights:</p>
+
+      <p><strong>Access to treatment</strong><br>
+      If you have a covered injury, you are entitled to receive treatment funded by ACC. You do not need a GP referral — we can lodge your claim on the day of your first appointment.</p>
+
+      <p><strong>Right to choose your provider</strong><br>
+      You have the right to choose which ACC-registered physiotherapist treats you. You are not required to stay with a particular provider.</p>
+
+      <p><strong>Right to information</strong><br>
+      You have the right to be told what treatment ACC is funding, how many sessions have been approved, and what any co-payment will be before your appointment.</p>
+
+      <p><strong>Right to a second opinion</strong><br>
+      You have the right to seek a second opinion about your diagnosis or treatment plan at any time.</p>
+
+      <p><strong>Right to dispute</strong><br>
+      If ACC declines your claim or limits your treatment, you have the right to review and appeal that decision. We can help you understand the process. For more information visit <a href="https://www.acc.co.nz" target="_blank" rel="noopener">acc.co.nz</a>.</p>
+
+      <p><strong>Co-payments</strong><br>
+      ACC covers a portion of your treatment cost. A co-payment (patient contribution) applies at most clinics. Our current co-payment rates are available on our <a href="/#pricing">pricing page</a>. Panmure — Lagoon Pools currently has a $0 co-payment for all ACC patients.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: COMPLAINTS ── -->
+  <section class="page-section" id="complaints">
+    <div class="section-eyebrow">Concerns &amp; Complaints</div>
+    <h2 class="section-heading">How to Make a Complaint</h2>
+    <div class="prose">
+      <p>We take all feedback seriously and are committed to resolving concerns quickly and fairly. You will not be disadvantaged in any way for raising a concern or complaint.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Talk to us directly</div>
+          <div class="step-desc">In most cases the fastest resolution is to raise your concern with your physiotherapist or the clinic reception team. We will do our best to address it on the spot or at your next appointment.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Write to the Clinical Director</div>
+          <div class="step-desc">If you would prefer to put your complaint in writing, or if your concern wasn't resolved at clinic level, contact Jade Warren (Clinical Director) directly at <a href="mailto:jade@totalbodyphysio.co.nz">jade@totalbodyphysio.co.nz</a>. We will acknowledge your complaint within 5 working days and provide a written response within 20 working days.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Contact the Health &amp; Disability Commissioner</div>
+          <div class="step-desc">If you are not satisfied with our response, or if you prefer to complain independently, you can contact the HDC at any time. The HDC is free, independent, and confidential.<br><br>
+            📞 <a href="tel:0800112233">0800 11 22 33</a><br>
+            🌐 <a href="https://www.hdc.org.nz" target="_blank" rel="noopener">hdc.org.nz</a><br>
+            ✉️ <a href="mailto:hdc@hdc.org.nz">hdc@hdc.org.nz</a>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Contact Physiotherapy New Zealand</div>
+          <div class="step-desc">If your complaint relates to the professional conduct of a physiotherapist, you can also contact <a href="https://www.physiotherapy.org.nz" target="_blank" rel="noopener">Physiotherapy New Zealand</a> or the <a href="https://www.physioboard.org.nz" target="_blank" rel="noopener">Physiotherapy Board of New Zealand</a>, which is the regulatory body responsible for registration and competence.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:28px">
+      <strong>You can use a support person or advocate</strong> when making a complaint. The <strong>Nationwide Health &amp; Disability Advocacy Service</strong> offers free, independent advocacy — phone <a href="tel:0800555050">0800 555 050</a> or visit <a href="https://www.advocacy.org.nz" target="_blank" rel="noopener">advocacy.org.nz</a>.
+    </div>
+  </section>
+
+  <!-- ── SECTION 5: CONTACT ── -->
+  <section class="page-section" id="contact">
+    <div class="section-eyebrow">Get in touch</div>
+    <h2 class="section-heading">Contact Us</h2>
+    <div class="prose">
+      <p>If you have any questions about your rights, our privacy practices, or how to make a complaint, please contact us.</p>
+    </div>
+    <div class="contact-box">
+      <div class="contact-box-title">Total Body Physio — Administration</div>
+      <div class="contact-row">📧 <a href="mailto:admin@totalbodyphysio.co.nz">admin@totalbodyphysio.co.nz</a></div>
+      <div class="contact-row">🌐 <a href="https://www.totalbodyphysio.co.nz">totalbodyphysio.co.nz</a></div>
+      <div class="contact-row">📞 Titirangi: <a href="tel:098177377">09 817 7377</a></div>
+      <div class="contact-row">📞 Pakuranga: <a href="tel:095351932">09 535 1932</a></div>
+      <div class="contact-row">📞 Flat Bush: <a href="tel:092652323">09 265 2323</a></div>
+      <div class="contact-row">📞 Panmure: <a href="tel:095735788">09 573 5788</a></div>
+    </div>
+  </section>
+
+  <p class="updated">Last updated: April 2026 &nbsp;·&nbsp; Total Body Physio Limited, Auckland, New Zealand</p>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <p>&copy; 2026 Total Body Physio Limited &nbsp;·&nbsp; <a href="/">Back to main site</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
