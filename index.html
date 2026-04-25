@@ -3548,7 +3548,7 @@ function closeTeamModal() {
 }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeTeamModal(); });
 </script>
-  <script>
+<script>
 (function () {
   var params = new URLSearchParams(window.location.search);
   var wantsManage = params.get('manage') === '1';
@@ -3558,32 +3558,39 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') closeTeamModal(
 
   var PROXY = 'https://tbp-cliniko-proxy-j6f9.vercel.app';
 
-  // Find and click the Manage Booking button
-  function openManageWidget() {
+  function findTrigger() {
+    // Try common patterns first
     var trigger =
         document.querySelector('[data-manage-booking]')
      || document.querySelector('#manage-booking-button')
-     || document.querySelector('.nav-manage-booking')
-     || Array.prototype.find.call(
-          document.querySelectorAll('a, button'),
-          function (el) {
-            var t = (el.textContent || '').trim().toLowerCase();
-            return t === 'manage booking' || t === 'manage my booking';
-          }
-        );
+     || document.querySelector('.nav-manage-booking');
+    if (trigger) return trigger;
 
+    // Fallback: scan all clickable elements for "manage booking" text
+    var clickables = document.querySelectorAll('a, button, [role="button"]');
+    for (var i = 0; i < clickables.length; i++) {
+      var t = (clickables[i].textContent || '').trim().toLowerCase();
+      if (t.indexOf('manage booking') !== -1 || t.indexOf('manage my booking') !== -1) {
+        return clickables[i];
+      }
+    }
+    return null;
+  }
+
+  function openManageWidget() {
+    var trigger = findTrigger();
     if (trigger) {
+      console.log('[TBP] Found trigger, clicking:', trigger);
       trigger.click();
       return true;
     }
-    console.warn('[TBP] Manage booking trigger not found.');
+    console.warn('[TBP] No manage booking trigger found on page');
+    alert('Could not find Manage Booking button. Please tap it manually in the menu.');
     return false;
   }
 
-  // Pre-fill first name once widget opens
   function prefillFirstName(firstName) {
     if (!firstName) return;
-
     var attempts = 0;
     var poll = setInterval(function () {
       var input =
@@ -3591,47 +3598,35 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') closeTeamModal(
        || document.querySelector('input[name="first_name"]')
        || document.querySelector('input[placeholder="Jane"]')
        || document.querySelector('#firstName');
-
       if (input) {
         clearInterval(poll);
-        var setter = Object.getOwnPropertyDescriptor(
-          window.HTMLInputElement.prototype, 'value'
-        ).set;
+        var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
         setter.call(input, firstName);
-        input.dispatchEvent(new Event('input',  { bubbles: true }));
+        input.dispatchEvent(new Event('input', { bubbles: true }));
         input.dispatchEvent(new Event('change', { bubbles: true }));
-        var dob = document.querySelector('input[name="dob"]')
-               || document.querySelector('input[placeholder*="DD/MM"]');
-        if (dob) dob.focus();
       } else if (++attempts > 20) {
         clearInterval(poll);
       }
     }, 150);
   }
 
-  // Verify token in the background
   function verifyAndPrefill() {
     if (!token) return;
     fetch(PROXY + '/api/verify-manage-token?t=' + encodeURIComponent(token))
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        if (data && data.ok && data.firstName) {
-          prefillFirstName(data.firstName);
-        } else if (data && !data.ok && data.reason === 'expired') {
-          alert('This management link has expired. Please ring the clinic to make changes.');
+        if (data && data.ok && data.firstName) prefillFirstName(data.firstName);
+        else if (data && !data.ok && data.reason === 'expired') {
+          alert('This management link has expired. Please ring the clinic.');
         }
       })
-      .catch(function (err) {
-        console.warn('[TBP] Token verify failed:', err);
-      });
+      .catch(function (err) { console.warn('[TBP] Token verify failed:', err); });
   }
 
   function run() {
     setTimeout(function () {
-      if (openManageWidget()) {
-        verifyAndPrefill();
-      }
-    }, 250);
+      if (openManageWidget()) verifyAndPrefill();
+    }, 500);
   }
 
   if (document.readyState === 'loading') {
