@@ -1,0 +1,122 @@
+<!--
+  TBP Manage Booking — auto-open + pre-fill snippet
+  ──────────────────────────────────────────────────
+  Drop this script just before </body> on totalbodyphysio.co.nz.
+
+  WHAT IT DOES:
+  When a patient clicks "Manage booking" / "Reschedule or cancel" in our emails,
+  they land on the website with ?manage=1 (and optionally &t=TOKEN) in the URL.
+  This script:
+    1. Auto-opens the Manage Booking widget popup.
+    2. Verifies the token via our proxy.
+    3. Pre-fills the patient's first name in the widget so they only enter DOB/phone.
+
+  TWO PLACES YOU NEED TO CUSTOMISE (search for "EDIT:"):
+    1. The selector for your "Manage Booking" button/trigger
+    2. The selector for the first-name input field inside the widget
+-->
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var wantsManage = params.get('manage') === '1';
+  var token = params.get('t');
+
+  if (!wantsManage) return;
+
+  var PROXY = 'https://tbp-cliniko-proxy-j6f9.vercel.app';
+
+  // ─── 1. Open the manage booking widget ────────────────────────
+  function openManageWidget() {
+    // EDIT: change this selector to whatever opens your Manage Booking widget.
+    // Common patterns to try (the script tries them in order):
+    var trigger =
+        document.querySelector('[data-manage-booking]')
+     || document.querySelector('#manage-booking-button')
+     || document.querySelector('.nav-manage-booking')
+     || Array.prototype.find.call(
+          document.querySelectorAll('a, button'),
+          function (el) {
+            var t = (el.textContent || '').trim().toLowerCase();
+            return t === 'manage booking' || t === 'manage my booking';
+          }
+        );
+
+    if (trigger) {
+      trigger.click();
+      return true;
+    }
+    console.warn('[TBP] Manage booking trigger not found. Update the selector in the snippet.');
+    return false;
+  }
+
+  // ─── 2. Pre-fill first name once widget is open ────────────────
+  function prefillFirstName(firstName) {
+    if (!firstName) return;
+
+    // EDIT: change this selector to whatever the first-name input
+    // is in your manage booking widget (looks like the screenshot field).
+    var attempts = 0;
+    var poll = setInterval(function () {
+      var input =
+          document.querySelector('input[name="firstName"]')
+       || document.querySelector('input[name="first_name"]')
+       || document.querySelector('input[placeholder="Jane"]')
+       || document.querySelector('#firstName');
+
+      if (input) {
+        clearInterval(poll);
+        // Native setter so React/Vue/etc. detect the change
+        var setter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype, 'value'
+        ).set;
+        setter.call(input, firstName);
+        input.dispatchEvent(new Event('input',  { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        // Optional: focus the next field so they can type their DOB straight away
+        var dob = document.querySelector('input[name="dob"]')
+               || document.querySelector('input[placeholder*="DD/MM"]');
+        if (dob) dob.focus();
+      } else if (++attempts > 20) {
+        clearInterval(poll);
+      }
+    }, 150);
+  }
+
+  // ─── 3. Verify token in the background ─────────────────────────
+  function verifyAndPrefill() {
+    if (!token) return;
+    fetch(PROXY + '/api/verify-manage-token?t=' + encodeURIComponent(token))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.ok && data.firstName) {
+          prefillFirstName(data.firstName);
+        } else if (data && !data.ok) {
+          console.warn('[TBP] Manage token rejected:', data.reason);
+          // Show a friendly notice — link is expired etc.
+          if (data.reason === 'expired') {
+            alert('This management link has expired. Please ring the clinic to make changes.');
+          }
+        }
+      })
+      .catch(function (err) {
+        console.warn('[TBP] Token verify failed:', err);
+      });
+  }
+
+  // ─── Run after page is ready ───────────────────────────────────
+  function run() {
+    // Tiny delay so any async widget code has a chance to mount
+    setTimeout(function () {
+      if (openManageWidget()) {
+        verifyAndPrefill();
+      }
+    }, 250);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
+</script>
