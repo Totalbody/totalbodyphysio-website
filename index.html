@@ -481,7 +481,8 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
             <div class="clinic-team-member" onclick="openTeamModal('Jade Warren')"><div class="team-avatar"><img src="images/team/jade.AVIF" alt="Jade Warren"></div> Jade Warren</div>
             <div class="clinic-team-member" onclick="openTeamModal('Hans Vermeulen')"><div class="team-avatar"><img src="images/team/hans.GIF" alt="Hans Vermeulen"></div> Hans Vermeulen</div>
             <div class="clinic-team-member" onclick="openTeamModal('Gwenne Manares')"><div class="team-avatar"><img src="images/team/gwen.AVIF" alt="Gwenne Manares"></div> Gwenne Manares</div>
-            <div class="clinic-team-member" onclick="openTeamModal('Current Student')"><div class="team-avatar" style="background:#e8f3e0;font-size:18px;display:flex;align-items:center;justify-content:center;">&#127891;</div> Scott Clayton <span style="font-size:11px;color:#6b8f6b">(Student)</span></div>
+            <div class="clinic-team-member" onclick="openTeamModal('Scott Clayton')"><div class="team-avatar" style="background:#e8f3e0;font-size:18px;display:flex;align-items:center;justify-content:center;">&#127891;</div> Scott Clayton <span style="font-size:11px;color:#6b8f6b">(Student, Sun)</span></div>
+            <div class="clinic-team-member" onclick="openTeamModal('Crystal Ooi')"><div class="team-avatar" style="background:#e8f3e0;font-size:18px;display:flex;align-items:center;justify-content:center;">&#127891;</div> Crystal Ooi <span style="font-size:11px;color:#6b8f6b">(Student)</span></div>
           </div>
           <a href="https://total-body-physio.au1.cliniko.com/bookings?business_id=90865" class="btn-primary" style="margin-top:16px;width:100%;justify-content:center;font-size:13px;padding:12px 16px;">Book at Titirangi &#8594;</a>
         </div>
@@ -1475,6 +1476,7 @@ const CONFIG = {
         { id: '146146',                    name: 'Jade Warren',     title: 'Senior Physiotherapist' },
         { id: '151541',                    name: 'Hans Vermeulen',  title: 'Senior Physiotherapist' },
         { id: '1414969921577682942',        name: 'Scott Clayton',  title: 'Physiotherapy Assistant/Student' },
+        { id: '1937391966710924588',        name: 'Crystal Ooi',    title: 'Physiotherapy Student' },
         { id: '1710578842491422443',        name: 'Jemma Read',     title: 'Physio Assistant/Strength & Conditioning' },
         { id: '1837927442598069580',        name: 'Gwenne Manares', title: 'Physiotherapist' },
       ],
@@ -3107,7 +3109,8 @@ FLAT BUSH:
 TITIRANGI:
 - Jade Warren — Senior Physiotherapist.
 - Hans Vermeulen — Senior Physiotherapist. Nearly 30 years experience. Specialises in lower back pain, neck and shoulder conditions, knee rehabilitation, and therapeutic massage.
-- Scott Clayton — Physiotherapy Assistant/Student. Working under supervision at Titirangi. Note: Scott's online availability may be limited — if no times show, suggest selecting "no preference" or another practitioner.
+- Scott Clayton — Physiotherapy Assistant/Student. 4th year student, working Sundays only at Titirangi under supervision. Note: Scott's online availability may be limited — if no times show, suggest selecting "no preference" or another practitioner.
+- Crystal Ooi — 4th year physiotherapy student at AUT, working at Titirangi under supervision. Note: Crystal's online availability may be limited — if no times show, suggest selecting "no preference" or another practitioner.
 
 - Jemma Read — Physio Assistant and Strength & Conditioning Trainer. Exercise-based rehabilitation and strength training.
 - Gwenne Manares — Physiotherapist. Sports and general injuries. Works at both Titirangi and Panmure.
@@ -3125,7 +3128,7 @@ IMPORTANT RULES — NO HALLUCINATIONS
 - Only state facts listed above. If something is not listed here, say "I'm not sure — please call the clinic directly" and give the relevant phone number.
 - Never invent prices, practitioner names, availability, or services.
 - Never confirm a specific practitioner works somewhere unless listed above.
-- For Scott Clayton: if get_available_dates or get_available_times returns nothing, say "Scott's online availability isn't showing right now — would you like to try another practitioner or no preference to see all available times?"
+- For Scott Clayton or Crystal Ooi: if get_available_dates or get_available_times returns nothing, say "their online availability isn't showing right now — would you like to try another practitioner or no preference to see all available times?"
 - For Komal at Pakuranga: always say "starting soon — call 09 535 1932 to confirm".
 - For hours at Titirangi: always say "call 09 817 7377 for current hours" rather than guessing.
 
@@ -3516,7 +3519,8 @@ function closePriceModal() { document.getElementById('priceModal').classList.rem
 </div>
 <script>
 const TEAM = {
-  'Current Student': { photo:null, initials:'🎓', title:'4th Year Physiotherapy Student \u00b7 Titirangi', bio:'Scott is a 4th year physiotherapy student completing his clinical placement at Total Body Physio Titirangi. Working under the close supervision of our senior physios, Scott brings fresh enthusiasm, up-to-date clinical knowledge, and genuine care to every session.', specialties:['Supervised Clinical Treatment','Exercise Rehabilitation','Musculoskeletal Assessment','Patient Education'], outside:'Total Body Physio is proud to support the next generation of physios through our student placement programme.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1414969921577682942' },
+  'Scott Clayton': { photo:null, initials:'🎓', title:'4th Year Physiotherapy Student \u00b7 Titirangi (Sundays)', bio:'Scott is a 4th year physiotherapy student completing his clinical placement at Total Body Physio Titirangi on Sundays. Working under the close supervision of our senior physios, Scott brings fresh enthusiasm, up-to-date clinical knowledge, and genuine care to every session.', specialties:['Supervised Clinical Treatment','Exercise Rehabilitation','Musculoskeletal Assessment','Patient Education'], outside:'Total Body Physio is proud to support the next generation of physios through our student placement programme.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1414969921577682942' },
+  'Crystal Ooi': { photo:null, initials:'🎓', title:'4th Year Physiotherapy Student \u00b7 AUT \u00b7 Titirangi', bio:'Crystal is a 4th year physiotherapy student at AUT completing her clinical placement at Total Body Physio Titirangi. Working under the close supervision of our senior physios, Crystal brings fresh enthusiasm, up-to-date clinical knowledge, and a thoughtful, caring approach to every session.', specialties:['Supervised Clinical Treatment','Exercise Rehabilitation','Musculoskeletal Assessment','Patient Education'], outside:'Total Body Physio is proud to support the next generation of physios through our student placement programme.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1937391966710924588' },
   'Jade Warren': { photo:'images/team/jade.AVIF', title:'Clinical Director & Founder \u00b7 26+ Years', bio:'Jade founded Total Body Physio in 2000 with a simple belief \u2014 people deserve better than cookie-cutter treatment. With over 26 years of experience, he still sees patients most days at Titirangi, working with everyone from elite athletes to people managing chronic pain.', specialties:['Shoulder Rehabilitation','Knee Rehabilitation','Sports Injuries','Musculoskeletal Assessment','ACC Claims'], outside:'Married with four teenage children, Jade is a passionate advocate for hands-on physio and keeping people moving at every age.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=146146' },
   'Hans Vermeulen': { photo:'images/team/hans.GIF', title:'Senior Physiotherapist \u00b7 30 Years Experience', bio:'Hans is one of Auckland\'s most experienced physiotherapists with nearly 30 years in clinical practice. His depth of knowledge across musculoskeletal conditions is exceptional \u2014 patients regularly come to him after years of unresolved pain and finally get answers. He combines precise hands-on therapy with a calm, thorough approach that gets results.', specialties:['Lower Back Pain','Neck & Shoulder Conditions','Knee Rehabilitation','Musculoskeletal Assessment','Therapeutic Massage'], outside:'Hans brings a calm, methodical energy to every session and is known for getting to the root cause of long-standing injuries others have struggled to resolve.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=151541' },
   'Gwenne Manares': { photo:'images/team/gwen.AVIF', title:'Physiotherapist', bio:'Gwenne is a dedicated physiotherapist who provides patient-centred, evidence-based care. She believes successful rehabilitation is built on a strong partnership \u2014 care that is tailored, collaborative, and goal-focused.', specialties:['Manual Therapy','Exercise-Based Rehabilitation','Musculoskeletal Conditions','Patient Education','Self-Management Strategies'], outside:'Gwenne is committed to ongoing professional development and staying up to date with best practice.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1837927442598069580' },
