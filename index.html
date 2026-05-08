@@ -345,6 +345,38 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
   gtag('js', new Date());
   gtag('config', 'AW-956746735');
   gtag('config', 'G-F419L73TSJ');
+
+  // Track clicks on external Cliniko booking links (intent — not all clicks become bookings)
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a[href*="cliniko.com/bookings"]');
+    if (link) {
+      gtag('event', 'click_cliniko_booking', {
+        'destination': link.href,
+        'button_text': link.textContent.trim(),
+        'value': 80.0,
+        'currency': 'NZD'
+      });
+      // Also fire as Google Ads conversion (counts intent — not all complete)
+      gtag('event', 'conversion', {
+        'send_to': 'AW-956746735/kitwCIOW96kcEO-Xm8gD',
+        'value': 80.0,
+        'currency': 'NZD'
+      });
+    }
+  });
+
+  // Track phone number clicks (mobile tap-to-call)
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a[href^="tel:"]');
+    if (link) {
+      gtag('event', 'phone_click', {
+        'phone_number': link.href.replace('tel:', ''),
+        'button_text': link.textContent.trim(),
+        'value': 80.0,
+        'currency': 'NZD'
+      });
+    }
+  });
 </script>
 <script type="application/ld+json">
 {
@@ -2639,6 +2671,7 @@ const BW = {
           gtag('event', 'booking_completed', {
             'clinic': (S.selectedBusiness && S.selectedBusiness.name) || 'unknown',
             'appointment_type': (S.selectedApptType && S.selectedApptType.name) || 'unknown',
+            'booking_source': 'booking_widget',
             'value': 80.0,
             'currency': 'NZD'
           });
@@ -3010,6 +3043,23 @@ const JENNY = {
             starts_at:           slot.time,
             notes: 'Booked via Jenny AI chat',
           });
+
+          // Track booking conversion - Google Ads + GA4
+          if (typeof gtag === 'function') {
+            gtag('event', 'conversion', {
+              'send_to': 'AW-956746735/kitwCIOW96kcEO-Xm8gD',
+              'value': 80.0,
+              'currency': 'NZD'
+            });
+            gtag('event', 'booking_completed', {
+              'clinic': biz.name,
+              'appointment_type': apt.name,
+              'booking_source': 'jenny_ai_chat',
+              'value': 80.0,
+              'currency': 'NZD'
+            });
+          }
+
           // Send booking notification email
           const pracName = JENNY._resolvePracName(slot.practitioner_id);
           const dtStr = new Date(slot.time).toLocaleString('en-NZ', {
