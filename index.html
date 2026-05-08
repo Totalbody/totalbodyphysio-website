@@ -2625,6 +2625,25 @@ const BW = {
         try { await apiPost('cancel_appointment', { appointment_id: S.oldAppointmentId }); } catch(e) {}
       }
       S._bookingInProgress = false; S.step = 9; BW.renderCurrent();
+
+      // Track booking conversion - only fire on new bookings, not reschedules
+      if (!S.isRescheduling) {
+        // Google Ads conversion
+        if (typeof gtag === 'function') {
+          gtag('event', 'conversion', {
+            'send_to': 'AW-956746735/kitwCIOW96kcEO-Xm8gD',
+            'value': 80.0,
+            'currency': 'NZD'
+          });
+          // GA4 event with clinic + appointment type details
+          gtag('event', 'booking_completed', {
+            'clinic': (S.selectedBusiness && S.selectedBusiness.name) || 'unknown',
+            'appointment_type': (S.selectedApptType && S.selectedApptType.name) || 'unknown',
+            'value': 80.0,
+            'currency': 'NZD'
+          });
+        }
+      }
     } catch(e) {
       S._bookingInProgress = false;
       if (btn) { btn.disabled = false; btn.textContent = '✓ Confirm Booking'; }
