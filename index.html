@@ -534,6 +534,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
             <div class="clinic-team-member" onclick="openTeamModal('Dylan Connolly')"><div class="team-avatar"><img src="images/team/dylan.AVIF" alt="Dylan Connolly"></div> Dylan Connolly</div>
             <div class="clinic-team-member" onclick="openTeamModal('Ibrahim Al-Jumaily')"><div class="team-avatar"><img src="images/team/ibrahim.png" alt="Ibrahim Al-Jumaily"></div> Ibrahim Al-Jumaily</div>
             <div class="clinic-team-member" onclick="openTeamModal('Komal Preet Kaur')"><div class="team-avatar"><img src="images/team/komal.jpeg" alt="Komal Preet Kaur"></div> Komal Preet Kaur <span style="font-size:11px;color:#6b8f6b">(Fri)</span></div>
+            <div class="clinic-team-member" onclick="openTeamModal('Valentino Tie')"><div class="team-avatar"><img src="images/team/val.jpg" alt="Valentino Tie" onerror="this.style.display='none'"></div> Valentino Tie</div>
           </div>
           <a href="https://total-body-physio.au1.cliniko.com/bookings?business_id=90633" class="btn-primary" style="margin-top:16px;width:100%;justify-content:center;font-size:13px;padding:12px 16px;">Book at Pakuranga &#8594;</a>
         </div>
@@ -1489,6 +1490,7 @@ const CONFIG = {
         { id: '1243762082222966342', name: 'Dylan Connolly',   title: 'Physiotherapist' },
         { id: '1274037115297990613', name: 'Alistair Burgess', title: 'Senior Physiotherapist' },
         { id: '1859692633178244103', name: 'Ibrahim Al-Jumaily', title: 'Physiotherapist' },
+        { id: '1957050359348200887', name: 'Valentino Tie',      title: 'Physiotherapist' },
       ],
     },
     'Flat Bush': {
@@ -3173,6 +3175,7 @@ PAKURANGA:
 - Alistair Burgess — Senior Physiotherapist. Specialises in acupuncture and dry needling.
 - Ibrahim Al-Jumaily — Physiotherapist. Sports and general injuries. Official physio for the South Auckland Rangers football club. Also works at Flat Bush.
 - Komal Preet Kaur — Senior Physiotherapist. Dry needling. Currently at Panmure, starting at Pakuranga very soon — call clinic to confirm her Pakuranga availability.
+- Valentino Tie (Val) — Physiotherapist. Fluent Chinese-speaking (Mandarin/Cantonese). New to the team, working Mon, Tue, Thu and Fri.
 
 FLAT BUSH:
 - Isabella Yang — Physiotherapist. Fluent Chinese-speaking. Sports and general injuries.
@@ -3191,7 +3194,7 @@ PANMURE:
 - Komal Preet Kaur — Senior Physiotherapist. Dry needling.
 - Gwenne Manares — Physiotherapist. Sports and general injuries.
 
-Chinese-speaking practitioners: Timothy Keung (Pakuranga) and Isabella Yang (Flat Bush).
+Chinese-speaking practitioners: Timothy Keung and Valentino Tie (Pakuranga), Isabella Yang (Flat Bush).
 Acupuncture / dry needling: Timothy Keung and Alistair Burgess (Pakuranga), Komal Preet Kaur (Panmure and soon Pakuranga).
 
 ═══════════════════════════════
@@ -3601,7 +3604,8 @@ const TEAM = {
   'Ibrahim Al-Jumaily': { photo:'images/team/ibrahim.png', title:'Physiotherapist', bio:'Born and raised in South East Auckland, Ibrahim is a NZ-trained physiotherapist with a lifelong involvement in sport. He brings a modern, evidence-based approach with a strong focus on personalised care.', specialties:['Sports Injuries','Lower Back Pain','Exercise-Based Rehabilitation','Injury Prevention','Return to Activity'], outside:'Ibrahim enjoys football, martial arts, hiking, and travelling.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1859692633178244103' },
   'Isabella Yang': { photo:'images/team/isabella.JPG', title:'Physiotherapist', bio:'Isabella is an Otago University-trained physiotherapist and proud local \u2014 she grew up in the area and attended Macleans College. Her approach combines hands-on techniques with exercise-based treatment.', specialties:['Hands-On Physiotherapy','Exercise-Based Treatment','Musculoskeletal Conditions','Sports Injuries','Community Health'], outside:'Isabella is passionate about giving back to the community she grew up in.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1436701077519992729' },
   'Timothy Keung': { photo:'images/team/tim.JPG', title:'Physiotherapist & Acupuncturist', bio:'Timothy completed his Bachelor of Physiotherapy at Otago University and a Postgraduate Certificate in Acupuncture at AUT. He has a particular passion for musculoskeletal physiotherapy.', specialties:['Lower Back Pain','Sports Injuries','Manual Therapy','Acupuncture','Injury Rehabilitation'], outside:'Tim enjoys hiking and photography around New Zealand. He speaks three languages \u2014 English, Cantonese, and Mandarin.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=172332' },
-  'Komal Preet Kaur': { photo:'images/team/komal.jpeg', title:'Physiotherapist', bio:'Komal brings five years of physiotherapy experience, including her training in India where she worked with sports teams across sports injuries, post-surgical rehabilitation, and neurological conditions.', specialties:['Sports Injuries','Post-Surgical Rehabilitation','Neurological Conditions','Dry Needling','Exercise-Based Physiotherapy'], outside:'Komal enjoys running, cooking, reading, and time with family and friends.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1836577525711504654' }
+  'Komal Preet Kaur': { photo:'images/team/komal.jpeg', title:'Physiotherapist', bio:'Komal brings five years of physiotherapy experience, including her training in India where she worked with sports teams across sports injuries, post-surgical rehabilitation, and neurological conditions.', specialties:['Sports Injuries','Post-Surgical Rehabilitation','Neurological Conditions','Dry Needling','Exercise-Based Physiotherapy'], outside:'Komal enjoys running, cooking, reading, and time with family and friends.', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1836577525711504654' },
+  'Valentino Tie': { photo:null, title:'Physiotherapist \u00b7 Pakuranga', bio:'PLACEHOLDER \u2014 please replace with Val\'s real bio. Valentino (Val) is a physiotherapist at our Pakuranga clinic and is fluent in Mandarin and Cantonese.', specialties:['Musculoskeletal Physiotherapy','Sports Injuries','Mandarin & Cantonese Speaking'], outside:'', booking:'https://total-body-physio.au1.cliniko.com/bookings?practitioner_id=1957050359348200887' }
 };
 function openTeamModal(name) {
   const p = TEAM[name]; if (!p) return;
