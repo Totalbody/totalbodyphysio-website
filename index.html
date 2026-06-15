@@ -566,6 +566,7 @@ footer { background: #0A3D25; color: white; padding: 60px 0 32px; }
             <div class="clinic-team" style="border-top:none;padding-top:0;margin-top:8px">
               <div class="clinic-team-member" onclick="openTeamModal('Komal Preet Kaur')"><div class="team-avatar"><img src="images/team/komal.jpeg" alt="Komal Preet Kaur"></div> Komal Preet Kaur</div>
               <div class="clinic-team-member" onclick="openTeamModal('Gwenne Manares')"><div class="team-avatar"><img src="images/team/gwen.AVIF" alt="Gwenne Manares"></div> Gwenne Manares</div>
+              <div class="clinic-team-member" onclick="openTeamModal('Valentino Tie')"><div class="team-avatar"><img src="images/team/valentino.jpeg" alt="Valentino Tie" onerror="this.style.display='none'"></div> Val Tie <span style="font-size:11px;color:#6b8f6b">(Wed)</span></div>
             </div>
             <a href="https://total-body-physio.au1.cliniko.com/bookings?business_id=1505312653948487012" class="btn-primary" style="margin-top:auto;width:100%;justify-content:center;font-size:13px;padding:12px 16px;background:var(--free-green)">Book Free First ACC Visit &#8594;</a>
           </div>
@@ -1507,7 +1508,7 @@ const CONFIG = {
       business_id: '90865',
       address: '2 Rangiwai Rd, Titirangi',
       phone: '09 817 7377',
-      hours: 'Mon–Fri (call for times)',
+      hours: 'Mon–Fri (call for times), Sun 9am–3pm',
       practitioners: [
         { id: '146146',                    name: 'Jade Warren',     title: 'Senior Physiotherapist' },
         { id: '151541',                    name: 'Hans Vermeulen',  title: 'Senior Physiotherapist' },
@@ -1525,6 +1526,7 @@ const CONFIG = {
       practitioners: [
         { id: '1836577525711504654', name: 'Komal Preet Kaur', title: 'Senior Physiotherapist' },
         { id: '1837927442598069580', name: 'Gwenne Manares',   title: 'Physiotherapist' },
+        { id: '1957050361940281187', name: 'Valentino Tie',      title: 'Physiotherapist' },
       ],
     },
   },
@@ -3113,7 +3115,7 @@ Pakuranga: Lloyd Elsmore Pools, 1 Sir Lloyd Drive, Pakuranga Heights. Ph 09 535 
 
 Flat Bush / Botany: 14 Fusion Rd, Botany. Ph 09 265 2323. Mon–Fri 9am–6pm. Parking directly outside.
 
-Titirangi: 2 Rangiwai Rd, Titirangi. Ph 09 817 7377. Mon–Fri (call for current hours). Onsite gym available. Parking right outside clinic — note there is a steep driveway; alternative parking opposite where the old post office / GECO shop used to be.
+Titirangi: 2 Rangiwai Rd, Titirangi. Ph 09 817 7377. Mon–Fri (call for current hours), Sun 9am–3pm. Onsite gym available. Parking right outside clinic — note there is a steep driveway; alternative parking opposite where the old post office / GECO shop used to be.
 
 Panmure (Lagoon Pools): 29 Lagoon Drive, Panmure. Ph 09 573 5788. Mon–Thu 7am–5pm, Fri 7am–3pm. Large car park with two entry points, easily accessible.
 
@@ -3154,6 +3156,7 @@ Gold Card / students get ~$5 off. Acupuncture at Pakuranga $35.
 SERVICES
 ═══════════════════════════════
 - Physiotherapy: injury assessment and treatment, ACC claims, post-surgery rehab, sports injuries, general musculoskeletal
+- Paediatric physiotherapy: We treat children of all ages. Common conditions include growing pains, postural issues, injury prevention and rehabilitation.
 - Acupuncture and dry needling: available at Pakuranga only (Timothy Keung and Alistair Burgess)
 - Therapeutic massage: available at Titirangi
 - Hydrotherapy: available at Panmure (Lagoon Pools) — requires initial assessment first
@@ -3193,8 +3196,9 @@ TITIRANGI:
 PANMURE:
 - Komal Preet Kaur — Senior Physiotherapist. Dry needling.
 - Gwenne Manares — Physiotherapist. Sports and general injuries.
+- Valentino Tie (Val) — Physiotherapist. Fluent Chinese-speaking (Mandarin/Cantonese). Working Wednesdays at Panmure.
 
-Chinese-speaking practitioners: Timothy Keung and Valentino Tie (Pakuranga), Isabella Yang (Flat Bush).
+Chinese-speaking practitioners: Timothy Keung and Valentino Tie (Pakuranga), Valentino Tie (Panmure Wednesdays), Isabella Yang (Flat Bush).
 Acupuncture / dry needling: Timothy Keung and Alistair Burgess (Pakuranga), Komal Preet Kaur (Panmure and soon Pakuranga).
 
 ═══════════════════════════════
