@@ -1,0 +1,136 @@
+// ═══════════════════════════════════════════════════════════════════
+//  LATE CANCELLATION ALERT — Total Body Physio
+//  Drop this file into the tbp-cliniko-proxy repo (same folder as your
+//  existing api code, e.g. /api/ or /lib/).
+//
+//  WHAT IT DOES
+//  After any appointment is cancelled (via Jenny chat, the widget's
+//  Manage tab, or a reschedule), call checkAndAlertLateCancellation().
+//  If the appointment started within the next 24 hours, it emails the
+//  clinic via Resend with the patient, appointment, reason, and a direct
+//  Cliniko link — so staff can raise the $60 invoice (or waive it) in
+//  seconds. Cancellations outside 24h are silently ignored.
+//
+//  WHY NOT AUTO-INVOICE? Cliniko's public API is read-only for invoices
+//  (GET only, confirmed against docs.api.cliniko.com) — no system can
+//  create or send Cliniko invoices. This alert + a 30-second manual
+//  invoice in Cliniko is the closest reliable automation, and it keeps
+//  waiver decisions human.
+//
+//  ENV VARS REQUIRED (add in Vercel → tbp-cliniko-proxy → Settings →
+//  Environment Variables — CLINIKO_API_KEY and RESEND_API_KEY very
+//  likely already exist):
+//    CLINIKO_API_KEY      — existing Cliniko key
+//    RESEND_API_KEY       — existing Resend key (used for transcripts)
+//    LATE_CANCEL_TO       — where alerts go, e.g. admin@totalbodyphysio.co.nz
+//    LATE_CANCEL_FROM     — verified Resend sender, e.g. jenny@totalbodyphysio.co.nz
+//    CLINIKO_SHARD        — optional, defaults to au1
+//    LATE_FEE_AMOUNT      — optional, defaults to 60
+//
+//  HOW TO WIRE IT UP
+//  In your existing cancel_appointment handler (api/cliniko.js or
+//  wherever the POST cancel happens), after the Cliniko cancel succeeds:
+//
+//      const { checkAndAlertLateCancellation } = require('./late-cancel-alert');
+//      // fire-and-forget — never blocks or fails the cancellation itself
+//      checkAndAlertLateCancellation(appointment_id, cancellation_reason)
+//        .catch(err => console.error('late-cancel alert failed:', err));
+//
+//  That one call covers every cancellation path automatically, because
+//  chat, Manage tab, and reschedules all funnel through this endpoint.
+// ═══════════════════════════════════════════════════════════════════
+
+const SHARD = process.env.CLINIKO_SHARD || 'au1';
+const CLINIKO_BASE = `https://api.${SHARD}.cliniko.com/v1`;
+const FEE = process.env.LATE_FEE_AMOUNT || '60';
+
+const REASONS = {
+  10: 'Feeling better',
+  20: 'Condition worse',
+  30: 'Sick',
+  40: 'Away',
+  50: 'Other',
+  60: 'Work',
+};
+
+async function cliniko(path) {
+  const res = await fetch(`${CLINIKO_BASE}${path}`, {
+    headers: {
+      Authorization: 'Basic ' + Buffer.from(process.env.CLINIKO_API_KEY + ':').toString('base64'),
+      Accept: 'application/json',
+      'User-Agent': 'Total Body Physio Late-Cancel Alert (admin@totalbodyphysio.co.nz)',
+    },
+  });
+  if (!res.ok) throw new Error(`Cliniko ${path} → ${res.status}`);
+  return res.json();
+}
+
+async function checkAndAlertLateCancellation(appointmentId, reasonCode) {
+  // 1. Fetch the (now cancelled) appointment
+  const appt = await cliniko(`/individual_appointments/${appointmentId}`);
+  const startsAt = new Date(appt.starts_at);
+  const hoursUntil = (startsAt - new Date()) / 3600000;
+
+  // Only alert for genuinely late changes: appointment was in the
+  // next 24 hours (negative = already started/past, still late).
+  if (hoursUntil >= 24) return { late: false };
+
+  // 2. Resolve patient, practitioner, business from links
+  const idFrom = (link) => link?.links?.self?.split('/').pop();
+  const [patient, practitioner, business] = await Promise.all([
+    cliniko(`/patients/${idFrom(appt.patient)}`),
+    appt.practitioner ? cliniko(`/practitioners/${idFrom(appt.practitioner)}`) : null,
+    appt.business ? cliniko(`/businesses/${idFrom(appt.business)}`) : null,
+  ]);
+
+  const nzTime = (d) =>
+    new Date(d).toLocaleString('en-NZ', {
+      weekday: 'short', day: 'numeric', month: 'short',
+      hour: 'numeric', minute: '2-digit', hour12: true,
+      timeZone: 'Pacific/Auckland',
+    });
+
+  const reason = REASONS[reasonCode] || 'Not given';
+  const patientName = `${patient.first_name} ${patient.last_name}`;
+  const patientUrl = `https://${SHARD}.cliniko.com/patients/${patient.id}`;
+  const hrs = hoursUntil < 0 ? 'after the start time' : `${hoursUntil.toFixed(1)} hours before`;
+
+  // 3. Email the clinic via Resend
+  const html = `
+    <div style="font-family:sans-serif;max-width:560px">
+      <h2 style="color:#B42318">⚠️ Late cancellation — $${FEE} fee may apply</h2>
+      <table style="border-collapse:collapse;width:100%">
+        <tr><td style="padding:6px 12px 6px 0;color:#666">Patient</td><td style="padding:6px 0"><strong>${patientName}</strong></td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#666">Contact</td><td style="padding:6px 0">${patient.email || '—'} · ${patient.patient_phone_numbers?.[0]?.number || '—'}</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#666">Appointment</td><td style="padding:6px 0">${nzTime(appt.starts_at)} — ${practitioner ? practitioner.first_name + ' ' + practitioner.last_name : '—'} @ ${business ? business.business_name : '—'}</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#666">Cancelled</td><td style="padding:6px 0"><strong>${hrs}</strong> the appointment</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#666">Stated reason</td><td style="padding:6px 0"><strong>${reason}</strong></td></tr>
+      </table>
+      <p style="margin:18px 0">
+        <a href="${patientUrl}" style="background:#2C6120;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Open ${patient.first_name} in Cliniko →</a>
+      </p>
+      <p style="color:#666;font-size:13px;line-height:1.6">
+        To charge: open the patient → Invoices → Add invoice → add the "Late Cancellation Fee" billable item ($${FEE}) → save &amp; email (Cliniko's invoice email includes the online payment link).<br>
+        To waive: no action needed — reply to this email with "waived" so there's a record.
+      </p>
+    </div>`;
+
+  const send = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: process.env.LATE_CANCEL_FROM,
+      to: process.env.LATE_CANCEL_TO,
+      subject: `⚠️ Late cancel: ${patientName} — ${nzTime(appt.starts_at)} (${reason})`,
+      html,
+    }),
+  });
+  if (!send.ok) throw new Error(`Resend → ${send.status}: ${await send.text()}`);
+
+  return { late: true, patient: patientName, hoursUntil };
+}
+
+module.exports = { checkAndAlertLateCancellation };
