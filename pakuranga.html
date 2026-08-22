@@ -819,6 +819,8 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(14px);backg
 [data-show-days]{display:none}
 .promo:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(224,174,63,0.45)}
 .promo .free-tag{background:var(--ink);color:var(--gold);padding:5px 13px;border-radius:100px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+/* Same pill as .free-tag but wraps, for listing who is on over the weekend. */
+.promo-who{background:var(--ink);color:var(--gold);padding:5px 13px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.02em;white-space:normal}
 .promo .promo-arrow{font-weight:800}
 @media(max-width:480px){.promo{font-size:14px;padding:12px 16px}.promo .free-tag{white-space:normal;line-height:1.45;text-align:left}}
 
@@ -1011,7 +1013,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="wrap">
     <a class="promo" data-show-days="4,5,6,0" href="https://total-body-physio.au1.cliniko.com/bookings?business_id=90633">
       <span>😀 Weekend clinic — open Saturday and Sunday</span>
-      <span class="free-tag">Free initial ACC assessment with Samuel — Saturdays</span>
+      <span class="promo-who">Sat: physio with Ibrahim · Sun: acupuncture with Vivian and physio with Tim</span>
       <span class="promo-arrow">Book →</span>
     </a>
     <div class="eyebrow">Pakuranga · Lloyd Elsmore Pools · Est. 2002</div>
