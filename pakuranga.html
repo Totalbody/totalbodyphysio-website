@@ -814,6 +814,9 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(14px);backg
 
 /* promo banner */
 .promo{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:linear-gradient(100deg,var(--gold),#F2C65E);color:var(--ink);border-radius:16px;padding:13px 22px;margin-bottom:28px;text-decoration:none;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15.5px;line-height:1.35;box-shadow:0 10px 28px rgba(224,174,63,0.35);transition:transform .2s,box-shadow .2s}
+/* Day-gated promos start hidden so they never flash on a day they should not appear.
+   Sits after .promo so it wins on equal specificity; JS drops the attribute to reveal. */
+[data-show-days]{display:none}
 .promo:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(224,174,63,0.45)}
 .promo .free-tag{background:var(--ink);color:var(--gold);padding:5px 13px;border-radius:100px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .promo .promo-arrow{font-weight:800}
@@ -1006,8 +1009,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
   <div id="phTag" style="display:none;position:absolute;top:86px;right:18px;z-index:2;background:rgba(0,0,0,0.55);color:#fff;font-size:11.5px;font-weight:600;padding:6px 13px;border-radius:100px;letter-spacing:.04em;align-items:center;gap:6px">📷 Stock placeholder — your photo goes here</div>
   <div class="wrap">
-    <a class="promo" href="https://total-body-physio.au1.cliniko.com/bookings?business_id=90633&practitioner_id=1941711195203437842">
-      <span>😀 Now open weekends! Sat physio 8:30am–2pm · Sun acupuncture</span>
+    <a class="promo" data-show-days="4,5,6,0" href="https://total-body-physio.au1.cliniko.com/bookings?business_id=90633">
+      <span>😀 Weekend clinic — open Saturday and Sunday</span>
       <span class="free-tag">Free initial ACC assessment with Samuel — Saturdays</span>
       <span class="promo-arrow">Book →</span>
     </a>
@@ -1019,7 +1022,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <a class="btn btn-ghost" href="tel:095351932">09 535 1932</a>
     </div>
     <div class="facts">
-      <div class="fact">Mon–Thu 7am–6pm · Fri 7am–3pm · Sat 8:30am–2pm · Sun: acupuncture</div>
+      <div class="fact">Mon–Thu 7am–6pm · Fri 7am–3pm · Sat 8:30am–2pm · Sun: acupuncture + physio</div>
       <div class="fact">Open weekends</div>
       <div class="fact">Pool & gym on-site</div>
       <div class="fact">Acupuncture $35</div>
@@ -2932,7 +2935,7 @@ FORMATTING RULES:
 ═══════════════════════════════
 CLINICS
 ═══════════════════════════════
-Pakuranga: Lloyd Elsmore Pools, 1 Sir Lloyd Drive, Pakuranga Heights. Ph 09 535 1932. Mon–Thu 7am–6pm, Fri 7am–3pm. NOW OPEN WEEKENDS: Saturdays 8:30am–2pm for physiotherapy with Ibrahim Al-Jumaily and Samuel Warren, and Sundays for acupuncture with Vivian Chen. Large car park on site, situated left side of the building.
+Pakuranga: Lloyd Elsmore Pools, 1 Sir Lloyd Drive, Pakuranga Heights. Ph 09 535 1932. Mon–Thu 7am–6pm, Fri 7am–3pm. NOW OPEN WEEKENDS: Saturdays 8:30am–2pm for physiotherapy with Ibrahim Al-Jumaily and Samuel Warren, and Sundays for acupuncture with Vivian Chen plus limited physiotherapy hours with Timothy Keung — call to confirm Sunday times. Large car park on site, situated left side of the building.
 
 Flat Bush / Botany: 14 Fusion Rd, Botany. Ph 09 265 2323. Mon–Fri 9am–6pm. Parking directly outside.
 
@@ -3415,6 +3418,28 @@ var io = new IntersectionObserver(function(es){
   es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
 },{threshold:0.12});
 document.querySelectorAll('.fu').forEach(function(el){ io.observe(el); });
+</script>
+<script>
+/* Day-gated promos.
+   data-show-days lists the NZ weekdays an element may appear on (0=Sun … 6=Sat).
+   The element is hidden by CSS until this runs; revealing it by REMOVING the
+   attribute means the element falls back to whatever display its own rules give
+   it, so this works for any element without hardcoding inline-flex here.
+   Reads the day in Pacific/Auckland, not the visitor's timezone — otherwise
+   someone browsing from Australia on Wednesday evening sees Thursday's banner. */
+(function(){
+  var DAYS = {Sun:0, Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6}, today;
+  try {
+    today = DAYS[new Date().toLocaleDateString('en-US', {timeZone:'Pacific/Auckland', weekday:'short'})];
+  } catch (e) { return; }                      // no Intl: fail hidden, never wrongly shown
+  if (today === undefined) return;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-show-days]'), function(el){
+    var days = el.getAttribute('data-show-days').split(',');
+    for (var i = 0; i < days.length; i++) {
+      if (parseInt(days[i], 10) === today) { el.removeAttribute('data-show-days'); return; }
+    }
+  });
+})();
 </script>
 </body>
 </html>
