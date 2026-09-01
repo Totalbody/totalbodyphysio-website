@@ -1331,6 +1331,21 @@ const apiGet  = (path, params = {}) => {
   return api(`${path}${qs}`);
 };
 const apiPost = (path, body) => api(path, { method: 'POST', body: JSON.stringify(body) });
+
+// Cancels an appointment and then CHECKS Cliniko really let it go.
+// A 2xx from the proxy is not proof: telling a patient their booking is
+// cancelled when it is still in the diary leaves them a no-show, so re-read
+// their upcoming appointments and throw if the booking is still there.
+async function cancelAppointmentVerified(appointmentId, reason, patientId) {
+  await apiPost('cancel_appointment', {
+    appointment_id: String(appointmentId),
+    cancellation_reason: reason || 50,
+  });
+  if (!patientId) return;
+  const d = await apiGet('patient_appointments', { patient_id: patientId });
+  const stillBooked = (d.appointments || []).some(a => String(a.id) === String(appointmentId));
+  if (stillBooked) throw new Error('Cliniko still shows this appointment as booked');
+}
 // fire-and-forget: tells the proxy a cancellation happened so it can alert
 // the clinic if it was within 24 hours (server decides — never blocks the patient)
 const lateCancelAlert = (id, reason, context, info) => {
@@ -1897,11 +1912,16 @@ function renderStep8() {
 // STEP 9: Success
 function renderStep9() {
   $('bw-progress').innerHTML = '';
-  const title = S.isRescheduling ? 'Appointment Rescheduled!' : "You're booked in!";
-  const sub   = S.isRescheduling ? 'Your appointment has been rescheduled and your previous booking cancelled.' : 'Your appointment has been confirmed.';
+  // A reschedule books the new time first — if cancelling the old one failed,
+  // the patient still has it, so say that instead of "previous booking cancelled".
+  const failedCancel = S.isRescheduling && S.rescheduleCancelFailed;
+  const title = failedCancel ? 'New Appointment Booked' : (S.isRescheduling ? 'Appointment Rescheduled!' : "You're booked in!");
+  const sub   = failedCancel
+    ? `Your new time is booked, but we could not remove your original appointment — please call us on ${CONFIG.phone} so we can cancel it for you.`
+    : (S.isRescheduling ? 'Your appointment has been rescheduled and your previous booking cancelled.' : 'Your appointment has been confirmed.');
   setBody(`
     <div class="bw-success-screen">
-      <div class="bw-success-icon">${S.isRescheduling ? '🔄' : '✓'}</div>
+      <div class="bw-success-icon">${failedCancel ? '⚠️' : (S.isRescheduling ? '🔄' : '✓')}</div>
       <div class="bw-success-title">${title}</div>
       <div class="bw-success-sub">
         ${sub}<br>
@@ -2217,7 +2237,7 @@ const BW = {
     const btn = document.querySelector('.bw-btn-primary');
     if (btn) { btn.disabled = true; btn.textContent = 'Cancelling…'; }
     try {
-      await apiPost('cancel_appointment', { appointment_id: S.selectedAppointment.id, cancellation_reason: S.cancelReason || 50 });
+      await cancelAppointmentVerified(S.selectedAppointment.id, S.cancelReason || 50, S.patientId);
       lateCancelAlert(S.selectedAppointment.id, S.cancelReason, 'manage', {
         starts_at: S.selectedAppointment.starts_at,
         appointment_type: S.selectedAppointment.appointment_type,
@@ -2400,9 +2420,13 @@ const BW = {
           S.appointmentNotes ? `Patient notes: ${S.appointmentNotes}` : ''
         ].filter(Boolean).join(' | '),
       });
+      // The new time is booked; cancelling the old one can still fail. Swallowing
+      // that leaves the patient double-booked while the success screen claims the
+      // old appointment is gone — so record the failure and own up to it.
+      S.rescheduleCancelFailed = false;
       if (S.isRescheduling && S.oldAppointmentId) {
         try {
-          await apiPost('cancel_appointment', { appointment_id: S.oldAppointmentId });
+          await cancelAppointmentVerified(S.oldAppointmentId, 50, S.patientId);
           lateCancelAlert(S.oldAppointmentId, 50, 'reschedule', S.selectedAppointment ? {
             starts_at: S.selectedAppointment.starts_at,
             appointment_type: S.selectedAppointment.appointment_type,
@@ -2410,7 +2434,9 @@ const BW = {
             business: S.selectedAppointment.business,
             patient_id: S.patientId,
           } : { patient_id: S.patientId });
-        } catch(e) {}
+        } catch(e) {
+          S.rescheduleCancelFailed = true;
+        }
       }
       S._bookingInProgress = false; S.step = 9; BW.renderCurrent();
 
@@ -2447,7 +2473,7 @@ const BW = {
       availableDates:[], calMonth:null, date:'', slots:[], selectedSlot:null, appointmentNotes:'',
       loading:false, error:'', mode:null, upcomingAppointments:[], selectedAppointment:null,
       manageAction:null, oldAppointmentId:null, isRescheduling:false, manageStep:null,
-      cancelReason:50, _bookingInProgress:false,
+      cancelReason:50, _bookingInProgress:false, rescheduleCancelFailed:false,
     });
     BW.renderCurrent();
   },
@@ -2582,7 +2608,12 @@ const JENNY = {
         try { const arr = JSON.parse(chipsMatch[1]); if (Array.isArray(arr)) chipsToShow = arr.slice(0, 12).map(String); } catch(e) {}
       }
       if (chipsToShow) JENNY.renderChips(chipsToShow);
-      if (display) {
+      if (actionMatch) {
+        // A turn carrying an action shows no bubble. The model routinely writes
+        // "that's cancelled for you" alongside the tag, which would be shown
+        // before the action has even run — the [SYSTEM: result] drives the reply.
+        JENNY.history.push({ role: 'assistant', content: raw });
+      } else if (display) {
         JENNY.addBubble('bot', display);
         JENNY.history.push({ role: 'assistant', content: raw });
       } else if (chipsToShow) {
@@ -2678,7 +2709,8 @@ const JENNY = {
         }
 
         case 'cancel_appointment': {
-          await apiPost('cancel_appointment', { appointment_id: action.appointment_id, cancellation_reason: action.reason || 50 });
+          // Verified — throws (and Jenny reports the failure) if Cliniko still has it.
+          await cancelAppointmentVerified(action.appointment_id, action.reason, JENNY.verifiedPatientId);
           const _a = (JENNY._lastAppts || []).find(x => String(x.id) === String(action.appointment_id));
           lateCancelAlert(action.appointment_id, action.reason, 'jenny-chat', _a ? {
             starts_at: _a.starts_at,
@@ -2687,7 +2719,7 @@ const JENNY = {
             business: _a.business,
             patient_id: JENNY.verifiedPatientId,
           } : { patient_id: JENNY.verifiedPatientId });
-          result = '[SYSTEM: Appointment successfully cancelled.]';
+          result = '[SYSTEM: Appointment cancelled — confirmed gone from Cliniko.]';
           break;
         }
 
@@ -2835,7 +2867,11 @@ const JENNY = {
           break;
         }
 
-        case 'book_appointment': {
+        case 'book_appointment':
+        case 'reschedule_appointment': {
+          // A reschedule is one action, not "book then remember to cancel" — the
+          // old booking is cancelled here so it can never be left behind.
+          const _isResched = action.type === 'reschedule_appointment';
           if (!JENNY.verifiedPatientId) { result='[SYSTEM: No verified patient.]'; break; }
           const biz = JENNY._biz(action.business_name);
           const apt = JENNY._apt(action.appointment_type_name, biz);
@@ -2849,11 +2885,11 @@ const JENNY = {
             patient_id:          JENNY.verifiedPatientId,
             appointment_type_id: apt.id,
             starts_at:           slot.time,
-            notes: 'Booked via Jenny AI chat',
+            notes: _isResched ? 'Rescheduled via Jenny AI chat' : 'Booked via Jenny AI chat',
           });
 
-          // Track booking conversion - Google Ads + GA4
-          if (typeof gtag === 'function') {
+          // Track booking conversion - Google Ads + GA4 (new bookings only, not reschedules)
+          if (!_isResched && typeof gtag === 'function') {
             gtag('event', 'conversion', {
               'send_to': 'AW-956746735/kitwCIOW96kcEO-Xm8gD',
               'value': 80.0,
@@ -2885,7 +2921,37 @@ const JENNY = {
           });
           JENNY._bookingNotified = true;
           JENNY._transcriptSent  = true;
-          result = '[SYSTEM: Appointment booked successfully! Confirmation email will be sent.]';
+          if (!_isResched) {
+            result = '[SYSTEM: Appointment booked successfully! Confirmation email will be sent.]';
+            break;
+          }
+          const _oldId = action.old_appointment_id;
+          if (!_oldId) {
+            result = `[SYSTEM: The new time is booked, but no old_appointment_id was supplied so the ORIGINAL appointment is STILL BOOKED. Tell the patient their new time is confirmed but the old one could not be removed, and ask them to call ${CONFIG.phone}.]`;
+            break;
+          }
+          const _old = (JENNY._lastAppts || []).find(x => String(x.id) === String(_oldId));
+          try {
+            await cancelAppointmentVerified(_oldId, action.reason || 50, JENNY.verifiedPatientId);
+            lateCancelAlert(_oldId, action.reason || 50, 'jenny-reschedule', Object.assign(
+              { patient_id: JENNY.verifiedPatientId },
+              _old ? {
+                starts_at: _old.starts_at, appointment_type: _old.appointment_type,
+                practitioner: _old.practitioner, business: _old.business,
+              } : {}
+            ));
+            result = '[SYSTEM: Reschedule complete — the new time is booked AND the original appointment is confirmed cancelled in Cliniko.]';
+          } catch(e) {
+            // The patient now holds two appointments — the clinic has to know.
+            JENNY.sendNotification('booking', { booking: {
+              patientName:     `${JENNY.verifiedPatientName} ⚠️ OLD APPOINTMENT NOT CANCELLED — remove it manually`,
+              clinic:          biz.name,
+              appointmentType: apt.name,
+              practitioner:    pracName,
+              datetime:        dtStr,
+            }});
+            result = `[SYSTEM: The NEW appointment IS booked, but cancelling the original FAILED (${e.message}) — it is STILL in the diary. Do NOT tell the patient the old appointment is cancelled. Say their new time is confirmed, that we could not remove the old booking automatically, and ask them to call ${CONFIG.phone} so we can clear it. The clinic has been alerted.]`;
+          }
           break;
         }
 
@@ -3088,7 +3154,13 @@ CANCELLATION & LATE CHANGE POLICY (STRICT — NEVER SKIP):
 - More than 24 hours out: changes are free — encourage early rescheduling anytime.
 - ALWAYS capture a cancellation reason. If the patient has already said why (sick, work came up, feeling better, going away), use it — don't ask again. Otherwise ask once, lightly: "No problem — can I ask the reason? Helps us with the notes." Accept whatever they say without pushing. Map to the reason code: 10 = feeling better, 20 = condition worse, 30 = sick/unwell, 40 = away/travelling, 60 = work, 50 = anything else. Never suggest that the reason affects whether the fee applies.
 
-MANAGING: ask email → ask DOB → search_patient → get_appointments → list naturally → cancel or reschedule → IF the appointment's fee flag says the $60 fee APPLIES: state the fee and get an explicit yes first (if the flag says NO late fee, do not mention any fee) → capture the reason (use what they said, or ask once) → confirm → cancel_appointment with the mapped reason code.
+MANAGING (cancelling): ask email → ask DOB → search_patient → get_appointments → list naturally → cancel or reschedule (to move it, follow RESCHEDULING below instead) → IF the appointment's fee flag says the $60 fee APPLIES: state the fee and get an explicit yes first (if the flag says NO late fee, do not mention any fee) → capture the reason (use what they said, or ask once) → confirm → cancel_appointment with the mapped reason code.
+
+RESCHEDULING (STRICT — a half-done reschedule leaves the patient booked twice):
+- A reschedule is ONE action: reschedule_appointment. Never book the new time with book_appointment and then cancel the old one separately — if the cancel is missed or fails, the original stays in the diary and the patient turns up twice or is marked a no-show.
+- Flow: get_appointments → patient picks which appointment to move → get_available_dates / get_available_times for the SAME clinic and appointment type → patient picks the new time → confirm both the old and new time back to them → reschedule_appointment with old_appointment_id set to the ID of the appointment being moved.
+- Only say the appointment has been moved once the [SYSTEM: ...] result confirms BOTH halves. If the result says the original could not be cancelled, tell the patient plainly that their new time is booked but the old appointment is still there and they need to call the clinic — never paper over it.
+- The $60 late-change rule is judged on the ORIGINAL appointment's fee flag, exactly as for a cancellation.
 
 TAP-TO-ANSWER CHIPS (VERY IMPORTANT — makes the chat tap-first, minimal typing):
 - Whenever your reply asks the patient to choose from known options, end the reply with a chips tag: <chips>["Option 1","Option 2"]</chips> — a JSON array of strings, nothing else inside the tag. The widget shows these as tappable buttons; tapping sends that exact text back as the patient's reply.
@@ -3102,6 +3174,8 @@ IMPORTANT: Widget resolves all IDs from names automatically. NEVER include numer
 
 ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: result] before replying.
 
+NEVER tell a patient an appointment has been booked, cancelled, moved or rescheduled until the matching [SYSTEM: ...] result has come back confirming it. The action tag is a request, not a receipt. Never write words like "that's cancelled for you" in the same message as an action tag — send the tag on its own and let the result decide what you say next. If a [SYSTEM: ...] result reports a failure, say so plainly and give the clinic's phone number; never smooth over it or guess that it probably worked.
+
 <action>{"type":"search_patient","email":"EMAIL","dob":"DD/MM/YYYY"}</action>
 <action>{"type":"create_patient","first_name":"Jane","last_name":"Smith","email":"EMAIL","phone":"021 123 4567","dob":"YYYY-MM-DD"}</action>
 <action>{"type":"get_appointments"}</action>
@@ -3111,6 +3185,7 @@ ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: 
 <action>{"type":"get_available_dates","business_name":"Titirangi","appointment_type_name":"ACC Initial","practitioner_name":"Scott"}</action>
 <action>{"type":"get_available_times","business_name":"Titirangi","appointment_type_name":"ACC Initial","date_index":0,"practitioner_name":"Scott"}</action>
 <action>{"type":"book_appointment","business_name":"Titirangi","appointment_type_name":"ACC Initial","slot_index":0}</action>
+<action>{"type":"reschedule_appointment","business_name":"Titirangi","appointment_type_name":"ACC Follow-up","slot_index":0,"old_appointment_id":"APPOINTMENT_ID","reason":50}</action>  ← use this for EVERY reschedule; books the new time and cancels the old one
 <action>{"type":"cancel_appointment","appointment_id":"APPOINTMENT_ID","reason":30}</action>  ← reason codes: 10 feeling better · 20 condition worse · 30 sick · 40 away · 60 work · 50 other`;
   },
 
