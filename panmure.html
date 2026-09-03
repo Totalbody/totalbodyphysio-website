@@ -2956,9 +2956,39 @@ const JENNY = {
     await JENNY.sendMessage(result, true);
   },
 
+  // The next fortnight, spelled out. JENNY must never work a date out
+  // herself: asked for "this Saturday" she once answered 7 September when
+  // Saturday was the 5th. A date read off this list cannot drift.
+  _dateRef() {
+    const todayNz = new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Auckland' }); // YYYY-MM-DD
+    const [y, m, d] = todayNz.split('-').map(Number);
+    const out = [];
+    for (let i = 0; i < 15; i++) {
+      // Midnight UTC on a date is midday in NZ, so the NZ calendar date always
+      // matches the one we asked for — no drift across the daylight-saving switch.
+      const dt = new Date(Date.UTC(y, m - 1, d + i));
+      const label = dt.toLocaleDateString('en-NZ', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+        timeZone: 'Pacific/Auckland',
+      });
+      out.push(i === 0 ? label + '  \u2190 TODAY' : i === 1 ? label + '  \u2190 tomorrow' : label);
+    }
+    return out.join('\n');
+  },
+
   systemPrompt() {
     const now = new Date().toLocaleDateString('en-NZ',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Pacific/Auckland'}) + ', ' + new Date().toLocaleTimeString('en-NZ',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'Pacific/Auckland'}) + ' (NZ time)';
     return `Today is ${now}. You are Jenny, the friendly AI assistant for Total Body Physio, Auckland NZ (totalbodyphysio.co.nz).
+
+DATES — READ THEM, NEVER WORK THEM OUT:
+- Every calendar date you say must be copied from the list below, or from a get_available_dates / get_appointments result. Never count days forward yourself — you once told a patient "this Saturday (7 September)" when Saturday was the 5th, and they nearly came in on the wrong day.
+- A weekday on its own ("Saturday", "Tuesday") means the FIRST matching day in the list below. Only when the patient clearly means the week after do you take the second match.
+- Always give the weekday AND the date together, straight from the list, so the patient can correct you if you have picked the wrong one.
+- If a patient asks for a day that is not in the list (more than a fortnight out), do not name a date — ask them which week they mean and check availability instead.
+
+THE NEXT FORTNIGHT (NZ) — the only dates you may quote:
+${JENNY._dateRef()}
+
 
 PERSONALITY: Warm, professional, concise. Natural NZ English. Max 2–3 sentences per reply for simple questions. Plain sentences for short answers. Ask ONE question at a time.
 
