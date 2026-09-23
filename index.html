@@ -1743,31 +1743,37 @@ const CONFIG = {
 
   clinicAppointmentTypes: {
     'Titirangi': [
-      '467826',
-      '546224',
-      '546217',
-      '1760431355214169677',
-      '1160520320398918864',
-      '1160521542988203217',
+      '467826',              // Private Initial
+      '546224',              // Private Follow-up
+      '546217',              // ACC Initial - Titirangi
+      '1760431355214169677', // ACC Follow-up 30 min - Titirangi
+      '1954858911718704506', // Free ACC Initial Consult — Scott Clayton (student); the only ACC initial Cliniko lets him take
+      '1954861311363908988', // Free ACC Follow-up — student physio (Scott)
+      '1160520320398918864', // Therapeutic Massage 60
+      '1160521542988203217', // Therapeutic Massage 45
     ],
     'Pakuranga': [
       '467826',              // Private Initial
       '546225',              // ACC Initial
       '546226',              // ACC Follow-up
       '546224',              // Private Follow-up
+      '1954858911718704506', // Free ACC Initial Consult — Samuel Warren (student); the only ACC initial Cliniko lets him take
+      '1954861311363908988', // Free ACC Follow-up — student physio (Samuel)
       '1254678601672951138', // Acupuncture/Dry Needling - Physio ACC
       '1996007156318471600', // Acupuncture Initial (ACC) 60min - Vivian Chen
       '1996007682015757746', // Acupuncture Follow-up (ACC) 45min - Vivian Chen
     ],
+    // ACC initials at Flat Bush are free, and Cliniko has a type for that which
+    // Isabella and Ibrahim both offer (with more open days than the paid one).
     'Flat Bush': [
       '467826',              // Private Initial
-      '546225',              // ACC Initial
+      '1984503389823698366', // Free Initial Consultation - ACC Botany
       '546226',              // ACC Follow-up
       '546224',              // Private Follow-up
     ],
     'Botany': [
       '467826',
-      '546225',
+      '1984503389823698366', // Free Initial Consultation - ACC Botany
       '546226',
       '546224',
     ],
@@ -3283,8 +3289,8 @@ const JENNY = {
           if (hardcoded.length > 0) {
             JENNY._practitioners = hardcoded;
             { const list = hardcoded; JENNY._autoChips = list
-              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton/i.test(p.name))
-              .map(p => /scott\s+clayton/i.test(p.name)
+              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton|samuel\s+warren/i.test(p.name))
+              .map(p => /scott\s+clayton|samuel\s+warren/i.test(p.name)
                 ? `${p.name} :: Student · ACC appts · free initial`
                 : `${p.name} :: ${p.title || 'Physiotherapist'}`)
               .concat(['No preference']); }
@@ -3294,8 +3300,8 @@ const JENNY = {
             const d = await apiGet('practitioners', { business_id: biz.id });
             JENNY._practitioners = d.practitioners || [];
             { const list = JENNY._practitioners; JENNY._autoChips = list
-              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton/i.test(p.name))
-              .map(p => /scott\s+clayton/i.test(p.name)
+              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton|samuel\s+warren/i.test(p.name))
+              .map(p => /scott\s+clayton|samuel\s+warren/i.test(p.name)
                 ? `${p.name} :: Student · ACC appts · free initial`
                 : `${p.name} :: ${p.title || 'Physiotherapist'}`)
               .concat(['No preference']); }
@@ -3308,7 +3314,7 @@ const JENNY = {
 
         case 'get_available_dates': {
           const biz = JENNY._biz(action.business_name);
-          const apt = JENNY._apt(action.appointment_type_name, biz);
+          let apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
           if (!apt) {
             const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
@@ -3316,6 +3322,7 @@ const JENNY = {
             break;
           }
           const prac = action.practitioner_name ? JENNY._prac(action.practitioner_name) : null;
+          apt = JENNY._effectiveType(apt, prac ? prac.id : null, biz);
           // Exactly mirrors BW.loadAvailableDates
           const params = { business_id: biz.id, appointment_type_id: apt.id, weeks: 2 };
           if (prac) params.practitioner_id = prac.id;
@@ -3336,7 +3343,7 @@ const JENNY = {
 
         case 'get_available_times': {
           const biz = JENNY._biz(action.business_name);
-          const apt = JENNY._apt(action.appointment_type_name, biz);
+          let apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
           if (!apt) {
             const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
@@ -3350,6 +3357,7 @@ const JENNY = {
             : action.date || '';
           if (!dateStr) { result = `[SYSTEM: No date. Ask patient to pick from available dates list.]`; break; }
           const prac = action.practitioner_name ? JENNY._prac(action.practitioner_name) : null;
+          apt = JENNY._effectiveType(apt, prac ? prac.id : null, biz);
           // Exactly mirrors BW.loadSlots
           const params = {
             business_id: biz.id,
@@ -3380,11 +3388,12 @@ const JENNY = {
           const _isResched = action.type === 'reschedule_appointment';
           if (!JENNY.verifiedPatientId) { result='[SYSTEM: No verified patient.]'; break; }
           const biz = JENNY._biz(action.business_name);
-          const apt = JENNY._apt(action.appointment_type_name, biz);
+          let apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz||!apt) { result='[SYSTEM: Missing clinic or appointment type.]'; break; }
           const idx = parseInt(action.slot_index ?? 0);
           const slot = JENNY._lastSlots && JENNY._lastSlots[idx];
           if (!slot) { result='[SYSTEM: Slot not found. Confirm the slot index from the times list.]'; break; }
+          apt = JENNY._effectiveType(apt, slot.practitioner_id, biz);
           await apiPost('book_appointment', {
             practitioner_id:     slot.practitioner_id,
             business_id:         biz.id,
@@ -3620,7 +3629,7 @@ BUSINESS & NON-PATIENT ENQUIRIES: Jade Warren (he/him) is the Director and owner
 - Only state facts listed above. If something is not listed here, say "I'm not sure — please call the clinic directly" and give the relevant phone number.
 - Never invent prices, practitioner names, availability, or services.
 - Never confirm a specific practitioner works somewhere unless listed above.
-- For Scott Clayton: if get_available_dates or get_available_times returns nothing, say "Scott's online availability isn't showing right now — would you like to try another practitioner or no preference to see all available times?"
+- Scott Clayton and Samuel Warren are booked under their own FREE student appointment types in Cliniko. You never need to name those: pass the normal ACC type name (e.g. "ACC Initial" or "ACC Follow-up") together with their name and the widget switches to the right type automatically. If they genuinely have no dates, say so and offer the other practitioners or no preference.
 - For hours at Titirangi: always say "call 09 817 7377 for current hours" rather than guessing.
 
 ═══════════════════════════════
@@ -3785,22 +3794,69 @@ NEVER tell a patient an appointment has been booked, cancelled, moved or resched
   _apt(name='', biz=null) {
     if (!name) return null;
     const types = biz ? JENNY._apptTypesForBiz(biz) : (JENNY._currentApptTypes || JENNY._allApptTypes || []);
-    const needle = name.toLowerCase().trim();
-    // Try exact include first
-    let found = types.find(t => t.name.toLowerCase().includes(needle));
-    if (found) return found;
-    // Try each word in the needle against type names (e.g. "initial" matches "Private Consultation - Initial")
-    const words = needle.split(/\s+/).filter(w => w.length > 3);
-    for (const word of words) {
-      found = types.find(t => t.name.toLowerCase().includes(word));
-      if (found) return found;
+    // Flatten punctuation (and Cliniko's "Acupunture" spelling) so "ACC
+    // Follow-up" can meet "2. Follow up  - 30 mins" without a round trip.
+    const norm = x => String(x || '').toLowerCase().replace(/acupuncture/g, 'acupunture').replace(/[^a-z0-9]+/g, ' ').trim();
+    const needle = norm(name);
+    if (!needle) return null;
+    // The student-only types are chosen by _effectiveType from who is being
+    // booked, never by name — unless the name asks for them outright.
+    const STUDENT_IDS = ['1954858911718704506', '1954861311363908988'];
+    const wantsStudent = /\b(free|student)\b/.test(needle);
+    let pool = types.filter(t => wantsStudent || !STUDENT_IDS.includes(String(t.id)));
+    // "ACC" or "Private" in the request is about funding, and Cliniko records
+    // funding in the category — so decide that first. Matching words alone
+    // sent "ACC Initial" to the $120 private initial wherever the private
+    // type happened to come first in the list.
+    const funding = /\bacc\b/.test(needle) ? 'acc' : /\bprivate\b/.test(needle) ? 'private' : null;
+    if (funding) {
+      const byCategory = pool.filter(t => funding === 'acc' ? /\bacc\b/i.test(t.category || '') : /private/i.test(t.category || ''));
+      if (byCategory.length) pool = byCategory;
     }
-    return null;
+    const exact = pool.find(t => norm(t.name).includes(needle));
+    if (exact) return exact;
+    const words = needle.split(' ').filter(w => w.length > 2 && w !== 'acc' && w !== 'private');
+    let best = null, bestScore = 0;
+    for (const t of pool) {
+      const n = norm(t.name);
+      const score = words.filter(w => n.includes(w)).length;
+      if (score > bestScore) { best = t; bestScore = score; }
+    }
+    if (best) return best;
+    return funding && pool.length ? pool[0] : null;
   },
   _prac(name='') {
     // Search hardcoded practitioners across all clinics
     const all = Object.values(CONFIG.CLINICS).flatMap(c => c.practitioners);
     return (JENNY._practitioners || all).find(p => p.name.toLowerCase().includes(name.toLowerCase().trim()));
+  },
+  _pracById(practitioner_id) {
+    const all = Object.values(CONFIG.CLINICS).flatMap(c => c.practitioners);
+    return all.find(p => String(p.id) === String(practitioner_id))
+      || (JENNY._practitioners || []).find(p => String(p.id) === String(practitioner_id))
+      || null;
+  },
+  // Scott and Samuel (supervised students) can only be booked under Cliniko's
+  // free student appointment types; every physio can only be booked under the
+  // standard ones. Asking Cliniko for the wrong pairing is a 404, which used to
+  // reach the patient as "no availability". Swap the ACC type to match whoever
+  // is being booked, so the AI only ever has to say "ACC Initial" + a name.
+  _effectiveType(apt, practitioner_id, biz) {
+    if (!apt || !biz) return apt;
+    if (!/acc/i.test(apt.category || '')) return apt;
+    const kind = /initial/i.test(apt.name) ? 'initial' : /follow/i.test(apt.name) ? 'followup' : null;
+    if (!kind) return apt;
+    const STUDENT = { initial: '1954858911718704506', followup: '1954861311363908988' };
+    const studentIds = Object.values(STUDENT);
+    const allowed = JENNY._apptTypesForBiz(biz);
+    const prac = practitioner_id ? JENNY._pracById(practitioner_id) : null;
+    const isStudent = !!(prac && /student/i.test(prac.title || ''));
+    if (isStudent) {
+      return allowed.find(t => String(t.id) === STUDENT[kind]) || apt;
+    }
+    if (!studentIds.includes(String(apt.id))) return apt;
+    const kindRe = kind === 'initial' ? /initial/i : /follow/i;
+    return allowed.find(t => /acc/i.test(t.category || '') && kindRe.test(t.name) && !studentIds.includes(String(t.id))) || apt;
   },
   _resolvePracName(practitioner_id) {
     const all = Object.values(CONFIG.CLINICS).flatMap(c => c.practitioners);
