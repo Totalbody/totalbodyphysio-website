@@ -955,31 +955,37 @@ const CONFIG = {
 
   clinicAppointmentTypes: {
     'Titirangi': [
-      '467826',
-      '546224',
-      '546217',
-      '1760431355214169677',
-      '1160520320398918864',
-      '1160521542988203217',
+      '467826',              // Private Initial
+      '546224',              // Private Follow-up
+      '546217',              // ACC Initial - Titirangi
+      '1760431355214169677', // ACC Follow-up 30 min - Titirangi
+      '1954858911718704506', // Free ACC Initial Consult — Scott Clayton (student); the only ACC initial Cliniko lets him take
+      '1954861311363908988', // Free ACC Follow-up — student physio (Scott)
+      '1160520320398918864', // Therapeutic Massage 60
+      '1160521542988203217', // Therapeutic Massage 45
     ],
     'Pakuranga': [
       '467826',              // Private Initial
       '546225',              // ACC Initial
       '546226',              // ACC Follow-up
       '546224',              // Private Follow-up
+      '1954858911718704506', // Free ACC Initial Consult — Samuel Warren (student); the only ACC initial Cliniko lets him take
+      '1954861311363908988', // Free ACC Follow-up — student physio (Samuel)
       '1254678601672951138', // Acupuncture/Dry Needling - Physio ACC
       '1996007156318471600', // Acupuncture Initial (ACC) 60min - Vivian Chen
       '1996007682015757746', // Acupuncture Follow-up (ACC) 45min - Vivian Chen
     ],
+    // ACC initials at Flat Bush are free, and Cliniko has a type for that which
+    // Isabella and Ibrahim both offer (with more open days than the paid one).
     'Flat Bush': [
       '467826',              // Private Initial
-      '546225',              // ACC Initial
+      '1984503389823698366', // Free Initial Consultation - ACC Botany
       '546226',              // ACC Follow-up
       '546224',              // Private Follow-up
     ],
     'Botany': [
       '467826',
-      '546225',
+      '1984503389823698366', // Free Initial Consultation - ACC Botany
       '546226',
       '546224',
     ],
