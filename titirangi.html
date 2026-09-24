@@ -1050,7 +1050,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </button>
       <button class="t-card fu" onclick="openModal('gwenne')">
         <div class="t-photo"><img src="images/team/gwen.AVIF" alt="Gwenne Manares" onerror="this.remove()">GM</div>
-        <div class="t-info"><h3>Gwenne Manares</h3><div>Physiotherapist · Sports & general</div><span>Meet Gwenne →</span></div>
+        <div class="t-info"><h3>Gwenne Manares</h3><div>Physiotherapist · Pilates-based rehab</div><span>Meet Gwenne →</span></div>
       </button>
       <button class="t-card fu" onclick="openModal('jemma')">
         <div class="t-photo">JR</div>
@@ -3105,11 +3105,11 @@ TITIRANGI:
 - Scott Clayton — Physiotherapy Assistant/Student. 4th year student, working Sundays at Titirangi and Wednesdays at Panmure under supervision. Bookable for ACC Initial AND ACC Follow-up appointments — always offer him as an option for these at Titirangi and Panmure. FREE initial ACC assessment with Scott — no co-payment. Note: Scott's online availability may be limited — if no times show, suggest selecting "no preference" or another practitioner.
 
 - Jemma Read — Physio Assistant and Strength & Conditioning Trainer. Exercise-based rehabilitation and strength training. Not a physiotherapist — does not take ACC or Private physio consultations.
-- Gwenne Manares — Physiotherapist. Sports and general injuries. Works at both Titirangi and Panmure.
+- Gwenne Manares — Physiotherapist. Patient-centred, evidence-based physio combining hands-on treatment, targeted exercise rehabilitation, patient education and Pilates-based exercise. Currently completing her Mat Pilates certification and incorporates Pilates principles into rehab programs to improve strength, mobility, core control, balance and movement confidence. Works at both Titirangi and Panmure.
 
 PANMURE:
 - Komal Preet Kaur — Senior Physiotherapist. Dry needling. Works Monday to Friday at Panmure.
-- Also at Panmure: Gwenne Manares (also Titirangi), Valentino Tie (Wednesdays; also Pakuranga), and Scott Clayton (Wednesdays; supervised 4th-year student — bookable for ACC Initial and ACC Follow-up, free initial ACC; also Titirangi on Sundays).
+- Also at Panmure: Gwenne Manares (also Titirangi; Pilates-based exercise rehab), Valentino Tie (Wednesdays; also Pakuranga), and Scott Clayton (Wednesdays; supervised 4th-year student — bookable for ACC Initial and ACC Follow-up, free initial ACC; also Titirangi on Sundays).
 
 Chinese-speaking practitioners: Timothy Keung and Valentino Tie (Pakuranga), Valentino Tie (Panmure Wednesdays), Isabella Yang (Flat Bush).
 Arabic-speaking practitioner: Ibrahim Al-Jumaily (Pakuranga and Flat Bush).
@@ -3428,7 +3428,7 @@ document.addEventListener('visibilitychange', function() {
       <div class="m-photo" id="mPhoto"></div>
       <div><h3 id="mName"></h3><div class="m-title" id="mTitle"></div></div>
     </div>
-    <p id="mBio"></p>
+    <div id="mBio"></div>
     <div class="m-tags" id="mTags"></div>
     <a class="btn btn-free" id="mBook" href="#" style="width:100%;justify-content:center">Book →</a>
   </div>
@@ -3487,12 +3487,13 @@ var TEAM = {
     "photo": "images/team/gwen.AVIF",
     "pos": "",
     "title": "Physiotherapist",
-    "bio": "Gwenne is a dedicated physiotherapist who provides patient-centred, evidence-based care. She believes successful rehabilitation is built on a strong partnership — care that is tailored, collaborative, and goal-focused — and is committed to ongoing professional development and staying up to date with best practice. She works at both Titirangi and Panmure.",
+    "bio": "Gwenne provides patient-centred, evidence-based physiotherapy focused on helping people move better, build strength, and return to the activities they enjoy. She combines hands-on treatment, targeted exercise rehabilitation, patient education, and Pilates-based exercises tailored to each patient’s goals.\n\nShe is currently completing her Mat Pilates certification and incorporates Pilates principles into appropriate rehabilitation programs to improve strength, mobility, core control, balance, and movement confidence.\n\nGwenne works at both Titirangi and Panmure.",
     "tags": [
+      "Musculoskeletal physiotherapy",
+      "Exercise rehabilitation",
+      "Pilates-based exercise",
       "Manual therapy",
-      "Exercise-based rehab",
-      "Patient education",
-      "Self-management"
+      "Strength & mobility"
     ],
     "book": "https://total-body-physio.au1.cliniko.com/bookings?business_id=90865&practitioner_id=1837927442598069580"
   },
@@ -3519,7 +3520,13 @@ function openModal(k){
   ph.innerHTML = p.initials + (p.photo ? '<img src="'+p.photo+'"'+st+' alt="" onerror="this.remove()">' : '');
   document.getElementById('mName').textContent = p.name;
   document.getElementById('mTitle').textContent = p.title;
-  document.getElementById('mBio').textContent = p.bio;
+  const bioEl = document.getElementById('mBio');
+  bioEl.innerHTML = '';
+  String(p.bio || '').split(/\n\s*\n/).forEach(function(para){
+    const el = document.createElement('p');
+    el.textContent = para.trim();
+    bioEl.appendChild(el);
+  });
   document.getElementById('mTags').innerHTML = p.tags.map(function(t){return '<span>'+t+'</span>'}).join('');
   var b = document.getElementById('mBook');
   b.href = p.book; b.textContent = 'Book with ' + p.name.split(' ')[0] + ' →';
