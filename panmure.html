@@ -1186,11 +1186,12 @@ const CONFIG = {
       business_id: '90633',
       address: 'Lloyd Elsmore Pools, Sir Lloyd Dr, Pakuranga Heights',
       phone: '09 535 1932',
-      hours: 'Mon–Thu 7am–6pm, Fri 7am–3pm',
+      hours: 'Mon–Thu 7am–6pm, Fri 7am–3pm, Sat 8:30am–2pm, Sun acupuncture',
       practitioners: [
         { id: '172332',             name: 'Timothy Keung',    title: 'Physiotherapist and Acupuncturist' },
         { id: '1274037115297990613', name: 'Alistair Burgess', title: 'Senior Physiotherapist' },
         { id: '1859692633178244103', name: 'Ibrahim Al-Jumaily', title: 'Physiotherapist' },
+        { id: '1941711195203437842', name: 'Samuel Warren',      title: 'Physiotherapy Assistant/Student' },
         { id: '1957050361940281187', name: 'Valentino Tie',      title: 'Physiotherapist' },
         { id: '1996003944437908717', name: 'Vivian Chen',      title: 'Registered Acupuncturist' },
       ],
@@ -2573,6 +2574,33 @@ const JENNY = {
   // [SYSTEM: …] result itself. Left alone the markup is shown to the patient,
   // the action never runs, and the made-up result is treated as real data.
   // Rewrite any such call into a proper <action> tag and drop the rest.
+  // Practitioner chips come from the clinic list, never from the model — left
+  // to itself it drops people (Gwenne at Titirangi) and invents titles.
+  _practitionerChips(list) {
+    const said = JENNY.history.filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM'))
+      .slice(-6).map(m => m.content).join(' ');
+    const acupuncture = /acupunct|needl/i.test(said);
+    const privateOnly = /private/i.test(said) && !/\bacc\b/i.test(said);
+    const student = p => /scott\s+clayton|samuel\s+warren/i.test(p.name);
+    return list
+      .filter(p => !/assistant|student/i.test(p.title || '') || (student(p) && !privateOnly))
+      .filter(p => acupuncture || !/acupuncturist/i.test(p.title || '') || /physio/i.test(p.title || ''))
+      .map(p => student(p)
+        ? `${p.name} :: Student · ACC appts · free initial`
+        : `${p.name} :: ${p.title || 'Physiotherapist'}`)
+      .concat(['No preference']);
+  },
+
+  // If the model offers its own practitioner chips (any list with "No
+  // preference"), swap in the real list for the clinic being booked.
+  _fixPractitionerChips(chips) {
+    if (!chips.some(c => /^no preference/i.test(c))) return chips;
+    const biz = JENNY._currentBiz;
+    const key = biz && Object.keys(CONFIG.CLINICS).find(k => k.toLowerCase() === biz.name.toLowerCase());
+    const list = key ? CONFIG.CLINICS[key].practitioners : (JENNY._practitioners || []);
+    return list.length ? JENNY._practitionerChips(list).slice(0, 12) : chips;
+  },
+
   _normaliseReply(raw) {
     let s = String(raw || '');
     const sys = s.indexOf('[SYSTEM');
@@ -2631,7 +2659,7 @@ const JENNY = {
         chipsToShow = JENNY._autoChips;   // deterministic chips built by the widget (e.g. full practitioner list)
         JENNY._autoChips = null;
       } else if (chipsMatch && !actionMatch) {
-        try { const arr = JSON.parse(chipsMatch[1]); if (Array.isArray(arr)) chipsToShow = arr.slice(0, 12).map(String); } catch(e) {}
+        try { const arr = JSON.parse(chipsMatch[1]); if (Array.isArray(arr)) chipsToShow = JENNY._fixPractitionerChips(arr.slice(0, 12).map(String)); } catch(e) {}
       }
       if (chipsToShow) JENNY.renderChips(chipsToShow);
       if (actionMatch) {
@@ -2802,23 +2830,13 @@ const JENNY = {
           const hardcoded = clinicKey ? CONFIG.CLINICS[clinicKey].practitioners : [];
           if (hardcoded.length > 0) {
             JENNY._practitioners = hardcoded;
-            { const list = hardcoded; JENNY._autoChips = list
-              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton|samuel\s+warren/i.test(p.name))
-              .map(p => /scott\s+clayton|samuel\s+warren/i.test(p.name)
-                ? `${p.name} :: Student · ACC appts · free initial`
-                : `${p.name} :: ${p.title || 'Physiotherapist'}`)
-              .concat(['No preference']); }
+            JENNY._autoChips = JENNY._practitionerChips(hardcoded);
             result = `[SYSTEM: Practitioners at ${biz.name}: ${hardcoded.map(p=>`${p.name} (${p.title||'Physiotherapist'})`).join(', ')}. Use practitioner NAME in future actions. Only offer practitioners qualified for the chosen appointment type — see qualification rules.]`;
           } else {
             // Fallback for clinics not yet hardcoded (Flat Bush, Panmure)
             const d = await apiGet('practitioners', { business_id: biz.id });
             JENNY._practitioners = d.practitioners || [];
-            { const list = JENNY._practitioners; JENNY._autoChips = list
-              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton|samuel\s+warren/i.test(p.name))
-              .map(p => /scott\s+clayton|samuel\s+warren/i.test(p.name)
-                ? `${p.name} :: Student · ACC appts · free initial`
-                : `${p.name} :: ${p.title || 'Physiotherapist'}`)
-              .concat(['No preference']); }
+            JENNY._autoChips = JENNY._practitionerChips(JENNY._practitioners);
             result = JENNY._practitioners.length
               ? `[SYSTEM: Practitioners at ${biz.name}: ${JENNY._practitioners.map(p=>p.title?`${p.name} (${p.title})`:p.name).join(', ')}. Use practitioner NAME in future actions. Only offer practitioners qualified for the chosen appointment type — see qualification rules.]`
               : `[SYSTEM: No practitioners found at ${biz.name}.]`;
@@ -3039,7 +3057,7 @@ FORMATTING RULES:
 ═══════════════════════════════
 CLINICS
 ═══════════════════════════════
-Pakuranga: Lloyd Elsmore Pools, 1 Sir Lloyd Drive, Pakuranga Heights. Ph 09 535 1932. Mon–Thu 7am–6pm, Fri 7am–3pm. Open Sundays for acupuncture with Vivian Chen, plus physiotherapy with Timothy Keung, roughly 10–11.30am — call to confirm exact Sunday times. Large car park on site, situated left side of the building.
+Pakuranga: Lloyd Elsmore Pools, 1 Sir Lloyd Drive, Pakuranga Heights. Ph 09 535 1932. Mon–Thu 7am–6pm, Fri 7am–3pm. NOW OPEN WEEKENDS: Saturdays 8:30am–2pm for physiotherapy with Ibrahim Al-Jumaily and Samuel Warren, and Sundays for acupuncture with Vivian Chen plus physiotherapy with Timothy Keung, roughly 10–11.30am — call to confirm exact Sunday times. Large car park on site, situated left side of the building.
 
 Flat Bush / Botany: 14 Fusion Rd, Botany. Ph 09 265 2323. Mon–Fri 9am–6pm. Parking directly outside.
 
@@ -3057,8 +3075,10 @@ PRICING
 - Scott Clayton works Sundays under senior physio supervision — his initial ACC appointments are free.
 
 **Pakuranga:**
-- ACC initial: $35 | ACC follow-up: $30
+- ACC initial with Samuel Warren (Saturdays): FREE
+- ACC initial (standard): $35 | ACC follow-up: $30
 - Private initial: $120 | Private follow-up: $80
+- Samuel Warren works Saturdays 8:30am–2pm under senior physio supervision — his initial ACC appointments are free.
 
 **Flat Bush / Botany:**
 - ACC initial: FREE (new) | ACC follow-up: $30
@@ -3082,7 +3102,7 @@ No referral needed for any appointment.
 When a patient asks about prices, format your reply exactly like this:
 
 **Titirangi:** Free initial ACC with Scott (Sundays). Standard ACC initial $45, follow-up $40. Private initial $120, follow-up $80.
-**Pakuranga:** ACC initial $35, follow-up $30. Private initial $120, follow-up $80.
+**Pakuranga:** Free initial ACC with Samuel (Saturdays). Standard ACC initial $35, follow-up $30. Private initial $120, follow-up $80.
 **Flat Bush / Botany:** Free initial ACC, follow-up $30. Private initial $120, follow-up $80.
 **Panmure:** ACC initial FREE, follow-up $30. Private initial $90, follow-up $80.
 Gold Card / students get ~$5 off. Acupuncture at Pakuranga (Vivian Chen, Sundays): ACC initial $35, follow-up $30.
@@ -3111,7 +3131,8 @@ PAKURANGA:
 - Vivian Chen — Registered Acupuncturist (Sundays only at Pakuranga). 3 years experience. Bachelor of TCM & Acupuncture (Shanghai University of TCM) + Postgrad Diploma in Western Acupuncture (AUT). Also offers electroacupuncture, cupping, and tuina (Chinese therapeutic massage). Special interests: pain management, mental health, women’s health. Fluent Mandarin and English.
 - Timothy Keung — Physiotherapist and Acupuncturist. Specialises in acupuncture and dry needling. Fluent Chinese-speaking (Mandarin/Cantonese).
 - Alistair Burgess — Senior Physiotherapist. Specialises in acupuncture and dry needling.
-- Ibrahim Al-Jumaily — Physiotherapist. Sports and general injuries. Fluent Arabic-speaking. Also works at Flat Bush.
+- Ibrahim Al-Jumaily — Physiotherapist. Sports and general injuries. Fluent Arabic-speaking. Also works at Flat Bush. Works SATURDAYS 8:30am–2pm at Pakuranga.
+- Samuel Warren — Physio Assistant / 4th-year AUT physiotherapy student. Works Saturdays 8:30am–2pm at Pakuranga alongside Ibrahim. Bookable for ACC Initial AND ACC Follow-up appointments, which he takes under senior physio supervision (same arrangement as Scott Clayton at Titirangi) — always offer him as an option for those two types at Pakuranga. FREE initial ACC assessment with Samuel — no co-payment (follow-ups at the standard $30). Macleans College old boy and physio for the Howick College 1st XV rugby team. Special interest in ACL and knee injuries; hands-on, exercise and strength-based approach. Keen endurance athlete — marathon running, triathlons, endurance training — and rugby.
 - Valentino Tie (Val) — Physiotherapist. Fluent Chinese-speaking (Mandarin/Cantonese). Works Pakuranga (Mon, Tue, Thu and Fri) and Panmure (Wednesdays).
 
 FLAT BUSH:
@@ -3187,8 +3208,8 @@ BOOKING FLOW (one question at a time — never repeat a question already answere
 
 CRITICAL — MATCH PRACTITIONER TO APPOINTMENT TYPE:
 - Not everyone on the team can take every appointment type. When offering practitioner options (and chips), ONLY include those qualified for the chosen appointment type:
-  - ACC or Private physiotherapy consultations (Initial or Follow-up): qualified Physiotherapists only (includes Senior Physiotherapists and Physiotherapist & Acupuncturists). NEVER offer Physio Assistants for these — e.g. Jemma Read at Titirangi must NOT appear as an option for ACC Initial or any standard physio consultation.
-  - One exception: Scott Clayton (supervised 4th-year student) IS bookable for ACC Initial AND ACC Follow-up appointments at Titirangi and Panmure (Wednesdays) — ALWAYS include him in the practitioner options for those two types. His initial ACC assessment is free (no co-payment). His available days/times come from the live calendar.
+  - ACC or Private physiotherapy consultations (Initial or Follow-up): qualified Physiotherapists only (includes Senior Physiotherapists and Physiotherapist & Acupuncturists). NEVER offer strength & conditioning trainers for these — e.g. Jemma Read at Titirangi (S&C trainer, not a physio) must NOT appear as an option for ACC Initial or any standard physio consultation.
+  - Supervised 4th-year students ARE bookable for ACC Initial AND ACC Follow-up appointments — ALWAYS include them in the practitioner options for those two types at their clinic: Scott Clayton at Titirangi and Panmure (Wednesdays), and Samuel Warren at Pakuranga (Saturdays 8:30am–2pm) — both offer a FREE initial ACC assessment (no co-payment). Their available days/times come from the live calendar.
   - Acupuncture / dry needling appointment types: only practitioners whose TEAM description mentions acupuncture.
   - Jemma Read: strength & conditioning / exercise-based sessions only. If a patient asks to book her for a physio consultation, kindly explain she's the S&C trainer and offer the physiotherapists instead.
 - If unsure whether someone is qualified for the chosen type, leave them out of the options — the patient can always ask.
