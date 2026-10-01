@@ -2600,6 +2600,33 @@ const JENNY = {
   // [SYSTEM: …] result itself. Left alone the markup is shown to the patient,
   // the action never runs, and the made-up result is treated as real data.
   // Rewrite any such call into a proper <action> tag and drop the rest.
+  // Practitioner chips come from the clinic list, never from the model — left
+  // to itself it drops people (Gwenne at Titirangi) and invents titles.
+  _practitionerChips(list) {
+    const said = JENNY.history.filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM'))
+      .slice(-6).map(m => m.content).join(' ');
+    const acupuncture = /acupunct|needl/i.test(said);
+    const privateOnly = /private/i.test(said) && !/\bacc\b/i.test(said);
+    const student = p => /scott\s+clayton|samuel\s+warren/i.test(p.name);
+    return list
+      .filter(p => !/assistant|student/i.test(p.title || '') || (student(p) && !privateOnly))
+      .filter(p => acupuncture || !/acupuncturist/i.test(p.title || '') || /physio/i.test(p.title || ''))
+      .map(p => student(p)
+        ? `${p.name} :: Student · ACC appts · free initial`
+        : `${p.name} :: ${p.title || 'Physiotherapist'}`)
+      .concat(['No preference']);
+  },
+
+  // If the model offers its own practitioner chips (any list with "No
+  // preference"), swap in the real list for the clinic being booked.
+  _fixPractitionerChips(chips) {
+    if (!chips.some(c => /^no preference/i.test(c))) return chips;
+    const biz = JENNY._currentBiz;
+    const key = biz && Object.keys(CONFIG.CLINICS).find(k => k.toLowerCase() === biz.name.toLowerCase());
+    const list = key ? CONFIG.CLINICS[key].practitioners : (JENNY._practitioners || []);
+    return list.length ? JENNY._practitionerChips(list).slice(0, 12) : chips;
+  },
+
   _normaliseReply(raw) {
     let s = String(raw || '');
     const sys = s.indexOf('[SYSTEM');
@@ -2658,7 +2685,7 @@ const JENNY = {
         chipsToShow = JENNY._autoChips;   // deterministic chips built by the widget (e.g. full practitioner list)
         JENNY._autoChips = null;
       } else if (chipsMatch && !actionMatch) {
-        try { const arr = JSON.parse(chipsMatch[1]); if (Array.isArray(arr)) chipsToShow = arr.slice(0, 12).map(String); } catch(e) {}
+        try { const arr = JSON.parse(chipsMatch[1]); if (Array.isArray(arr)) chipsToShow = JENNY._fixPractitionerChips(arr.slice(0, 12).map(String)); } catch(e) {}
       }
       if (chipsToShow) JENNY.renderChips(chipsToShow);
       if (actionMatch) {
@@ -2829,23 +2856,13 @@ const JENNY = {
           const hardcoded = clinicKey ? CONFIG.CLINICS[clinicKey].practitioners : [];
           if (hardcoded.length > 0) {
             JENNY._practitioners = hardcoded;
-            { const list = hardcoded; JENNY._autoChips = list
-              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton|samuel\s+warren/i.test(p.name))
-              .map(p => /scott\s+clayton|samuel\s+warren/i.test(p.name)
-                ? `${p.name} :: Student · ACC appts · free initial`
-                : `${p.name} :: ${p.title || 'Physiotherapist'}`)
-              .concat(['No preference']); }
+            JENNY._autoChips = JENNY._practitionerChips(hardcoded);
             result = `[SYSTEM: Practitioners at ${biz.name}: ${hardcoded.map(p=>`${p.name} (${p.title||'Physiotherapist'})`).join(', ')}. Use practitioner NAME in future actions. Only offer practitioners qualified for the chosen appointment type — see qualification rules.]`;
           } else {
             // Fallback for clinics not yet hardcoded (Flat Bush, Panmure)
             const d = await apiGet('practitioners', { business_id: biz.id });
             JENNY._practitioners = d.practitioners || [];
-            { const list = JENNY._practitioners; JENNY._autoChips = list
-              .filter(p => !/assistant|student/i.test(p.title || '') || /scott\s+clayton|samuel\s+warren/i.test(p.name))
-              .map(p => /scott\s+clayton|samuel\s+warren/i.test(p.name)
-                ? `${p.name} :: Student · ACC appts · free initial`
-                : `${p.name} :: ${p.title || 'Physiotherapist'}`)
-              .concat(['No preference']); }
+            JENNY._autoChips = JENNY._practitionerChips(JENNY._practitioners);
             result = JENNY._practitioners.length
               ? `[SYSTEM: Practitioners at ${biz.name}: ${JENNY._practitioners.map(p=>p.title?`${p.name} (${p.title})`:p.name).join(', ')}. Use practitioner NAME in future actions. Only offer practitioners qualified for the chosen appointment type — see qualification rules.]`
               : `[SYSTEM: No practitioners found at ${biz.name}.]`;
