@@ -2572,6 +2572,26 @@ const JENNY = {
 
   // Guarantees the API always receives a valid alternating conversation,
   // even if a failed reply left the history out of sync.
+  // Haiku sometimes slips into its native tool-call syntax (<function_calls>,
+  // <invoke>, <…>) instead of our <action> tag, then invents the
+  // [SYSTEM: …] result itself. Left alone the markup is shown to the patient,
+  // the action never runs, and the made-up result is treated as real data.
+  // Rewrite any such call into a proper <action> tag and drop the rest.
+  _normaliseReply(raw) {
+    let s = String(raw || '');
+    const sys = s.indexOf('[SYSTEM');
+    if (sys !== -1) s = s.slice(0, sys);
+    if (/<action>[\s\S]*?<\/action>/.test(s)) return s.trim();
+    const tag = s.search(/<\/?(?:[a-z_]+:)?(?:function_calls?|invoke|tool_calls?|tool_use|parameter)\b/i);
+    if (tag === -1) return s.trim();
+    const before = s.slice(0, tag).trim();
+    const json = s.slice(tag).match(/\{[^{}]*"type"\s*:\s*"[a-z_]+"[^{}]*\}/);
+    if (json) {
+      try { JSON.parse(json[0]); return '<action>' + json[0] + '</action>'; } catch(e) {}
+    }
+    return before;
+  },
+
   _cleanHistory() {
     const out = [];
     for (const m of JENNY.history) {
@@ -2597,13 +2617,16 @@ const JENNY = {
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 700,
+          // Only the widget writes [SYSTEM: …] results. If the model starts
+          // writing one itself it is inventing data — cut it off there.
+          stop_sequences: ['[SYSTEM'],
           system: JENNY.systemPrompt(),
           messages: JENNY._cleanHistory(),
         })
       });
       const data = await res.json();
       typing.remove();
-      const raw = data.content ? data.content.map(c => c.text || '').join('') : '';
+      const raw = JENNY._normaliseReply(data.content ? data.content.map(c => c.text || '').join('') : '');
       const actionMatch = raw.match(/<action>([\s\S]*?)<\/action>/);
       const chipsMatch  = raw.match(/<chips>([\s\S]*?)<\/chips>/);
       const display = raw.replace(/<action>[\s\S]*?<\/action>/g, '').replace(/<chips>[\s\S]*?<\/chips>/g, '').trim();
@@ -3212,6 +3235,8 @@ TAP-TO-ANSWER CHIPS (VERY IMPORTANT — makes the chat tap-first, minimal typing
 - Chips supplement your message, they don't replace it — still write your normal short question first; NEVER send a reply that contains only a chips tag with no message text. Keep the chips tag as the very last thing in your reply. Never mention the word "chips" to the patient; say "tap an option below" the first time, then it's self-evident.
 
 IMPORTANT: Widget resolves all IDs from names automatically. NEVER include numeric IDs in actions — use names only. Never invent or guess data.
+
+ACTION FORMAT (STRICT): the ONLY way to run an action is the <action>{...}</action> tag exactly as shown below. Never use <function_calls>, <invoke>, or any other tool-call syntax. Never write a [SYSTEM: ...] line yourself — those come only from the widget, so stop after the action tag and wait.
 
 ACTIONS — output the action tag alone, no surrounding text. Wait for [SYSTEM: result] before replying.
 
