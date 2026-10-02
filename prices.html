@@ -2789,7 +2789,7 @@ const JENNY = {
 
         case 'get_appointment_types': {
           const biz = JENNY._biz(action.business_name);
-          if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
+          if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
           JENNY._currentBiz = biz;
           JENNY._currentApptTypes = JENNY._apptTypesForBiz(biz);
           result = `[SYSTEM: Appointment types at ${biz.name}: ${JENNY._currentApptTypes.map(t=>`"${t.name}" ${t.duration}min`).join(' | ')}. Use type NAME in future actions.]`;
@@ -2798,7 +2798,7 @@ const JENNY = {
 
         case 'get_practitioners': {
           const biz = JENNY._biz(action.business_name);
-          if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found.]`; break; }
+          if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
           // Use hardcoded practitioners first
           const clinicKey = Object.keys(CONFIG.CLINICS).find(k => k.toLowerCase() === biz.name.toLowerCase());
           const hardcoded = clinicKey ? CONFIG.CLINICS[clinicKey].practitioners : [];
@@ -2821,7 +2821,7 @@ const JENNY = {
         case 'get_available_dates': {
           const biz = JENNY._biz(action.business_name);
           let apt = JENNY._apt(action.appointment_type_name, biz);
-          if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
+          if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
           if (!apt) {
             const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
             result = `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${action.business_name}. Available types: ${avail}. Call get_appointment_types for ${action.business_name} to refresh, then retry with exact name.]`;
@@ -2850,7 +2850,7 @@ const JENNY = {
         case 'get_available_times': {
           const biz = JENNY._biz(action.business_name);
           let apt = JENNY._apt(action.appointment_type_name, biz);
-          if (!biz) { result = `[SYSTEM: Clinic not found.]`; break; }
+          if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
           if (!apt) {
             const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
             result = `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${action.business_name}. Available types: ${avail}. Call get_appointment_types for ${action.business_name} then retry with exact name.]`;
@@ -3301,7 +3301,21 @@ NEVER tell a patient an appointment has been booked, cancelled, moved or resched
       });
     } catch(e) { /* silent fail — don't interrupt user experience */ }
   },
-  _biz(name='')  { return (JENNY._businesses||[]).find(b=>b.name.toLowerCase().includes(name.toLowerCase().trim())); },
+  // The model passes whatever the patient tapped, e.g. "Flat Bush / Botany",
+  // so match each half and known aliases, not just the exact clinic key.
+  _biz(name='') {
+    const list = JENNY._businesses || [];
+    const norm = x => String(x || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+    const ALIAS = { 'botany': 'flat bush', 'flat bush botany': 'flat bush', 'pakuranga heights': 'pakuranga' };
+    const parts = [name, ...String(name).split(/[\/,&]|\bor\b/i)].map(norm).filter(Boolean);
+    for (const p of parts) {
+      for (const q of [p, ALIAS[p]].filter(Boolean)) {
+        const hit = list.find(b => norm(b.name) === q) || list.find(b => norm(b.name).includes(q));
+        if (hit) return hit;
+      }
+    }
+    return null;
+  },
   _apt(name='', biz=null) {
     if (!name) return null;
     const types = biz ? JENNY._apptTypesForBiz(biz) : (JENNY._currentApptTypes || JENNY._allApptTypes || []);
