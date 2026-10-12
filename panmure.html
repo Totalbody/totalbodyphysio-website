@@ -1048,10 +1048,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="t-photo"><img src="images/team/valentino.jpeg" alt="Val Tie" onerror="this.remove()">VT</div>
         <div class="t-info"><h3>Val Tie</h3><div>Wednesdays · 中文</div><span>Meet Val →</span></div>
       </button>
-      <button class="t-card fu" onclick="openModal('scott')">
-        <div class="t-photo"><img src="images/team/scott.jpeg" alt="Scott Clayton" onerror="this.remove()">SC</div>
-        <div class="t-info"><h3>Scott Clayton</h3><div>Wednesdays · Student physio</div><span>Meet Scott →</span></div>
-      </button>
     </div>
   </div>
 </section>
@@ -1228,7 +1224,6 @@ const CONFIG = {
         { id: '1836577525711504654', name: 'Komal Preet Kaur', title: 'Senior Physiotherapist' },
         { id: '1837927442598069580', name: 'Gwenne Manares',   title: 'Physiotherapist' },
         { id: '1957050361940281187', name: 'Valentino Tie',      title: 'Physiotherapist' },
-        { id: '1414969921577682942', name: 'Scott Clayton',     title: 'Physiotherapy Assistant/Student' },
       ],
     },
   },
@@ -1239,8 +1234,7 @@ const CONFIG = {
       '546224',              // Private Follow-up
       '546217',              // ACC Initial - Titirangi
       '1760431355214169677', // ACC Follow-up 30 min - Titirangi
-      '1954858911718704506', // Free ACC Initial Consult — Scott Clayton (student); the only ACC initial Cliniko lets him take
-      '1954861311363908988', // Free ACC Follow-up — student physio (Scott)
+      '1954861311363908988', // Free ACC Follow-up — student physio (Scott; follow-ups only, he doesn't see new patients)
       '1160520320398918864', // Therapeutic Massage 60
       '1160521542988203217', // Therapeutic Massage 45
     ],
@@ -2581,11 +2575,16 @@ const JENNY = {
       .slice(-6).map(m => m.content).join(' ');
     const acupuncture = /acupunct|needl/i.test(said);
     const privateOnly = /private/i.test(said) && !/\bacc\b/i.test(said);
+    const initial = /initial|new (injur|patient)|first (visit|appointment|time)/i.test(said);
     const student = p => /scott\s+clayton|samuel\s+warren/i.test(p.name);
+    // Scott is a physio assistant: ACC follow-ups only, no new patients.
+    const followUpOnly = p => /scott\s+clayton/i.test(p.name);
     return list
-      .filter(p => !/assistant|student/i.test(p.title || '') || (student(p) && !privateOnly))
+      .filter(p => !/assistant|student/i.test(p.title || '') || (student(p) && !privateOnly && !(followUpOnly(p) && initial)))
       .filter(p => acupuncture || !/acupuncturist/i.test(p.title || '') || /physio/i.test(p.title || ''))
-      .map(p => student(p)
+      .map(p => followUpOnly(p)
+        ? `${p.name} :: Physio assistant · ACC follow-ups only`
+        : student(p)
         ? `${p.name} :: Student · ACC appts · free initial`
         : `${p.name} :: ${p.title || 'Physiotherapist'}`)
       .concat(['No preference']);
@@ -3069,10 +3068,9 @@ Panmure (Lagoon Pools): 29 Lagoon Drive, Panmure. Ph 09 573 5788. Mon–Thu 7am�
 PRICING
 ═══════════════════════════════
 **Titirangi:**
-- ACC initial with Scott (Sundays): FREE
-- ACC initial (standard): $45 | ACC follow-up: $40
+- ACC initial: $45 | ACC follow-up: $40
 - Private initial: $120 | Private follow-up: $80
-- Scott Clayton works Sundays under senior physio supervision — his initial ACC appointments are free.
+- There is NO free ACC initial at Titirangi. Scott Clayton (physio assistant) works Sundays under senior physio supervision and sees ACC FOLLOW-UP patients only — he does not see new patients or do initial assessments.
 
 **Pakuranga:**
 - ACC initial with Samuel Warren (Saturdays): FREE
@@ -3101,7 +3099,7 @@ No referral needed for any appointment.
 
 When a patient asks about prices, format your reply exactly like this:
 
-**Titirangi:** Free initial ACC with Scott (Sundays). Standard ACC initial $45, follow-up $40. Private initial $120, follow-up $80.
+**Titirangi:** ACC initial $45, follow-up $40. Private initial $120, follow-up $80.
 **Pakuranga:** Free initial ACC with Samuel (Saturdays). Standard ACC initial $35, follow-up $30. Private initial $120, follow-up $80.
 **Flat Bush / Botany:** Free initial ACC, follow-up $30. Private initial $120, follow-up $80.
 **Panmure:** ACC initial FREE, follow-up $30. Private initial $90, follow-up $80.
@@ -3132,7 +3130,7 @@ PAKURANGA:
 - Timothy Keung — Physiotherapist and Acupuncturist. Specialises in acupuncture and dry needling. Fluent Chinese-speaking (Mandarin/Cantonese).
 - Alistair Burgess — Senior Physiotherapist. Specialises in acupuncture and dry needling.
 - Ibrahim Al-Jumaily — Physiotherapist. Sports and general injuries. Fluent Arabic-speaking. Also works at Flat Bush. Works SATURDAYS 8:30am–2pm at Pakuranga.
-- Samuel Warren — Physio Assistant / 4th-year AUT physiotherapy student. Works Saturdays 8:30am–2pm at Pakuranga alongside Ibrahim. Bookable for ACC Initial AND ACC Follow-up appointments, which he takes under senior physio supervision (same arrangement as Scott Clayton at Titirangi) — always offer him as an option for those two types at Pakuranga. FREE initial ACC assessment with Samuel — no co-payment (follow-ups at the standard $30). Macleans College old boy and physio for the Howick College 1st XV rugby team. Special interest in ACL and knee injuries; hands-on, exercise and strength-based approach. Keen endurance athlete — marathon running, triathlons, endurance training — and rugby.
+- Samuel Warren — Physio Assistant / 4th-year AUT physiotherapy student. Works Saturdays 8:30am–2pm at Pakuranga alongside Ibrahim. Bookable for ACC Initial AND ACC Follow-up appointments, which he takes under senior physio supervision — always offer him as an option for those two types at Pakuranga. FREE initial ACC assessment with Samuel — no co-payment (follow-ups at the standard $30). Macleans College old boy and physio for the Howick College 1st XV rugby team. Special interest in ACL and knee injuries; hands-on, exercise and strength-based approach. Keen endurance athlete — marathon running, triathlons, endurance training — and rugby.
 - Valentino Tie (Val) — Physiotherapist. Fluent Chinese-speaking (Mandarin/Cantonese). Works Pakuranga (Mon, Tue, Thu and Fri) and Panmure (Wednesdays).
 
 FLAT BUSH:
@@ -3142,14 +3140,14 @@ FLAT BUSH:
 TITIRANGI:
 - Jade Warren (he/him — Jade is male, always refer to him as he/him) — Senior Physiotherapist. Founder, Director and owner of Total Body Physio; established the practice in 2000, 26+ years experience.
 - Hans Vermeulen — Senior Physiotherapist. Nearly 30 years experience. Specialises in lower back pain, neck and shoulder conditions, knee rehabilitation, and therapeutic massage.
-- Scott Clayton — Physiotherapy Assistant/Student. 4th year student, working Sundays at Titirangi and Wednesdays at Panmure under supervision. Bookable for ACC Initial AND ACC Follow-up appointments — always offer him as an option for these at Titirangi and Panmure. FREE initial ACC assessment with Scott — no co-payment. Note: Scott's online availability may be limited — if no times show, suggest selecting "no preference" or another practitioner.
+- Scott Clayton — Physiotherapy Assistant/Student. 4th year student, working Sundays at Titirangi under supervision. As a physio assistant he can NOT see new patients: he is bookable for ACC Follow-up appointments ONLY — never offer him for ACC Initial, Private, or any new-patient booking, and there is no free initial with him. He no longer works at Panmure. Note: Scott's online availability may be limited — if no times show, suggest selecting "no preference" or another practitioner.
 
 - Jemma Read — Physio Assistant and Strength & Conditioning Trainer. Exercise-based rehabilitation and strength training. Not a physiotherapist — does not take ACC or Private physio consultations.
 - Gwenne Manares — Physiotherapist. Patient-centred, evidence-based physio combining hands-on treatment, targeted exercise rehabilitation, patient education and Pilates-based exercise. Currently completing her Mat Pilates certification and incorporates Pilates principles into rehab programs to improve strength, mobility, core control, balance and movement confidence. Works at both Titirangi and Panmure.
 
 PANMURE:
 - Komal Preet Kaur — Senior Physiotherapist. Dry needling. Works Monday to Friday at Panmure.
-- Also at Panmure: Gwenne Manares (also Titirangi; Pilates-based exercise rehab), Valentino Tie (Wednesdays; also Pakuranga), and Scott Clayton (Wednesdays; supervised 4th-year student — bookable for ACC Initial and ACC Follow-up, free initial ACC; also Titirangi on Sundays).
+- Also at Panmure: Gwenne Manares (also Titirangi; Pilates-based exercise rehab), and Valentino Tie (Wednesdays; also Pakuranga).
 
 Chinese-speaking practitioners: Timothy Keung and Valentino Tie (Pakuranga), Valentino Tie (Panmure Wednesdays), Isabella Yang (Flat Bush).
 Arabic-speaking practitioner: Ibrahim Al-Jumaily (Pakuranga and Flat Bush).
@@ -3164,7 +3162,7 @@ BUSINESS & NON-PATIENT ENQUIRIES: Jade Warren (he/him) is the Director and owner
 - Only state facts listed above. If something is not listed here, say "I'm not sure — please call the clinic directly" and give the relevant phone number.
 - Never invent prices, practitioner names, availability, or services.
 - Never confirm a specific practitioner works somewhere unless listed above.
-- Scott Clayton and Samuel Warren are booked under their own FREE student appointment types in Cliniko. You never need to name those: pass the normal ACC type name (e.g. "ACC Initial" or "ACC Follow-up") together with their name and the widget switches to the right type automatically. If they genuinely have no dates, say so and offer the other practitioners or no preference.
+- Scott Clayton (ACC Follow-up only) and Samuel Warren are booked under their own FREE student appointment types in Cliniko. You never need to name those: pass the normal ACC type name (e.g. "ACC Initial" or "ACC Follow-up") together with their name and the widget switches to the right type automatically. If they genuinely have no dates, say so and offer the other practitioners or no preference.
 - For hours at Titirangi: always say "call 09 817 7377 for current hours" rather than guessing.
 
 ═══════════════════════════════
@@ -3209,7 +3207,8 @@ BOOKING FLOW (one question at a time — never repeat a question already answere
 CRITICAL — MATCH PRACTITIONER TO APPOINTMENT TYPE:
 - Not everyone on the team can take every appointment type. When offering practitioner options (and chips), ONLY include those qualified for the chosen appointment type:
   - ACC or Private physiotherapy consultations (Initial or Follow-up): qualified Physiotherapists only (includes Senior Physiotherapists and Physiotherapist & Acupuncturists). NEVER offer strength & conditioning trainers for these — e.g. Jemma Read at Titirangi (S&C trainer, not a physio) must NOT appear as an option for ACC Initial or any standard physio consultation.
-  - Supervised 4th-year students ARE bookable for ACC Initial AND ACC Follow-up appointments — ALWAYS include them in the practitioner options for those two types at their clinic: Scott Clayton at Titirangi and Panmure (Wednesdays), and Samuel Warren at Pakuranga (Saturdays 8:30am–2pm) — both offer a FREE initial ACC assessment (no co-payment). Their available days/times come from the live calendar.
+  - Samuel Warren (supervised 4th-year student) IS bookable for ACC Initial AND ACC Follow-up appointments — ALWAYS include him in the practitioner options for those two types at Pakuranga (Saturdays 8:30am–2pm); his initial ACC assessment is FREE (no co-payment).
+  - Scott Clayton (physio assistant, Titirangi Sundays) is bookable for ACC Follow-up ONLY — include him for ACC Follow-up at Titirangi, but NEVER for ACC Initial, Private, or any new patient. Their available days/times come from the live calendar.
   - Acupuncture / dry needling appointment types: only practitioners whose TEAM description mentions acupuncture.
   - Jemma Read: strength & conditioning / exercise-based sessions only. If a patient asks to book her for a physio consultation, kindly explain she's the S&C trainer and offer the physiotherapists instead.
 - If unsure whether someone is qualified for the chosen type, leave them out of the options — the patient can always ask.
@@ -3265,8 +3264,8 @@ NEVER tell a patient an appointment has been booked, cancelled, moved or resched
 <action>{"type":"get_businesses"}</action>
 <action>{"type":"get_appointment_types","business_name":"Titirangi"}</action>
 <action>{"type":"get_practitioners","business_name":"Titirangi"}</action>
-<action>{"type":"get_available_dates","business_name":"Titirangi","appointment_type_name":"ACC Initial","practitioner_name":"Scott"}</action>
-<action>{"type":"get_available_times","business_name":"Titirangi","appointment_type_name":"ACC Initial","date_index":0,"practitioner_name":"Scott"}</action>
+<action>{"type":"get_available_dates","business_name":"Titirangi","appointment_type_name":"ACC Follow-up","practitioner_name":"Scott"}</action>
+<action>{"type":"get_available_times","business_name":"Titirangi","appointment_type_name":"ACC Follow-up","date_index":0,"practitioner_name":"Scott"}</action>
 <action>{"type":"book_appointment","business_name":"Titirangi","appointment_type_name":"ACC Initial","slot_index":0}</action>
 <action>{"type":"reschedule_appointment","business_name":"Titirangi","appointment_type_name":"ACC Follow-up","slot_index":0,"old_appointment_id":"APPOINTMENT_ID","reason":50}</action>  ← use this for EVERY reschedule; books the new time and cancels the old one
 <action>{"type":"cancel_appointment","appointment_id":"APPOINTMENT_ID","reason":30}</action>  ← reason codes: 10 feeling better · 20 condition worse · 30 sick · 40 away · 60 work · 50 other`;
@@ -3537,21 +3536,6 @@ var TEAM = {
       "Mandarin & Cantonese"
     ],
     "book": "https://total-body-physio.au1.cliniko.com/bookings?business_id=1505312653948487012&practitioner_id=1957050361940281187"
-  },
-  "scott": {
-    "name": "Scott Clayton",
-    "initials": "SC",
-    "photo": "images/team/scott.jpeg",
-    "pos": "",
-    "title": "Physiotherapy Assistant/Student · Wednesdays",
-    "bio": "Scott is a 4th-year physiotherapy student working as a physio assistant at Panmure on Wednesdays. Operating under the close supervision of our senior physios, Scott brings fresh enthusiasm, up-to-date clinical knowledge, and genuine care to every session — and he's bookable for both ACC initial and follow-up appointments, with your first ACC visit free.",
-    "tags": [
-      "ACC initial & follow-up",
-      "Supervised clinical treatment",
-      "Exercise rehabilitation",
-      "Patient education"
-    ],
-    "book": "https://total-body-physio.au1.cliniko.com/bookings?business_id=1505312653948487012&practitioner_id=1414969921577682942"
   }
 };
 function jennyFab(show){var f=document.getElementById('bw-fab-wrap');if(f)f.style.display=show?'':'none'}
