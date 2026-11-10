@@ -2301,7 +2301,11 @@ async function cancelAppointmentVerified(appointmentId, reason, patientId) {
 const lateCancelAlert = (id, reason, context, info) => {
   try {
     fetch(`${CONFIG.proxyUrl}/api/late-cancellation-alert`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      // The patient's token lets the clinic's alert say it really came from them.
+      headers: Object.assign({ 'Content-Type': 'application/json' },
+        info && info.patient_id && PATIENT_TOKENS[String(info.patient_id)]
+          ? { 'X-Patient-Token': PATIENT_TOKENS[String(info.patient_id)] } : {}),
       body: JSON.stringify(Object.assign(
         { appointment_id: id, reason: reason || 50, context: context || 'manage' },
         info || {}
