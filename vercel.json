@@ -1,4 +1,23 @@
 {
+  "redirects": [
+    { "source": "/flatbush-botanyjunction", "destination": "/flatbush.html", "statusCode": 301 },
+    { "source": "/panmure-clinic", "destination": "/panmure.html", "statusCode": 301 },
+    { "source": "/titirangi-clinic", "destination": "/titirangi.html", "statusCode": 301 },
+    { "source": "/our-story-pakuranga", "destination": "/pakuranga.html", "statusCode": 301 },
+    { "source": "/acupuncture-info", "destination": "/pakuranga.html", "statusCode": 301 },
+    { "source": "/dry-needling", "destination": "/acupuncture-dry-needling.html", "statusCode": 301 },
+    { "source": "/new-patient-info", "destination": "/faq.html", "statusCode": 301 },
+    { "source": "/contact-8", "destination": "/#contact", "statusCode": 301 },
+    { "source": "/contact-8-1", "destination": "/#contact", "statusCode": 301 },
+    { "source": "/covid-alert-level-3-health-and-safety", "destination": "/", "statusCode": 301 },
+    { "source": "/ourstaff", "destination": "/", "statusCode": 301 },
+    { "source": "/jade-warren-profile", "destination": "/titirangi.html", "statusCode": 301 },
+    { "source": "/hans-vermeulen-profile", "destination": "/titirangi.html", "statusCode": 301 },
+    { "source": "/timothy-keung-profile", "destination": "/pakuranga.html", "statusCode": 301 },
+    { "source": "/alistair-burgess-profile", "destination": "/pakuranga.html", "statusCode": 301 },
+    { "source": "/dylan-connolly-profile", "destination": "/pakuranga.html", "statusCode": 301 },
+    { "source": "/ishwari-pillay-profile", "destination": "/flatbush.html", "statusCode": 301 }
+  ],
   "headers": [
     {
       "source": "/(.*)",
