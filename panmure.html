@@ -947,6 +947,17 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(14px);backg
 .team{padding:100px 0;background:var(--bone)}
 .team h2{font-size:clamp(32px,4.2vw,52px);font-weight:800;color:var(--ink);margin-top:16px}
 .team-sub{color:var(--text-mid);margin-top:12px;max-width:52ch}
+/* inside the clinic */
+.inside{padding:100px 0;background:#fff}
+.inside h2{font-size:clamp(32px,4.2vw,52px);font-weight:800;color:var(--ink);margin-top:16px}
+.inside-sub{color:var(--text-mid);margin-top:12px;max-width:52ch}
+.i-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.i-grid.two{grid-template-columns:repeat(2,1fr)}
+.i-grid figure{margin:0}
+.i-grid img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:20px;background:var(--bone)}
+.i-grid figcaption{font-size:14.5px;color:var(--text-mid);margin-top:12px}
+@media(max-width:920px){.i-grid,.i-grid.two{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.i-grid,.i-grid.two{grid-template-columns:1fr}.inside{padding:72px 0}}
 .t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
 .t-card{background:#fff;border:1px solid var(--hairline-dark);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s;text-align:left}
 .t-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(20,40,12,0.12)}
@@ -1157,6 +1168,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="t-photo"><img width="714" height="714" src="images/team/valentino.webp" alt="Val Tie" onerror="this.remove()">VT</div>
         <div class="t-info"><h3>Val Tie</h3><div>Wednesdays · 中文</div><span>Meet Val →</span></div>
       </button>
+    </div>
+  </div>
+</section>
+
+<section class="inside">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--moss)">Inside the clinic</div>
+    <h2 class="fu">Take a look around.</h2>
+    <p class="inside-sub fu">Here's what to expect when you arrive at Lagoon Pools.</p>
+    <div class="i-grid two">
+      <figure class="fu"><img src="images/clinics/panmure-pool.webp" width="945" height="630" alt="The indoor pool at Lagoon Pools, Panmure" loading="lazy"><figcaption>The indoor pool at Lagoon Pools</figcaption></figure>
+      <figure class="fu"><img src="images/clinics/panmure-treatment-room.webp" width="1100" height="1100" alt="A treatment room at the Panmure clinic" loading="lazy"><figcaption>One of our treatment rooms</figcaption></figure>
     </div>
   </div>
 </section>
