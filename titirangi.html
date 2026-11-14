@@ -34,7 +34,7 @@
    "url": "https://www.totalbodyphysio.co.nz/titirangi.html",
    "telephone": "+6498177377",
    "email": "titirangi@totalbodyphysio.co.nz",
-   "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5346.webp",
+   "image": "https://www.totalbodyphysio.co.nz/images/clinics/titirangi-exterior.webp",
    "address": {
     "@type": "PostalAddress",
     "streetAddress": "2 Rangiwai Rd",
@@ -947,6 +947,18 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(14px);backg
 .team{padding:100px 0;background:var(--bone)}
 .team h2{font-size:clamp(32px,4.2vw,52px);font-weight:800;color:var(--ink);margin-top:16px}
 .team-sub{color:var(--text-mid);margin-top:12px;max-width:52ch}
+/* inside the clinic */
+.inside{padding:100px 0;background:#fff}
+.inside h2{font-size:clamp(32px,4.2vw,52px);font-weight:800;color:var(--ink);margin-top:16px}
+.inside-sub{color:var(--text-mid);margin-top:12px;max-width:52ch}
+.i-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.i-grid.two{grid-template-columns:repeat(2,1fr)}
+.i-grid.one{grid-template-columns:minmax(0,760px)}
+.i-grid figure{margin:0}
+.i-grid img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:20px;background:var(--bone)}
+.i-grid figcaption{font-size:14.5px;color:var(--text-mid);margin-top:12px}
+@media(max-width:920px){.i-grid,.i-grid.two{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.i-grid,.i-grid.two{grid-template-columns:1fr}.inside{padding:72px 0}}
 .t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
 .t-card{background:#fff;border:1px solid var(--hairline-dark);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s;text-align:left}
 .t-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(20,40,12,0.12)}
@@ -1103,7 +1115,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <header class="hero">
   <div class="hero-media">
-    <img width="789" height="587" src="images/clinics/IMG_5346.webp" alt="Total Body Physio Titirangi clinic, Titirangi Village"
+    <img width="1203" height="586" src="images/clinics/titirangi-exterior.webp" alt="Total Body Physio Titirangi clinic, Titirangi Village"
       onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1800&q=80';document.getElementById('phTag').style.display='inline-flex'}else if(this.dataset.f==1){this.dataset.f=2;this.src='https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1800&q=80'}else{this.remove()}">
   </div>
   <div id="phTag" style="display:none;position:absolute;top:86px;right:18px;z-index:2;background:rgba(0,0,0,0.55);color:#fff;font-size:11.5px;font-weight:600;padding:6px 13px;border-radius:100px;letter-spacing:.04em;align-items:center;gap:6px">📷 Stock placeholder — your photo goes here</div>
@@ -1145,21 +1157,32 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <p class="team-sub fu">Tap anyone to read their story and book with them directly.</p>
     <div class="t-grid">
       <button class="t-card fu" onclick="openModal('jade')">
-        <div class="t-photo"><img width="532" height="538" src="images/team/jade.AVIF" alt="Jade Warren" onerror="this.remove()">JW</div>
+        <div class="t-photo"><img width="720" height="720" src="images/team/jade.webp" alt="Jade Warren" onerror="this.remove()">JW</div>
         <div class="t-info"><h3>Jade Warren</h3><div>Founder · 26+ years experience</div><span>Meet Jade →</span></div>
       </button>
       <button class="t-card fu" onclick="openModal('hans')">
-        <div class="t-photo"><img width="479" height="640" src="images/team/hans.webp" style="object-position:center top" alt="Hans Vermeulen" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='images/team/hans.GIF'}else{this.remove()}">HV</div>
+        <div class="t-photo"><img width="677" height="677" src="images/team/hans.webp" alt="Hans Vermeulen" onerror="this.remove()">HV</div>
         <div class="t-info"><h3>Hans Vermeulen</h3><div>Senior physio · 30 years</div><span>Meet Hans →</span></div>
       </button>
       <button class="t-card fu" onclick="openModal('gwenne')">
-        <div class="t-photo"><img width="532" height="538" src="images/team/gwen.AVIF" alt="Gwenne Manares" onerror="this.remove()">GM</div>
+        <div class="t-photo"><img width="720" height="720" src="images/team/gwen.webp" alt="Gwenne Manares" onerror="this.remove()">GM</div>
         <div class="t-info"><h3>Gwenne Manares</h3><div>Physiotherapist · Pilates-based rehab</div><span>Meet Gwenne →</span></div>
       </button>
       <button class="t-card fu" onclick="openModal('jemma')">
-        <div class="t-photo">JR</div>
+        <div class="t-photo"><img width="720" height="720" src="images/team/jemma.webp" alt="Jemma Read" onerror="this.remove()">JR</div>
         <div class="t-info"><h3>Jemma Read</h3><div>Strength & Conditioning</div><span>Meet Jemma →</span></div>
       </button>
+    </div>
+  </div>
+</section>
+
+<section class="inside">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--moss)">Inside the clinic</div>
+    <h2 class="fu">Take a look around.</h2>
+    <p class="inside-sub fu">Here's what to expect when you arrive in Titirangi Village.</p>
+    <div class="i-grid one">
+      <figure class="fu"><img src="images/clinics/titirangi-reception.webp" width="1100" height="825" alt="Reception and waiting area at the Titirangi clinic" loading="lazy"><figcaption>Reception at Titirangi</figcaption></figure>
     </div>
   </div>
 </section>
@@ -3315,7 +3338,7 @@ var TEAM = {
   "jade": {
     "name": "Jade Warren",
     "initials": "JW",
-    "photo": "images/team/jade.AVIF",
+    "photo": "images/team/jade.webp",
     "pos": "",
     "title": "Clinical Director & Founder · 26+ Years",
     "bio": "Jade founded Total Body Physio in 2000 with a simple belief — people deserve better than cookie-cutter treatment. With over 26 years of experience, he still sees patients most days at Titirangi, working with everyone from elite athletes to people managing chronic pain. Married with four teenage children, Jade is a passionate advocate for hands-on physio and keeping people moving at every age.",
@@ -3331,7 +3354,7 @@ var TEAM = {
     "name": "Hans Vermeulen",
     "initials": "HV",
     "photo": "images/team/hans.webp",
-    "pos": "center top",
+    "pos": "",
     "title": "Senior Physiotherapist · 30 Years Experience",
     "bio": "Hans is one of Auckland's most experienced physiotherapists with nearly 30 years in clinical practice. Patients regularly come to him after years of unresolved pain and finally get answers — he combines precise hands-on therapy with a calm, methodical approach known for getting to the root cause of long-standing injuries others have struggled to resolve.",
     "tags": [
@@ -3345,7 +3368,7 @@ var TEAM = {
   "gwenne": {
     "name": "Gwenne Manares",
     "initials": "GM",
-    "photo": "images/team/gwen.AVIF",
+    "photo": "images/team/gwen.webp",
     "pos": "",
     "title": "Physiotherapist",
     "bio": "Gwenne provides patient-centred, evidence-based physiotherapy focused on helping people move better, build strength, and return to the activities they enjoy. She combines hands-on treatment, targeted exercise rehabilitation, patient education, and Pilates-based exercises tailored to each patient’s goals.\n\nShe is currently completing her Mat Pilates certification and incorporates Pilates principles into appropriate rehabilitation programs to improve strength, mobility, core control, balance, and movement confidence.\n\nGwenne works at both Titirangi and Panmure.",
@@ -3361,7 +3384,7 @@ var TEAM = {
   "jemma": {
     "name": "Jemma Read",
     "initials": "JR",
-    "photo": "",
+    "photo": "images/team/jemma.webp",
     "pos": "",
     "title": "Physio Assistant · Strength & Conditioning",
     "bio": "Jemma is a physio assistant and strength & conditioning trainer, focused on exercise-based rehabilitation and building the strength that keeps injuries from coming back.",

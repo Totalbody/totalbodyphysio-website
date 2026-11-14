@@ -107,7 +107,7 @@
    "url": "https://www.totalbodyphysio.co.nz/titirangi.html",
    "telephone": "+6498177377",
    "email": "titirangi@totalbodyphysio.co.nz",
-   "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5346.webp",
+   "image": "https://www.totalbodyphysio.co.nz/images/clinics/titirangi-exterior.webp",
    "address": {
     "@type": "PostalAddress",
     "streetAddress": "2 Rangiwai Rd",
@@ -187,7 +187,7 @@
    "url": "https://www.totalbodyphysio.co.nz/pakuranga.html",
    "telephone": "+6495351932",
    "email": "pakuranga@totalbodyphysio.co.nz",
-   "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5351.webp",
+   "image": "https://www.totalbodyphysio.co.nz/images/clinics/pakuranga-exterior.webp",
    "address": {
     "@type": "PostalAddress",
     "streetAddress": "Lloyd Elsmore Pools, 1 Sir Lloyd Drive",
@@ -286,7 +286,7 @@
    "url": "https://www.totalbodyphysio.co.nz/flatbush.html",
    "telephone": "+6492652323",
    "email": "botany@totalbodyphysio.co.nz",
-   "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5350.webp",
+   "image": "https://www.totalbodyphysio.co.nz/images/clinics/flatbush-exterior.webp",
    "address": {
     "@type": "PostalAddress",
     "streetAddress": "14 Fusion Rd",
@@ -361,7 +361,7 @@
    "url": "https://www.totalbodyphysio.co.nz/panmure.html",
    "telephone": "+6495735788",
    "email": "panmure@totalbodyphysio.co.nz",
-   "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5353.webp",
+   "image": "https://www.totalbodyphysio.co.nz/images/clinics/panmure-exterior.webp",
    "address": {
     "@type": "PostalAddress",
     "streetAddress": "Lagoon Pools, 29 Lagoon Drive",
@@ -1307,7 +1307,7 @@ nav{
   border:1px solid var(--hairline-dark);
 }
 .hc-badge{
-  position:absolute;top:-20px;right:-12px;
+  position:absolute;bottom:calc(100% - 20px);right:-12px;
   background:var(--forest);color:#fff;border-radius:18px;padding:14px 20px;
   box-shadow:0 12px 30px rgba(44,97,32,0.4);text-align:left;
 }
@@ -1494,6 +1494,7 @@ nav{
 }
 .c-card a.book:hover{color:#fff}
 .c-cover{position:absolute;inset:0;z-index:1}
+.c-photo{display:block;width:calc(100% + 52px);max-width:none;height:auto;aspect-ratio:16/9;object-fit:cover;margin:-30px -26px 6px}
 .soon{font-size:12px;color:rgba(255,255,255,0.35);margin-top:8px}
 
 /* ── CTA ─────────────────────────────── */
@@ -1543,8 +1544,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .has-sub .sub{display:block;position:static;background:none;border:none;backdrop-filter:none;box-shadow:none;padding:0;min-width:0}
   .has-sub .sub a{padding:11px 24px 11px 40px;font-size:15px;color:rgba(255,255,255,0.65)}
   .hero-grid{grid-template-columns:1fr;gap:26px}
-  .hero-card{margin-top:18px}
-  .hc-badge{top:-16px;right:6px;padding:11px 16px}
+  .hero-card{margin-top:64px}
+  .hc-badge{bottom:calc(100% - 18px);right:6px;padding:11px 16px}
   .hc-badge b{font-size:21px}
   .hero{padding-top:104px}
   .j-grid{grid-template-columns:1fr;gap:8px}
@@ -1767,8 +1768,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <p class="services-sub fu">Whatever your body responds to best — we've got the tools, and the people trained to use them properly.</p>
     <div class="s-grid">
       <div class="s-card fu" onclick="openServ('manual')" style="cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1540205895360-4ad4cffb3aa8?w=1200&q=80" alt="Hands-on manual therapy"
-          onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://images.unsplash.com/photo-1649751361457-01d3a696c7e6?w=1200&q=80'}else{this.remove()}">
+        <img src="images/clinics/panmure-treatment-room.webp" alt="Hands-on manual therapy" loading="lazy" onerror="this.remove()">
         <div class="s-body">
           <h3>Hands-on manual therapy</h3>
           <p>Proper hands-on treatment — joint mobilisation, soft tissue work, real assessment. Not just a sheet of exercises.</p>
@@ -1776,8 +1776,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
       </div>
       <div class="s-card fu" onclick="openServ('needling')" style="cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1598555763574-dca77e10427e?w=1200&q=80" alt="Acupuncture and dry needling"
-          onerror="this.remove()">
+        <img src="images/clinics/pakuranga-dry-needling.webp" alt="Acupuncture and dry needling" style="object-position:center 12%" loading="lazy" onerror="this.remove()">
         <div class="s-body">
           <h3>Acupuncture &amp; dry needling</h3>
           <p>45-minute sessions with our specialist-trained physios for stubborn pain and tight, overloaded muscles.</p>
@@ -1785,8 +1784,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
       </div>
       <div class="s-card fu" onclick="openServ('massage')" style="cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=1200&q=80" alt="Therapeutic massage"
-          onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://images.unsplash.com/photo-1519824145371-296894a0daa9?w=1200&q=80'}else{this.remove()}">
+        <img src="images/clinics/titirangi-massage.webp" alt="Therapeutic massage" loading="lazy" onerror="this.remove()">
         <div class="s-body">
           <h3>Therapeutic massage</h3>
           <p>Deep, targeted sports and therapeutic massage — 45 or 60 minutes.</p>
@@ -1794,8 +1792,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
       </div>
       <div class="s-card fu" onclick="openServ('exercise')" style="cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=80" alt="Exercise and gym-based rehab"
-          onerror="this.remove()">
+        <img src="images/clinics/pakuranga-gym-rehab.webp" alt="Exercise and gym-based rehab" loading="lazy" onerror="this.remove()">
         <div class="s-body">
           <h3>Exercise &amp; gym rehab</h3>
           <p>Strength-based rehab with on-site gyms — build the body that doesn't break.</p>
@@ -1803,8 +1800,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
       </div>
       <div class="s-card fu" onclick="openServ('hydro')" style="cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1558658862-77693bcc4e97?w=1200&q=80" alt="Hydrotherapy pool rehabilitation"
-          onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://images.unsplash.com/photo-1730244548329-4ae2f4fcaa7c?w=1200&q=80'}else{this.remove()}">
+        <img src="images/clinics/panmure-hydro.webp" alt="Hydrotherapy pool rehabilitation" loading="lazy" onerror="this.remove()">
         <div class="s-body">
           <h3>Hydrotherapy</h3>
           <p>Low-impact rehab in the pool — perfect when land-based loading is too much, too soon.</p>
@@ -1865,6 +1861,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="c-grid">
       <div class="c-card fu">
         <a href="titirangi.html" class="c-cover" aria-label="View the Titirangi clinic page"></a>
+        <img class="c-photo" src="images/clinics/titirangi-exterior-card.webp" width="720" height="405" alt="Outside our Titirangi clinic" loading="lazy">
         <div class="c-est">Est. 2004</div>
         <h3>Titirangi</h3>
         <address>2 Rangiwai Rd, Titirangi Village<br>09 817 7377</address>
@@ -1873,6 +1870,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
       <div class="c-card fu">
         <a href="pakuranga.html" class="c-cover" aria-label="View the Pakuranga clinic page"></a>
+        <img class="c-photo" src="images/clinics/pakuranga-exterior-card.webp" width="720" height="405" alt="Outside our Pakuranga clinic" loading="lazy">
         <div class="c-est">Est. 2002</div>
         <h3>Pakuranga</h3>
         <address>Lloyd Elsmore Leisure Centre<br>09 535 1932</address>
@@ -1881,6 +1879,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
       <div class="c-card fu">
         <a href="flatbush.html" class="c-cover" aria-label="View the Flat Bush clinic page"></a>
+        <img class="c-photo" src="images/clinics/flatbush-exterior-card.webp" width="720" height="405" alt="Outside our Flat Bush clinic" loading="lazy">
         <div class="c-est">Purpose-built</div>
         <h3>Flat Bush / Botany</h3>
         <address>14 Fusion Rd, behind Ormiston Hospital<br>09 265 2323</address>
@@ -1889,6 +1888,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
       <div class="c-card fu">
         <a href="panmure.html" class="c-cover" aria-label="View the Panmure clinic page"></a>
+        <img class="c-photo" src="images/clinics/panmure-exterior-card.webp" width="720" height="405" alt="Outside our Panmure clinic" loading="lazy">
         <div class="c-est">Lagoon Pools</div>
         <h3>Panmure</h3>
         <address>29 Lagoon Drive, Panmure<br>09 573 5788</address>

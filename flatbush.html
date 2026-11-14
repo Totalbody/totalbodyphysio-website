@@ -34,7 +34,7 @@
    "url": "https://www.totalbodyphysio.co.nz/flatbush.html",
    "telephone": "+6492652323",
    "email": "botany@totalbodyphysio.co.nz",
-   "image": "https://www.totalbodyphysio.co.nz/images/clinics/IMG_5350.webp",
+   "image": "https://www.totalbodyphysio.co.nz/images/clinics/flatbush-exterior.webp",
    "address": {
     "@type": "PostalAddress",
     "streetAddress": "14 Fusion Rd",
@@ -942,6 +942,18 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(14px);backg
 .team{padding:100px 0;background:var(--bone)}
 .team h2{font-size:clamp(32px,4.2vw,52px);font-weight:800;color:var(--ink);margin-top:16px}
 .team-sub{color:var(--text-mid);margin-top:12px;max-width:52ch}
+/* inside the clinic */
+.inside{padding:100px 0;background:#fff}
+.inside h2{font-size:clamp(32px,4.2vw,52px);font-weight:800;color:var(--ink);margin-top:16px}
+.inside-sub{color:var(--text-mid);margin-top:12px;max-width:52ch}
+.i-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.i-grid.two{grid-template-columns:repeat(2,1fr)}
+.i-grid.one{grid-template-columns:minmax(0,760px)}
+.i-grid figure{margin:0}
+.i-grid img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:20px;background:var(--bone)}
+.i-grid figcaption{font-size:14.5px;color:var(--text-mid);margin-top:12px}
+@media(max-width:920px){.i-grid,.i-grid.two{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.i-grid,.i-grid.two{grid-template-columns:1fr}.inside{padding:72px 0}}
 .t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
 .t-card{background:#fff;border:1px solid var(--hairline-dark);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s;text-align:left}
 .t-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(20,40,12,0.12)}
@@ -1098,7 +1110,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <header class="hero">
   <div class="hero-media">
-    <img width="974" height="724" src="images/clinics/IMG_5350.webp" alt="Reception at Total Body Physio Flat Bush, 14 Fusion Rd, Botany"
+    <img width="1201" height="488" src="images/clinics/flatbush-exterior.webp" alt="Reception at Total Body Physio Flat Bush, 14 Fusion Rd, Botany"
       onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1800&q=80';document.getElementById('phTag').style.display='inline-flex'}else if(this.dataset.f==1){this.dataset.f=2;this.src='https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1800&q=80'}else{this.remove()}">
   </div>
   <div id="phTag" style="display:none;position:absolute;top:86px;right:18px;z-index:2;background:rgba(0,0,0,0.55);color:#fff;font-size:11.5px;font-weight:600;padding:6px 13px;border-radius:100px;letter-spacing:.04em;align-items:center;gap:6px">📷 Stock placeholder — your photo goes here</div>
@@ -1142,13 +1154,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <p class="team-sub fu">Tap anyone to read their story and book with them directly.</p>
     <div class="t-grid">
       <button class="t-card fu" onclick="openModal('isabella')">
-        <div class="t-photo"><img width="532" height="538" src="images/team/isabella.webp" alt="Isabella Yang" onerror="this.remove()">IY</div>
+        <div class="t-photo"><img width="527" height="527" src="images/team/isabella.webp" alt="Isabella Yang" onerror="this.remove()">IY</div>
         <div class="t-info"><h3>Isabella Yang</h3><div>Hands-on · Dry needling · 中文</div><span>Meet Isabella →</span></div>
       </button>
       <button class="t-card fu" onclick="openModal('ibrahim')">
-        <div class="t-photo"><img width="570" height="640" src="images/team/ibrahim.webp" style="object-position:center 20%" alt="Ibrahim Al-Jumaily" onerror="this.remove()">IA</div>
+        <div class="t-photo"><img width="720" height="720" src="images/team/ibrahim.webp" alt="Ibrahim Al-Jumaily" onerror="this.remove()">IA</div>
         <div class="t-info"><h3>Ibrahim Al-Jumaily</h3><div>Sports & general · Arabic-speaking</div><span>Meet Ibrahim →</span></div>
       </button>
+    </div>
+  </div>
+</section>
+
+<section class="inside">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--moss)">Inside the clinic</div>
+    <h2 class="fu">Take a look around.</h2>
+    <p class="inside-sub fu">Here's what to expect when you arrive at 14 Fusion Rd.</p>
+    <div class="i-grid one">
+      <figure class="fu"><img src="images/clinics/flatbush-inside.webp" width="1100" height="816" alt="Hallway inside the Flat Bush clinic" loading="lazy"><figcaption>Inside our purpose-built Flat Bush clinic</figcaption></figure>
     </div>
   </div>
 </section>
@@ -3322,7 +3345,7 @@ var TEAM = {
     "name": "Ibrahim Al-Jumaily",
     "initials": "IA",
     "photo": "images/team/ibrahim.webp",
-    "pos": "center 20%",
+    "pos": "",
     "title": "Physiotherapist · Arabic-speaking",
     "bio": "Born and raised in South East Auckland, Ibrahim is a NZ-trained physiotherapist with a lifelong involvement in sport. He brings a modern, evidence-based approach with a strong focus on personalised care, and is fluent in Arabic — happy to treat in Arabic or English. He also works at our Pakuranga clinic.",
     "tags": [
