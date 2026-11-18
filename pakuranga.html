@@ -1368,8 +1368,8 @@ const CONFIG = {
         { id: '1859692633178244103', name: 'Ibrahim Al-Jumaily', title: 'Physiotherapist' },
         { id: '1957050361940281187', name: 'Valentino Tie',      title: 'Physiotherapist' },
         { id: '1996003944437908717', name: 'Vivian Chen',      title: 'Registered Acupuncturist' },
-        // Graduated, awaiting registration — kept out of physio consultations until then.
-        { id: '1941711195203437842', name: 'Samuel Warren',    title: 'Physio Assistant / Student Physio' },
+        // Graduated, awaiting registration — follow-ups only (no initials) until then.
+        { id: '1941711195203437842', name: 'Samuel Warren',    title: 'Student Physio · follow-ups only' },
       ],
     },
     'Flat Bush': {
@@ -1392,7 +1392,7 @@ const CONFIG = {
         { id: '151541',                    name: 'Hans Vermeulen',  title: 'Senior Physiotherapist' },
         { id: '1710578842491422443',        name: 'Jemma Read',     title: 'Physio Assistant/Strength & Conditioning' },
         { id: '1837927442598069580',        name: 'Gwenne Manares', title: 'Physiotherapist' },
-        { id: '1941711195203437842',        name: 'Samuel Warren',  title: 'Physio Assistant / Student Physio' },
+        { id: '1941711195203437842',        name: 'Samuel Warren',  title: 'Student Physio · follow-ups only' },
       ],
     },
     Panmure: {
@@ -2513,12 +2513,17 @@ const BW = {
     try {
       const d = await apiGet('practitioners', { business_id: S.selectedBusiness.id });
       S.practitioners = d.practitioners || [];
-      // Physio assistants and students (e.g. a graduate awaiting registration)
-      // can't take a physio consultation; the proxy leaves them out of its
-      // times too, so listing them would only lead to "no availability".
+      // A student physio (graduate awaiting registration) can't take an initial
+      // consultation and an assistant can't take any physio consultation; the
+      // proxy leaves them out of those times, so listing them would only lead
+      // to "no availability".
       const t = S.selectedApptType || {};
       if (/physio/i.test(t.category || '') && !/student/i.test(t.name || '')) {
-        S.practitioners = S.practitioners.filter(p => !/assistant|student/i.test(p.title || ''));
+        const initial = /initial/i.test(t.name || '');
+        S.practitioners = S.practitioners.filter(p => {
+          const student = /student/i.test(p.title || '');
+          return student ? !initial : !/assistant/i.test(p.title || '');
+        });
       }
     } catch(e) { showError('Could not load practitioners. Please try again.'); }
     S.loading = false;
@@ -2757,8 +2762,12 @@ const JENNY = {
     const said = JENNY.history.filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM'))
       .slice(-6).map(m => m.content).join(' ');
     const acupuncture = /acupunct|needl/i.test(said);
+    // A student physio (graduate awaiting registration) can see follow-ups but
+    // not initial consultations; assistants take no physio consultations.
+    const followUp = /follow/i.test(said) && !/initial|new injury|first visit/i.test(said);
     return list
-      .filter(p => !/assistant|student/i.test(p.title || ''))
+      .filter(p => !/assistant/i.test(p.title || '') || /student/i.test(p.title || ''))
+      .filter(p => followUp || !/student/i.test(p.title || ''))
       .filter(p => acupuncture || !/acupuncturist/i.test(p.title || '') || /physio/i.test(p.title || ''))
       .map(p => `${p.name} :: ${p.title || 'Physiotherapist'}`)
       .concat(['No preference']);
