@@ -2995,11 +2995,7 @@ const JENNY = {
           const biz = JENNY._biz(action.business_name);
           let apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
-          if (!apt) {
-            const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
-            result = `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${action.business_name}. Available types: ${avail}. Call get_appointment_types for ${action.business_name} to refresh, then retry with exact name.]`;
-            break;
-          }
+          if (!apt) { result = JENNY._aptMissing(action, biz); break; }
           const prac = action.practitioner_name ? JENNY._prac(action.practitioner_name) : null;
           apt = JENNY._effectiveType(apt, prac ? prac.id : null, biz);
           // Exactly mirrors BW.loadAvailableDates
@@ -3007,15 +3003,23 @@ const JENNY = {
           if (prac) params.practitioner_id = prac.id;
           const d = await apiGet('available_dates', params);
           JENNY._lastDates = d.available_dates || [];
+          // A full fortnight is not "no availability" — patients took "nothing
+          // in the next 2 weeks" to mean the clinic had none. Look further first.
+          let widened = false;
           if (!JENNY._lastDates.length) {
-            result = `[SYSTEM: No availability in next 2 weeks${prac ? ' for ' + prac.name : ''}. Suggest trying no-preference practitioner or different clinic.]`;
+            const d6 = await apiGet('available_dates', Object.assign({}, params, { weeks: 6 }));
+            JENNY._lastDates = d6.available_dates || [];
+            widened = true;
+          }
+          if (!JENNY._lastDates.length) {
+            result = `[SYSTEM: No online availability in the next 6 weeks for ${apt.name}${prac ? ' with ' + prac.name : ''} at ${biz.name}. Offer: ${prac ? 'any practitioner (no preference), ' : ''}another clinic, joining the wait list (join_waitlist), or calling ${biz.name} on ${JENNY._clinicPhone(biz)}.]`;
           } else {
             // T12:00:00 prevents timezone date-shift — same fix as booking widget
             const fmt = JENNY._lastDates.slice(0, 8).map((dt, i) => {
               const label = new Date(dt + 'T12:00:00').toLocaleDateString('en-NZ', { weekday:'long', day:'numeric', month:'long' });
               return `date${i}=${label}`;
             });
-            result = `[SYSTEM: Available dates — ${fmt.join(' | ')}. Present first 3–4 naturally. To fetch times use date_index:0 (etc).]`;
+            result = `[SYSTEM: ${widened ? `Nothing free in the next 2 weeks${prac ? ' with ' + prac.name : ''} — the first available dates are` : 'Available dates'} — ${fmt.join(' | ')}. Present first 3–4 naturally. To fetch times use date_index:0 (etc). If none is soon enough for the patient, also offer the wait list.]`;
           }
           break;
         }
@@ -3024,11 +3028,7 @@ const JENNY = {
           const biz = JENNY._biz(action.business_name);
           let apt = JENNY._apt(action.appointment_type_name, biz);
           if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
-          if (!apt) {
-            const avail = biz ? JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ') : 'unknown';
-            result = `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${action.business_name}. Available types: ${avail}. Call get_appointment_types for ${action.business_name} then retry with exact name.]`;
-            break;
-          }
+          if (!apt) { result = JENNY._aptMissing(action, biz); break; }
           // Use date_index to get exact date string — prevents AI guessing wrong date
           const di = action.date_index !== undefined ? parseInt(action.date_index) : -1;
           const dateStr = (di >= 0 && JENNY._lastDates && JENNY._lastDates[di])
@@ -3052,7 +3052,7 @@ const JENNY = {
           } else {
             const fmt = JENNY._lastSlots.map((s, i) => {
               const t = new Date(s.time).toLocaleTimeString('en-NZ', { hour:'numeric', minute:'2-digit', hour12:true, timeZone:'Pacific/Auckland' });
-              const pn = JENNY._resolvePracName(s.practitioner_id);
+              const pn = JENNY._resolvePracName(s.practitioner_id) || s.practitioner_name || '';
               return `slot${i}:${t}${pn ? ' with ' + pn : ''}`;
             });
             result = `[SYSTEM: Available times on ${dateStr}: ${fmt.join(' | ')}. Present 4–5 naturally. To book use slot_index:0 (etc).]`;
@@ -3100,7 +3100,7 @@ const JENNY = {
           }
 
           // Send booking notification email
-          const pracName = JENNY._resolvePracName(slot.practitioner_id);
+          const pracName = JENNY._resolvePracName(slot.practitioner_id) || slot.practitioner_name || '';
           const dtStr = new Date(slot.time).toLocaleString('en-NZ', {
             weekday:'long', day:'numeric', month:'long',
             hour:'numeric', minute:'2-digit', hour12:true, timeZone:'Pacific/Auckland'
@@ -3147,6 +3147,40 @@ const JENNY = {
             }});
             result = `[SYSTEM: The NEW appointment IS booked, but cancelling the original FAILED (${e.message}) — it is STILL in the diary. Do NOT tell the patient the old appointment is cancelled. Say their new time is confirmed, that we could not remove the old booking automatically, and ask them to call ${CONFIG.phone} so we can clear it. The clinic has been alerted.]`;
           }
+          break;
+        }
+
+        case 'join_waitlist': {
+          // Cliniko's wait list has no API, so the request goes to the clinic's
+          // team by email (and onto the patient's file as a memo) — see
+          // api/waitlist.js in the proxy. Only for a verified patient.
+          if (!JENNY.verifiedPatientId) { result = '[SYSTEM: No verified patient. Verify identity with search_patient before adding them to the wait list.]'; break; }
+          const biz = JENNY._biz(action.business_name);
+          if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
+          const apt = JENNY._apt(action.appointment_type_name, biz);
+          const typeName = apt ? apt.name : String(action.appointment_type_name || '').slice(0, 120);
+          if (!typeName) { result = '[SYSTEM: join_waitlist needs appointment_type_name — use the type the patient was searching for.]'; break; }
+          const wantsPrac = action.practitioner_name && !/^(no pref|any)/i.test(String(action.practitioner_name).trim());
+          const pracName = wantsPrac ? ((JENNY._prac(action.practitioner_name) || {}).name || String(action.practitioner_name)) : 'No preference';
+          const token = PATIENT_TOKENS[String(JENNY.verifiedPatientId)];
+          const r = await fetch(`${CONFIG.proxyUrl}/api/waitlist`, {
+            method: 'POST',
+            headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'X-Patient-Token': token } : {}),
+            body: JSON.stringify({
+              business_id:    biz.id,
+              appointment_type: typeName,
+              practitioner:   pracName,
+              preferences:    String(action.preferences || ''),
+              booked_instead: String(action.booked_instead || ''),
+              notes:          String(action.notes || ''),
+            }),
+          });
+          const wd = await r.json().catch(() => ({}));
+          if (!r.ok) throw new Error(wd.error || `HTTP ${r.status}`);
+          if (typeof gtag === 'function') {
+            gtag('event', 'waitlist_request', { 'clinic': biz.name, 'appointment_type': typeName, 'booking_source': 'jenny_ai_chat' });
+          }
+          result = `[SYSTEM: Wait list request sent to the ${biz.name} team — ${typeName}, ${pracName}, suits: ${action.preferences || 'any time'}. This is NOT a booking. Tell the patient the team will be in touch if an earlier spot comes up${action.booked_instead ? ', and their booked time stays in place in the meantime' : ''}. Never promise a spot.]`;
           break;
         }
 
@@ -3230,6 +3264,7 @@ const JENNY = {
     return null;
   },
   _apt(name='', biz=null) {
+    JENNY._aptAmbiguous = false;
     if (!name) return null;
     const types = biz ? JENNY._apptTypesForBiz(biz) : (JENNY._currentApptTypes || JENNY._allApptTypes || []);
     // Flatten punctuation (and Cliniko's "Acupunture" spelling) so "ACC
@@ -3237,22 +3272,56 @@ const JENNY = {
     const norm = x => String(x || '').toLowerCase().replace(/acupuncture/g, 'acupunture').replace(/[^a-z0-9]+/g, ' ').trim();
     const needle = norm(name);
     if (!needle) return null;
+    // The exact name from get_appointment_types always wins. Matching on words
+    // first sent Vivian's "1. Initial Acupunture Assessment and treatment - ACC"
+    // to the ACC physio initial, because that one shares more of its words.
+    const exact = types.find(t => norm(t.name) === needle);
+    if (exact) return exact;
     // The student-only types are chosen by _effectiveType from who is being
     // booked, never by name — unless the name asks for them outright.
     const STUDENT_IDS = ['1954858911718704506', '1954861311363908988'];
     const wantsStudent = /\b(free|student)\b/.test(needle);
     let pool = types.filter(t => wantsStudent || !STUDENT_IDS.includes(String(t.id)));
-    // "ACC" or "Private" in the request is about funding, and Cliniko records
-    // funding in the category — so decide that first. Matching words alone
-    // sent "ACC Initial" to the $120 private initial wherever the private
-    // type happened to come first in the list.
-    const funding = /\bacc\b/.test(needle) ? 'acc' : /\bprivate\b/.test(needle) ? 'private' : null;
-    if (funding) {
-      const byCategory = pool.filter(t => funding === 'acc' ? /\bacc\b/i.test(t.category || '') : /private/i.test(t.category || ''));
-      if (byCategory.length) pool = byCategory;
+    // "ACC" or "Private" in the request is about funding. Cliniko records it in
+    // the category — or, for Vivian's acupuncture types, only in the name.
+    // Matching words alone sent "ACC Initial" to the $120 private initial
+    // wherever the private type happened to come first in the list.
+    const isAcc = t => /\bacc\b/i.test(t.category || '') || /\bacc\b/i.test(t.name || '');
+    const isPrivate = t => !isAcc(t) && (/private/i.test(t.category || '') || /private/i.test(t.name || ''));
+    let funding = /\bacc\b|\bfree\b/.test(needle) ? 'acc' : /\bprivate\b/.test(needle) ? 'private' : null;
+    if (!funding) {
+      // A Cliniko name this clinic doesn't offer (rescheduling a "3. Follow up -
+      // extended 45mins", say) keeps its own funding: an ACC follow-up must
+      // never be moved onto the private one.
+      const known = (JENNY._allApptTypes || []).find(t => norm(t.name) === needle);
+      if (known) funding = isAcc(known) ? 'acc' : isPrivate(known) ? 'private' : null;
     }
-    const exact = pool.find(t => norm(t.name).includes(needle));
-    if (exact) return exact;
+    if (funding) {
+      const byFunding = pool.filter(funding === 'acc' ? isAcc : isPrivate);
+      if (byFunding.length) pool = byFunding;
+    }
+    // Acupuncture and massage types only when they are asked for, so "ACC
+    // Initial" at Pakuranga can never land on an acupuncture type.
+    const ACU = /acupun|needl/i, MASSAGE = /massage/i;
+    const want = ACU.test(needle) ? ACU : MASSAGE.test(needle) ? MASSAGE : null;
+    const narrowed = want
+      ? pool.filter(t => want.test(t.name || ''))
+      : pool.filter(t => !ACU.test(t.name || '') && !MASSAGE.test(t.name || ''));
+    if (narrowed.length) pool = narrowed;
+    const kind = /\binitial\b|\bnew\b/.test(needle) ? /initial/i : /\bfollow/.test(needle) ? /follow/i : null;
+    if (kind) {
+      const byKind = pool.filter(t => kind.test(t.name || ''));
+      if (byKind.length) pool = byKind;
+    }
+    // Still both ACC and private on the table: a plain "Follow-up" at Titirangi
+    // used to become the $80 private follow-up for an ACC ($40) patient. Make
+    // Jenny ask instead of guessing.
+    if (!funding && pool.some(isAcc) && pool.some(t => !isAcc(t))) {
+      JENNY._aptAmbiguous = true;
+      return null;
+    }
+    const partial = pool.find(t => norm(t.name).includes(needle));
+    if (partial) return partial;
     const words = needle.split(' ').filter(w => w.length > 2 && w !== 'acc' && w !== 'private');
     let best = null, bestScore = 0;
     for (const t of pool) {
@@ -3261,7 +3330,20 @@ const JENNY = {
       if (score > bestScore) { best = t; bestScore = score; }
     }
     if (best) return best;
-    return funding && pool.length ? pool[0] : null;
+    return (funding || kind) && pool.length ? pool[0] : null;
+  },
+  // What Jenny is told when _apt finds no type: ask ACC-or-private if that is
+  // why, otherwise list the clinic's real types.
+  _aptMissing(action, biz) {
+    if (JENNY._aptAmbiguous) {
+      return `[SYSTEM: "${action.appointment_type_name}" could be ACC or private at ${biz.name}. Ask the patient whether it's for an ACC injury claim or private, then retry with "ACC ..." or "Private ..." in appointment_type_name.]`;
+    }
+    const avail = JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ');
+    return `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${biz.name}. Available types: ${avail}. Call get_appointment_types for ${biz.name} to refresh, then retry with the exact name.]`;
+  },
+  _clinicPhone(biz) {
+    const key = biz && Object.keys(CONFIG.CLINICS).find(k => k.toLowerCase() === String(biz.name).toLowerCase());
+    return key ? CONFIG.CLINICS[key].phone : CONFIG.phone;
   },
   _prac(name='') {
     // Search hardcoded practitioners across all clinics
