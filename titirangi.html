@@ -1324,6 +1324,8 @@ const CONFIG = {
         { id: '1859692633178244103', name: 'Ibrahim Al-Jumaily', title: 'Physiotherapist' },
         { id: '1957050361940281187', name: 'Valentino Tie',      title: 'Physiotherapist' },
         { id: '1996003944437908717', name: 'Vivian Chen',      title: 'Registered Acupuncturist' },
+        // Graduated, awaiting registration — kept out of physio consultations until then.
+        { id: '1941711195203437842', name: 'Samuel Warren',    title: 'Physio Assistant / Student Physio' },
       ],
     },
     'Flat Bush': {
@@ -1346,6 +1348,7 @@ const CONFIG = {
         { id: '151541',                    name: 'Hans Vermeulen',  title: 'Senior Physiotherapist' },
         { id: '1710578842491422443',        name: 'Jemma Read',     title: 'Physio Assistant/Strength & Conditioning' },
         { id: '1837927442598069580',        name: 'Gwenne Manares', title: 'Physiotherapist' },
+        { id: '1941711195203437842',        name: 'Samuel Warren',  title: 'Physio Assistant / Student Physio' },
       ],
     },
     Panmure: {
@@ -1356,7 +1359,6 @@ const CONFIG = {
       practitioners: [
         { id: '1836577525711504654', name: 'Komal Preet Kaur', title: 'Senior Physiotherapist' },
         { id: '1837927442598069580', name: 'Gwenne Manares',   title: 'Physiotherapist' },
-        { id: '1957050361940281187', name: 'Valentino Tie',      title: 'Physiotherapist' },
       ],
     },
   },
@@ -1946,7 +1948,7 @@ function renderStep6() {
   if (S.loading) {
     html += `<div class="bw-loading"><div class="bw-spinner"></div> Checking availability…</div>`;
   } else if (!S.availableDates || S.availableDates.length === 0) {
-    html += `<div class="bw-empty"><div class="bw-empty-icon">😔</div>No availability in the next 2 weeks.<br>Please call us on ${CONFIG.phone}.</div>`;
+    html += `<div class="bw-empty"><div class="bw-empty-icon">😔</div>No online availability in the next 6 weeks.<br>Please call us on ${CONFIG.phone}.</div>`;
   } else {
     if (!S.calMonth) {
       const first = new Date(S.availableDates[0] + 'T12:00:00');
@@ -2433,6 +2435,11 @@ const BW = {
       if (S.selectedPractitioner && S.selectedPractitioner.id !== 'any') params.practitioner_id = S.selectedPractitioner.id;
       const d = await apiGet('available_dates', params);
       S.availableDates = d.available_dates || [];
+      // A full fortnight isn't "no availability" — look 6 weeks out first.
+      if (!S.availableDates.length) {
+        const d6 = await apiGet('available_dates', Object.assign({}, params, { weeks: 6 }));
+        S.availableDates = d6.available_dates || [];
+      }
       if (S.availableDates.length > 0) {
         const first = new Date(S.availableDates[0] + 'T12:00:00');
         S.calMonth = { year: first.getFullYear(), month: first.getMonth() };
@@ -2462,6 +2469,13 @@ const BW = {
     try {
       const d = await apiGet('practitioners', { business_id: S.selectedBusiness.id });
       S.practitioners = d.practitioners || [];
+      // Physio assistants and students (e.g. a graduate awaiting registration)
+      // can't take a physio consultation; the proxy leaves them out of its
+      // times too, so listing them would only lead to "no availability".
+      const t = S.selectedApptType || {};
+      if (/physio/i.test(t.category || '') && !/student/i.test(t.name || '')) {
+        S.practitioners = S.practitioners.filter(p => !/assistant|student/i.test(p.title || ''));
+      }
     } catch(e) { showError('Could not load practitioners. Please try again.'); }
     S.loading = false;
   },
@@ -2970,11 +2984,7 @@ const JENNY = {
           if (!JENNY._lastDates.length) {
             result = `[SYSTEM: No online availability in the next 6 weeks for ${apt.name}${prac ? ' with ' + prac.name : ''} at ${biz.name}. Offer: ${prac ? 'any practitioner (no preference), ' : ''}another clinic, joining the wait list (join_waitlist), or calling ${biz.name} on ${JENNY._clinicPhone(biz)}.]`;
           } else {
-            // T12:00:00 prevents timezone date-shift — same fix as booking widget
-            const fmt = JENNY._lastDates.slice(0, 8).map((dt, i) => {
-              const label = new Date(dt + 'T12:00:00').toLocaleDateString('en-NZ', { weekday:'long', day:'numeric', month:'long' });
-              return `date${i}=${label}`;
-            });
+            const fmt = JENNY._lastDates.slice(0, 14).map((dt, i) => `date${i}=${JENNY._dayLabel(dt)}`);
             result = `[SYSTEM: ${widened ? `Nothing free in the next 2 weeks${prac ? ' with ' + prac.name : ''} — the first available dates are` : 'Available dates'} — ${fmt.join(' | ')}. Present first 3–4 naturally. To fetch times use date_index:0 (etc). If none is soon enough for the patient, also offer the wait list.]`;
           }
           break;
@@ -2989,8 +2999,8 @@ const JENNY = {
           const di = action.date_index !== undefined ? parseInt(action.date_index) : -1;
           const dateStr = (di >= 0 && JENNY._lastDates && JENNY._lastDates[di])
             ? JENNY._lastDates[di]
-            : action.date || '';
-          if (!dateStr) { result = `[SYSTEM: No date. Ask patient to pick from available dates list.]`; break; }
+            : (/^\d{4}-\d{2}-\d{2}$/.test(String(action.date || '')) ? action.date : '');
+          if (!dateStr) { result = `[SYSTEM: No valid date. Use date_index from the latest get_available_dates result (call it again if needed) — never work a date out yourself.]`; break; }
           const prac = action.practitioner_name ? JENNY._prac(action.practitioner_name) : null;
           apt = JENNY._effectiveType(apt, prac ? prac.id : null, biz);
           // Exactly mirrors BW.loadSlots
@@ -3004,14 +3014,14 @@ const JENNY = {
           const d = await apiGet('available_times', params);
           JENNY._lastSlots = d.available_times || [];
           if (!JENNY._lastSlots.length) {
-            result = `[SYSTEM: No available times on ${dateStr}. Suggest another date from the list.]`;
+            result = `[SYSTEM: No available times on ${JENNY._dayLabel(dateStr)}. Suggest another date from the list.]`;
           } else {
             const fmt = JENNY._lastSlots.map((s, i) => {
               const t = new Date(s.time).toLocaleTimeString('en-NZ', { hour:'numeric', minute:'2-digit', hour12:true, timeZone:'Pacific/Auckland' });
               const pn = JENNY._resolvePracName(s.practitioner_id) || s.practitioner_name || '';
               return `slot${i}:${t}${pn ? ' with ' + pn : ''}`;
             });
-            result = `[SYSTEM: Available times on ${dateStr}: ${fmt.join(' | ')}. Present 4–5 naturally. To book use slot_index:0 (etc).]`;
+            result = `[SYSTEM: Available times on ${JENNY._dayLabel(dateStr)}: ${fmt.join(' | ')}. Say the date with the times. Present 4–5 naturally. To book use slot_index:0 (etc).]`;
           }
           break;
         }
@@ -3057,10 +3067,8 @@ const JENNY = {
 
           // Send booking notification email
           const pracName = JENNY._resolvePracName(slot.practitioner_id) || slot.practitioner_name || '';
-          const dtStr = new Date(slot.time).toLocaleString('en-NZ', {
-            weekday:'long', day:'numeric', month:'long',
-            hour:'numeric', minute:'2-digit', hour12:true, timeZone:'Pacific/Auckland'
-          });
+          const dtStr = JENNY._whenLabel(slot.time);
+          const bookedLine = `${apt.name} at ${biz.name}${pracName ? ' with ' + pracName : ''} on ${dtStr}`;
           JENNY.sendNotification('booking', {
             booking: {
               patientName:     JENNY.verifiedPatientName,
@@ -3073,12 +3081,12 @@ const JENNY = {
           JENNY._bookingNotified = true;
           JENNY._transcriptSent  = true;
           if (!_isResched) {
-            result = '[SYSTEM: Appointment booked successfully! Confirmation email will be sent.]';
+            result = `[SYSTEM: Appointment booked: ${bookedLine}. Confirm it to the patient using exactly this day, date and time. A confirmation email will be sent.]`;
             break;
           }
           const _oldId = action.old_appointment_id;
           if (!_oldId) {
-            result = `[SYSTEM: The new time is booked, but no old_appointment_id was supplied so the ORIGINAL appointment is STILL BOOKED. Tell the patient their new time is confirmed but the old one could not be removed, and ask them to call ${CONFIG.phone}.]`;
+            result = `[SYSTEM: The new time is booked (${bookedLine}), but no old_appointment_id was supplied so the ORIGINAL appointment is STILL BOOKED. Tell the patient their new time is confirmed but the old one could not be removed, and ask them to call ${CONFIG.phone}.]`;
             break;
           }
           const _old = (JENNY._lastAppts || []).find(x => String(x.id) === String(_oldId));
@@ -3091,7 +3099,7 @@ const JENNY = {
                 practitioner: _old.practitioner, business: _old.business,
               } : {}
             ));
-            result = '[SYSTEM: Reschedule complete — the new time is booked AND the original appointment is confirmed cancelled in Cliniko.]';
+            result = `[SYSTEM: Reschedule complete — new appointment: ${bookedLine}. The original${_old ? ' (' + JENNY._whenLabel(_old.starts_at) + ')' : ''} is confirmed cancelled in Cliniko. Confirm both to the patient using exactly these days, dates and times.]`;
           } catch(e) {
             // The patient now holds two appointments — the clinic has to know.
             JENNY.sendNotification('booking', { booking: {
@@ -3101,7 +3109,7 @@ const JENNY = {
               practitioner:    pracName,
               datetime:        dtStr,
             }});
-            result = `[SYSTEM: The NEW appointment IS booked, but cancelling the original FAILED (${e.message}) — it is STILL in the diary. Do NOT tell the patient the old appointment is cancelled. Say their new time is confirmed, that we could not remove the old booking automatically, and ask them to call ${CONFIG.phone} so we can clear it. The clinic has been alerted.]`;
+            result = `[SYSTEM: The NEW appointment IS booked (${bookedLine}), but cancelling the original FAILED (${e.message}) — it is STILL in the diary. Do NOT tell the patient the old appointment is cancelled. Say their new time is confirmed, that we could not remove the old booking automatically, and ask them to call ${CONFIG.phone} so we can clear it. The clinic has been alerted.]`;
           }
           break;
         }
@@ -3220,7 +3228,6 @@ const JENNY = {
     return null;
   },
   _apt(name='', biz=null) {
-    JENNY._aptAmbiguous = false;
     if (!name) return null;
     const types = biz ? JENNY._apptTypesForBiz(biz) : (JENNY._currentApptTypes || JENNY._allApptTypes || []);
     // Flatten punctuation (and Cliniko's "Acupunture" spelling) so "ACC
@@ -3269,12 +3276,12 @@ const JENNY = {
       const byKind = pool.filter(t => kind.test(t.name || ''));
       if (byKind.length) pool = byKind;
     }
-    // Still both ACC and private on the table: a plain "Follow-up" at Titirangi
-    // used to become the $80 private follow-up for an ACC ($40) patient. Make
-    // Jenny ask instead of guessing.
+    // Still both ACC and private on the table: about 99% of patients are ACC,
+    // so ACC it is. A plain "Follow-up" at Titirangi used to become the $80
+    // private follow-up for an ACC ($40) patient. Jenny says "ACC" back to the
+    // patient, so a private one can correct her.
     if (!funding && pool.some(isAcc) && pool.some(t => !isAcc(t))) {
-      JENNY._aptAmbiguous = true;
-      return null;
+      pool = pool.filter(isAcc);
     }
     const partial = pool.find(t => norm(t.name).includes(needle));
     if (partial) return partial;
@@ -3288,14 +3295,26 @@ const JENNY = {
     if (best) return best;
     return (funding || kind) && pool.length ? pool[0] : null;
   },
-  // What Jenny is told when _apt finds no type: ask ACC-or-private if that is
-  // why, otherwise list the clinic's real types.
+  // What Jenny is told when _apt finds no type: the clinic's real types.
   _aptMissing(action, biz) {
-    if (JENNY._aptAmbiguous) {
-      return `[SYSTEM: "${action.appointment_type_name}" could be ACC or private at ${biz.name}. Ask the patient whether it's for an ACC injury claim or private, then retry with "ACC ..." or "Private ..." in appointment_type_name.]`;
-    }
     const avail = JENNY._apptTypesForBiz(biz).map(t => t.name).join(' | ');
     return `[SYSTEM: Appointment type "${action.appointment_type_name}" not found for ${biz.name}. Available types: ${avail}. Call get_appointment_types for ${biz.name} to refresh, then retry with the exact name.]`;
+  },
+  // "2026-11-24" -> "Tuesday, 24 November 2026". Built at midday UTC and
+  // formatted in UTC, so the visitor's own time zone can never shift the day.
+  _dayLabel(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''));
+    if (!m) return String(iso || '');
+    return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12)).toLocaleDateString('en-NZ', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+    });
+  },
+  // An appointment start, in NZ time: "Tuesday, 24 November 2026 at 9:00 am".
+  _whenLabel(isoDateTime) {
+    const d = new Date(isoDateTime);
+    const day = d.toLocaleDateString('en-NZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Pacific/Auckland' });
+    const time = d.toLocaleTimeString('en-NZ', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Pacific/Auckland' });
+    return `${day} at ${time}`;
   },
   _clinicPhone(biz) {
     const key = biz && Object.keys(CONFIG.CLINICS).find(k => k.toLowerCase() === String(biz.name).toLowerCase());
