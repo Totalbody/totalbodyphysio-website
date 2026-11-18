@@ -2653,6 +2653,7 @@ const JENNY = {
     this._businesses = [];
     this._apptTypes = {};
     this._autoChips = null;
+    this._lastBooking = null;
     document.getElementById('pip-messages').innerHTML = '';
     const greetings = ["Kia ora", "G'day", "Hey there", "Hi there", "Kia ora"];
     const greeting = greetings[Math.floor(Math.random() * greetings.length)];
@@ -3060,7 +3061,7 @@ const JENNY = {
           const slot = JENNY._lastSlots && JENNY._lastSlots[idx];
           if (!slot) { result='[SYSTEM: Slot not found. Confirm the slot index from the times list.]'; break; }
           apt = JENNY._effectiveType(apt, slot.practitioner_id, biz);
-          await apiPost('book_appointment', {
+          const _bk = await apiPost('book_appointment', {
             practitioner_id:     slot.practitioner_id,
             business_id:         biz.id,
             patient_id:          JENNY.verifiedPatientId,
@@ -3068,6 +3069,10 @@ const JENNY = {
             starts_at:           slot.time,
             notes: _isResched ? 'Rescheduled via Jenny AI chat' : 'Booked via Jenny AI chat',
           });
+          // A wait list request straight after this is linked to this booking:
+          // only earlier times are offered, and this is the one cancelled if
+          // the patient takes one.
+          JENNY._lastBooking = (_bk && _bk.id) ? { id: String(_bk.id), business_id: biz.id, starts_at: slot.time } : null;
 
           // Track booking conversion - Google Ads + GA4 (new bookings only, not reschedules)
           if (!_isResched && typeof gtag === 'function') {
@@ -3136,36 +3141,52 @@ const JENNY = {
         }
 
         case 'join_waitlist': {
-          // Cliniko's wait list has no API, so the request goes to the clinic's
-          // team by email (and onto the patient's file as a memo) — see
-          // api/waitlist.js in the proxy. Only for a verified patient.
+          // The automatic wait list (api/waitlist.js in the proxy): every 15
+          // minutes the diary is checked, and when an earlier time that suits
+          // opens up the patient is emailed a link that books it and cancels
+          // the appointment linked here. Only for a verified patient.
           if (!JENNY.verifiedPatientId) { result = '[SYSTEM: No verified patient. Verify identity with search_patient before adding them to the wait list.]'; break; }
           const biz = JENNY._biz(action.business_name);
           if (!biz) { result = `[SYSTEM: Clinic "${action.business_name}" not found. Use one of: ${(JENNY._businesses||[]).map(b=>b.name).join(', ')}.]`; break; }
           const apt = JENNY._apt(action.appointment_type_name, biz);
-          const typeName = apt ? apt.name : String(action.appointment_type_name || '').slice(0, 120);
-          if (!typeName) { result = '[SYSTEM: join_waitlist needs appointment_type_name — use the type the patient was searching for.]'; break; }
+          if (!apt) { result = JENNY._aptMissing(action, biz); break; }
           const wantsPrac = action.practitioner_name && !/^(no pref|any)/i.test(String(action.practitioner_name).trim());
-          const pracName = wantsPrac ? ((JENNY._prac(action.practitioner_name) || {}).name || String(action.practitioner_name)) : 'No preference';
+          const prac = wantsPrac ? JENNY._prac(action.practitioner_name) : null;
+          if (wantsPrac && !prac) { result = `[SYSTEM: Practitioner "${action.practitioner_name}" not found at ${biz.name}. Use a name from get_practitioners, or "No preference".]`; break; }
+          // The appointment this request is for: one they named from
+          // get_appointments, else the one booked earlier in this chat.
+          let held = null;
+          if (action.appointment_id) {
+            held = (JENNY._lastAppts || []).find(a => String(a.id) === String(action.appointment_id)) || null;
+            if (!held) { result = '[SYSTEM: appointment_id not found. Call get_appointments and use an ID from that list.]'; break; }
+          } else if (JENNY._lastBooking && JENNY._lastBooking.business_id === biz.id) {
+            held = JENNY._lastBooking;
+          }
           const token = PATIENT_TOKENS[String(JENNY.verifiedPatientId)];
           const r = await fetch(`${CONFIG.proxyUrl}/api/waitlist`, {
             method: 'POST',
             headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'X-Patient-Token': token } : {}),
             body: JSON.stringify({
-              business_id:    biz.id,
-              appointment_type: typeName,
-              practitioner:   pracName,
-              preferences:    String(action.preferences || ''),
-              booked_instead: String(action.booked_instead || ''),
-              notes:          String(action.notes || ''),
+              business_id:           biz.id,
+              appointment_type_id:   apt.id,
+              appointment_type:      apt.name,
+              practitioner_id:       prac ? prac.id : '',
+              practitioner:          prac ? prac.name : 'No preference',
+              time_of_day:           String(action.time_of_day || 'any'),
+              days:                  Array.isArray(action.days) ? action.days.map(String) : [],
+              preferences:           String(action.preferences || ''),
+              booked_appointment_id: held ? String(held.id) : '',
+              notes:                 String(action.notes || ''),
             }),
           });
           const wd = await r.json().catch(() => ({}));
           if (!r.ok) throw new Error(wd.error || `HTTP ${r.status}`);
           if (typeof gtag === 'function') {
-            gtag('event', 'waitlist_request', { 'clinic': biz.name, 'appointment_type': typeName, 'booking_source': 'jenny_ai_chat' });
+            gtag('event', 'waitlist_request', { 'clinic': biz.name, 'appointment_type': apt.name, 'automatic': !!wd.auto, 'booking_source': 'jenny_ai_chat' });
           }
-          result = `[SYSTEM: Wait list request sent to the ${biz.name} team — ${typeName}, ${pracName}, suits: ${action.preferences || 'any time'}. This is NOT a booking. Tell the patient the team will be in touch if an earlier spot comes up${action.booked_instead ? ', and their booked time stays in place in the meantime' : ''}. Never promise a spot.]`;
+          result = wd.auto
+            ? `[SYSTEM: On the automatic wait list — ${apt.name} at ${biz.name}, ${wd.practitioner}, suits: ${wd.preferences}, until ${wd.until}. Tell the patient: as soon as an earlier time that suits them opens up, we'll email them — they just tap the time in the email to take it${wd.linked_appointment ? `, and their appointment on ${wd.linked_appointment} is then cancelled automatically (it stays booked until then)` : ''}. They've been sent an email confirming this, with a link to leave the list. Never promise that a time will come up.]`
+            : `[SYSTEM: Couldn't use the automatic wait list (${wd.reason || 'not available'}), so the ${biz.name} team has been asked to phone the patient if an earlier time comes up. Tell the patient the team will be in touch if a spot opens — never promise one.]`;
           break;
         }
 
