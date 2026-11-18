@@ -954,11 +954,14 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(14px);backg
 .i-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
 .i-grid.two{grid-template-columns:repeat(2,1fr)}
 .i-grid.one{grid-template-columns:minmax(0,760px)}
+.i-grid.five{grid-template-columns:repeat(6,1fr)}
+.i-grid.five figure{grid-column:span 2}
+.i-grid.five figure:nth-child(n+4){grid-column:span 3}
 .i-grid figure{margin:0}
 .i-grid img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:20px;background:var(--bone)}
 .i-grid figcaption{font-size:14.5px;color:var(--text-mid);margin-top:12px}
-@media(max-width:920px){.i-grid,.i-grid.two{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.i-grid,.i-grid.two{grid-template-columns:1fr}.inside{padding:72px 0}}
+@media(max-width:920px){.i-grid,.i-grid.two,.i-grid.five{grid-template-columns:1fr 1fr}.i-grid.five figure,.i-grid.five figure:nth-child(n+4){grid-column:auto}.i-grid.five figure:first-child{grid-column:1/-1}}
+@media(max-width:560px){.i-grid,.i-grid.two,.i-grid.five{grid-template-columns:1fr}.inside{padding:72px 0}}
 .t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
 .t-card{background:#fff;border:1px solid var(--hairline-dark);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;padding:0}
 .t-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(20,40,12,0.12)}
@@ -1181,9 +1184,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="eyebrow" style="color:var(--moss)">Inside the clinic</div>
     <h2 class="fu">Take a look around.</h2>
     <p class="inside-sub fu">Here's what to expect when you arrive in Titirangi Village.</p>
-    <div class="i-grid">
+    <div class="i-grid five">
       <figure class="fu"><img src="images/clinics/titirangi-waiting.webp" width="1200" height="900" alt="The Titirangi waiting area with a light blue sofa, yellow and teal armchairs, a round jute rug and the reception window" loading="lazy"><figcaption>A bright, welcoming waiting area</figcaption></figure>
-      <figure class="fu"><img src="images/clinics/titirangi-treatment-room.webp" width="1200" height="900" alt="A Titirangi treatment room with an electric treatment table, garden-view windows and plants" loading="lazy"><figcaption>Treatment rooms with garden views</figcaption></figure>
+      <figure class="fu"><img src="images/clinics/titirangi-treatment-room.webp" width="1200" height="900" alt="A Titirangi treatment room with an electric treatment table, bush-view windows and plants" loading="lazy"><figcaption>Treatment rooms with bush views</figcaption></figure>
+      <figure class="fu"><img src="images/clinics/titirangi-treatment-room-2.webp" width="1200" height="900" alt="A second Titirangi treatment room with a treatment table, coastal painting, green chairs and windows onto native bush" loading="lazy"><figcaption>Calm, private treatment rooms</figcaption></figure>
+      <figure class="fu"><img src="images/clinics/titirangi-exercise-room.webp" width="1200" height="900" alt="The Titirangi exercise room with exercise mats, wall bars, resistance bands, dumbbells, a mirror and a fitball" loading="lazy"><figcaption>A dedicated space for exercise rehab</figcaption></figure>
       <figure class="fu"><img src="images/clinics/titirangi-reception.webp" width="1100" height="825" alt="Reception and waiting area at the Titirangi clinic" loading="lazy"><figcaption>Reception at Titirangi</figcaption></figure>
     </div>
   </div>
