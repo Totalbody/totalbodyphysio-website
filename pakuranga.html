@@ -1152,7 +1152,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="wrap">
     <a class="promo" data-show-days="4,5,6,0" href="https://total-body-physio.au1.cliniko.com/bookings?business_id=90633">
       <span>😀 Weekend clinic — open Saturday and Sunday</span>
-      <span class="promo-who">Sat: physio with Ibrahim and Val · Sun: acupuncture with Vivian and physio with Tim</span>
+      <span class="promo-who">Sat: physio with Val and student physio Samuel · Sun: acupuncture with Vivian and physio with Tim</span>
       <span class="promo-arrow">Book →</span>
     </a>
     <div class="eyebrow">Pakuranga · Lloyd Elsmore Pools · Est. 2002</div>
@@ -1203,7 +1203,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </button>
       <button class="t-card fu" onclick="openModal('ibrahim')">
         <div class="t-photo"><img width="720" height="720" src="images/team/ibrahim.webp" alt="Ibrahim Al-Jumaily" onerror="this.remove()">IA</div>
-        <div class="t-info"><h3>Ibrahim Al-Jumaily</h3><div>Sports & general · Saturdays too · Arabic-speaking</div><span>Meet Ibrahim →</span></div>
+        <div class="t-info"><h3>Ibrahim Al-Jumaily</h3><div>Sports & general · Arabic-speaking</div><span>Meet Ibrahim →</span></div>
       </button>
       <button class="t-card fu" onclick="openModal('val')">
         <div class="t-photo"><img width="714" height="714" src="images/team/valentino.webp" alt="Val Tie" onerror="this.remove()">VT</div>
@@ -1212,6 +1212,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <button class="t-card fu" onclick="openModal('vivian')">
         <div class="t-photo"><img width="720" height="720" src="images/team/vivian.webp" alt="Vivian Chen" onerror="this.remove()">VC</div>
         <div class="t-info"><h3>Vivian Chen</h3><div>Acupuncturist · Sundays · 中文</div><span>Meet Vivian →</span></div>
+      </button>
+      <button class="t-card fu" onclick="openModal('samuel')">
+        <div class="t-photo">SW</div>
+        <div class="t-info"><h3>Samuel Warren</h3><div>Physio assistant · Student · Saturdays</div><span>Meet Samuel →</span></div>
       </button>
     </div>
   </div>
@@ -1242,7 +1246,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="v-row"><div class="v-label">Address</div><div class="v-val">Lloyd Elsmore Pools, 1 Sir Lloyd Drive, Pakuranga Heights</div></div>
         <div class="v-row"><div class="v-label">Phone</div><div class="v-val"><a href="tel:095351932">09 535 1932</a></div></div>
         <div class="v-row"><div class="v-label">Email</div><div class="v-val"><a href="mailto:pakuranga@totalbodyphysio.co.nz">pakuranga@totalbodyphysio.co.nz</a></div></div>
-        <div class="v-row"><div class="v-label">Hours</div><div class="v-val">Mon–Thu 7am–6pm · Fri 7am–3pm<br>Saturdays 8:30am–2pm: physio with Ibrahim and Val<br>Sundays 10am–3pm: acupuncture with Vivian, physio with Tim</div></div>
+        <div class="v-row"><div class="v-label">Hours</div><div class="v-val">Mon–Thu 7am–6pm · Fri 7am–3pm<br>Saturdays 8:30am–2pm: physio with Val and student physio Samuel<br>Sundays 10am–3pm: acupuncture with Vivian, physio with Tim</div></div>
         <div class="v-row"><div class="v-label">Parking</div><div class="v-val">Large free car park on-site — we’re on the left side of the building.</div></div>
         <div class="v-row"><div class="v-label">Facilities</div><div class="v-val">Lloyd Elsmore pool & gym on-site — ideal for hydro and gym-based rehab</div></div>
       </div>
@@ -1267,7 +1271,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <footer>
   <div class="wrap">
     <div>© 2026 Total Body Physio · ACC Accredited Provider · Since 2000 · <a href="faq.html#complaints" style="color:inherit">Feedback &amp; complaints</a></div>
-    <div>Acupuncture &amp; dry needling with Timothy Keung and Alistair Burgess — Saturday physio with Ibrahim Al-Jumaily and Val Tie — and Sunday acupuncture with Vivian Chen (ACC $35 initial / $30 follow-up; private rates as standard).</div>
+    <div>Acupuncture &amp; dry needling with Timothy Keung and Alistair Burgess — Saturday physio with Val Tie and student physio Samuel Warren — and Sunday acupuncture with Vivian Chen (ACC $35 initial / $30 follow-up; private rates as standard).</div>
     <div style="flex-basis:100%"><a href="contact.html" style="color:inherit">Contact &amp; hours</a> · <a href="acc-physio.html" style="color:inherit">ACC physio</a> · <a href="acupuncture-dry-needling.html" style="color:inherit">Acupuncture &amp; dry needling</a> · <a href="hydrotherapy.html" style="color:inherit">Hydrotherapy</a> · <a href="massage.html" style="color:inherit">Massage</a> · <a href="sports-injury-physio.html" style="color:inherit">Sports injuries</a> · <a href="conditions.html" style="color:inherit">What we treat</a></div>
   </div>
 </footer>
@@ -3529,8 +3533,8 @@ var TEAM = {
     "initials": "IA",
     "photo": "images/team/ibrahim.webp",
     "pos": "",
-    "title": "Physiotherapist · Saturdays too · Arabic-speaking",
-    "bio": "Born and raised in South East Auckland, Ibrahim is a NZ-trained physiotherapist with a lifelong involvement in sport. He brings a modern, evidence-based approach with a strong focus on personalised care, and is fluent in Arabic — happy to treat in Arabic or English. Ibrahim also works Saturdays at Pakuranga. Outside work he enjoys football, martial arts, hiking and travelling.",
+    "title": "Physiotherapist · Arabic-speaking",
+    "bio": "Born and raised in South East Auckland, Ibrahim is a NZ-trained physiotherapist with a lifelong involvement in sport. He brings a modern, evidence-based approach with a strong focus on personalised care, and is fluent in Arabic — happy to treat in Arabic or English. He also works at our Flat Bush clinic. Outside work he enjoys football, martial arts, hiking and travelling.",
     "tags": [
       "Sports injuries",
       "Lower back pain",
@@ -3570,6 +3574,20 @@ var TEAM = {
       "Mandarin & English"
     ],
     "book": "https://total-body-physio.au1.cliniko.com/bookings?business_id=90633&practitioner_id=1996003944437908717"
+  },
+  "samuel": {
+    "name": "Samuel Warren",
+    "initials": "SW",
+    "photo": "",
+    "pos": "",
+    "title": "Physio Assistant · Student Physio",
+    "bio": "Samuel is a physio assistant and student physiotherapist, working under the supervision of our senior physios. He works at Pakuranga, including Saturdays, and at our Titirangi clinic.",
+    "tags": [
+      "Physio assistant",
+      "Student physio",
+      "Saturdays"
+    ],
+    "book": "https://total-body-physio.au1.cliniko.com/bookings?business_id=90633&practitioner_id=1941711195203437842"
   }
 };
 function jennyFab(show){var f=document.getElementById('bw-fab-wrap');if(f)f.style.display=show?'':'none'}
