@@ -1131,6 +1131,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     }
   });
 </script>
+<script src="/attribution.js" defer></script>
 </head>
 <body>
 
@@ -3426,6 +3427,11 @@ const JENNY = {
       .replace(/&/g,'&amp;')
       .replace(/</g,'&lt;')
       .replace(/>/g,'&gt;')
+      // A Cliniko booking URL becomes a link (attribution.js then adds the visit's UTMs).
+      .replace(/https:\/\/total-body-physio\.au1\.cliniko\.com\/[^\s<"']*/g, m => {
+        const url = m.replace(/[.,;:!?)]+$/, '');
+        return `<a href="${url}" target="_blank" rel="noopener">Book online →</a>${m.slice(url.length)}`;
+      })
       .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
       .replace(/\*(.+?)\*/g,'<em>$1</em>')
       .replace(/\n/g,'<br>');
